@@ -14,10 +14,29 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:titleTextAppearance="@style/ToolbarTitleText"
             android:backgroundTint="@color/white"
             android:minHeight="?attr/actionBarSize"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/toolBar_icon_Subscribe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/ic_back"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subscribe"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="24sp"/>
+        </androidx.appcompat.widget.Toolbar>
+
+
 
         <TextView
             android:id="@+id/textView"
