@@ -23,7 +23,7 @@
         android:id="@+id/splashScreen_animator"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="148dp"
+        android:layout_marginTop="140dp"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
@@ -34,5 +34,17 @@
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/sp" />
 
+    <TextView
+        android:id="@+id/footer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text=""
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/splashScreen_animator"
+        app:layout_constraintStart_toStartOf="@+id/splashScreen_animator"
+        app:layout_constraintTop_toBottomOf="@+id/splashScreen_animator" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
