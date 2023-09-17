@@ -7,29 +7,29 @@
 
     <fragment
         android:id="@+id/HomeFragment"
-        android:name="com.example.rtv_plus_android_app_revamp.ui.fregments.HomeFragment"
+        android:name="com.example.rtv_plus_android_app_revamp.ui.fragments.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/SearchFragment"
-        android:name="com.example.rtv_plus_android_app_revamp.ui.fregments.SearchFragment"
+        android:name="com.example.rtv_plus_android_app_revamp.ui.fragments.SearchFragment"
         android:label="Search"
         tools:layout="@layout/fragment_search" />
 
     <fragment
         android:id="@+id/LiveTvFragment"
-        android:name="com.example.rtv_plus_android_app_revamp.ui.fregments.LiveTvFragment"
+        android:name="com.example.rtv_plus_android_app_revamp.ui.fragments.LiveTvFragment"
         android:label="Live Tv"
         tools:layout="@layout/fragment_live_tv" />
 
     <fragment
         android:id="@+id/SubscriptionFragment"
-        android:name="com.example.rtv_plus_android_app_revamp.ui.fregments.SubscriptionFragment"
+        android:name="com.example.rtv_plus_android_app_revamp.ui.fragments.SubscriptionFragment"
         android:label="Subscription"
         tools:layout="@layout/fragment_subscription" />
     <fragment
         android:id="@+id/MoreFragment"
-        android:name="com.example.rtv_plus_android_app_revamp.ui.fregments.MoreFragment"
+        android:name="com.example.rtv_plus_android_app_revamp.ui.fragments.MoreFragment"
         android:label="More"
         tools:layout="@layout/fragment_more" />
 

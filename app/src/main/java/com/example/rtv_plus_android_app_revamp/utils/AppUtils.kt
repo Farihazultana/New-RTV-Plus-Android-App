@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.utils
 
-class AppUtils {
+object AppUtils {
+    const val BASE_URL = "https://rtvplus.tv/api/"
 
 }
