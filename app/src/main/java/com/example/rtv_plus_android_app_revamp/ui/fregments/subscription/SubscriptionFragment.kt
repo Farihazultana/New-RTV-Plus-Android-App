@@ -1,4 +1,4 @@
-package com.example.rtv_plus_android_app_revamp.ui.fregments
+package com.example.rtv_plus_android_app_revamp.ui.fregments.subscription
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,10 +12,9 @@ import androidx.navigation.Navigation.findNavController
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscriptionBinding
 
-class SubscriptionFragment : Fragment(){
+class SubscriptionFragment : Fragment() {
     private lateinit var binding: FragmentSubscriptionBinding
-    private lateinit var toolBar: Toolbar
-    private lateinit var actionBar: ActionBar
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,10 +28,27 @@ class SubscriptionFragment : Fragment(){
             navController.navigate(R.id.HomeFragment)
         }
 
+        binding.btWeeklySubscription.setOnClickListener{
+            showBottomSheet()
+        }
+        binding.btMonthlySubscription.setOnClickListener {
+            showBottomSheet()
+        }
+        binding.btSixMonthSubscription.setOnClickListener {
+            showBottomSheet()
+        }
+        binding.btYearlySubscription.setOnClickListener {
+            showBottomSheet()
+        }
+
         return binding.root
     }
 
-
-
+    private fun showBottomSheet(){
+        val bottomSheetFragment = SubscribeBottomFragment()
+        bottomSheetFragment.show(
+            childFragmentManager, bottomSheetFragment.tag
+        )
+    }
 
 }

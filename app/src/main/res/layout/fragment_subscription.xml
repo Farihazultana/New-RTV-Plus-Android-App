@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fregments.SubscriptionFragment">
+    tools:context=".ui.fregments.subscription.SubscriptionFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,6 +17,7 @@
             app:titleTextAppearance="@style/ToolbarTitleText"
             android:backgroundTint="@color/white"
             android:minHeight="?attr/actionBarSize"
+            app:elevation="6dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -88,6 +89,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/bt_weeklySubscription"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:layout_marginTop="8dp"
@@ -133,13 +135,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="TK 15 For 7 Days"
+                    android:text="TK 50 For 1 Month"
                     android:textStyle="bold"
                     android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/bt_monthlySubscription"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:layout_marginTop="8dp"
@@ -185,13 +188,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="TK 15 For 7 Days"
+                    android:text="TK 275 For 6 Months"
                     android:textStyle="bold"
                     android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/bt_sixMonthSubscription"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:layout_marginTop="8dp"
@@ -237,13 +241,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="TK 15 For 7 Days"
+                    android:text="TK 500 For 1 Year"
                     android:textStyle="bold"
                     android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/bt_yearlySubscription"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:layout_marginTop="8dp"

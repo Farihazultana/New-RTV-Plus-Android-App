@@ -63,7 +63,7 @@
         android:duration="200" />
 
 
-    <!--Fift-->
+    <!--Fifth-->
 
     <item
         android:drawable="@drawable/ic_dots1"
