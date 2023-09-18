@@ -5,27 +5,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-<!--    <com.jama.carouselview.CarouselView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:enableSnapping="true"-->
-<!--        app:scaleOnScroll="false"-->
-<!--        app:setAutoPlay="true"-->
-<!--        app:setAutoPlayDelay="3000"-->
-<!--        app:carouselOffset="center"-->
-<!--        app:indicatorAnimationType="drop"-->
-<!--        app:indicatorRadius="5"-->
-<!--        app:indicatorPadding="5"-->
-<!--        app:indicatorSelectedColor="@color/colorAccent"-->
-<!--        app:indicatorUnselectedColor="@color/colorPrimary"-->
-<!--        app:size="10"-->
-<!--        app:spacing="10"-->
-<!--        app:resource="@layout/image_carousel_item"/>-->
-
     <com.smarteist.autoimageslider.SliderView
         android:id="@+id/imageSlider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_100sdp"
+        android:layout_height="@dimen/_110sdp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

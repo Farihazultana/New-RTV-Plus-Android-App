@@ -6,16 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.marginTop
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Data
 import com.smarteist.autoimageslider.SliderView
+import org.w3c.dom.Text
 import java.util.TimerTask
 
 class ParentHomeAdapter(var homeData: List<Data>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     companion object {
         private const val TYPE_BANNER = 0
         private const val TYPE_CONTENT = 1
@@ -52,12 +53,12 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                         LinearLayoutManager.HORIZONTAL,
                         false
                     )
-
                     holder.textView.text = currentItem.catname
                     holder.recyclerView.adapter = holder.childListAdapter
                 } else {
                     holder.textView.visibility = View.GONE
                     holder.recyclerView.visibility = View.GONE
+                    holder.seeAll.visibility = View.GONE
                 }
             }
 
@@ -89,6 +90,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
         lateinit var childListAdapter: ChildHomeAdapter
         val recyclerView: RecyclerView = itemView.findViewById(R.id.listItem_recyclerview)
         val textView: TextView = itemView.findViewById(R.id.title_textviewID)
+        val seeAll: TextView = itemView.findViewById(R.id.seeAll)
     }
 
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

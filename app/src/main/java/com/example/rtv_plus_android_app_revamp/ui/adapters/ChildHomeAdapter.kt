@@ -21,6 +21,7 @@ class ChildHomeAdapter(
         private const val TYPE_BANNER = 0
         private const val TYPE_CONTENT = 1
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
 //            TYPE_BANNER -> {
@@ -51,6 +52,33 @@ class ChildHomeAdapter(
 //            }
             is ContentViewHolder -> {
 
+                if (currentItem.isfree.toInt() == 0) {
+                    holder.premiumTextView.visibility = View.VISIBLE
+                }
+
+                holder.titleTextView.text = currentItem.name
+
+                if (currentItem.contenttype == "playlist") {
+                    val drawableStart = R.drawable.baseline_format_list_numbered_24
+                    holder.descriptionText.setCompoundDrawablesWithIntrinsicBounds(
+                        drawableStart,
+                        0,
+                        0,
+                        0
+                    )
+                    holder.descriptionText.text = "Episodes-${currentItem.epcount}"
+                } else {
+                    val drawableStart = R.drawable.baseline_access_time_24
+                    holder.descriptionText.setCompoundDrawablesWithIntrinsicBounds(
+                        drawableStart,
+                        0,
+                        0,
+                        0
+                    )
+                    holder.descriptionText.text = currentItem.length2
+                }
+
+
                 Glide.with(holder.imageView.context)
                     .load(currentItem.image_location)
                     .placeholder(R.drawable.ic_launcher_background)
@@ -76,13 +104,15 @@ class ChildHomeAdapter(
             TYPE_CONTENT
         }
     }
-//    inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    //    inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 //        val sliderView: SliderView = itemView.findViewById(R.id.imageSlider)
 //        lateinit var sliderAdapter: SliderAdapter
 //    }
     inner class ContentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.image_view_id)
         val titleTextView: TextView = itemView.findViewById(R.id.title_textView)
+        val premiumTextView: TextView = itemView.findViewById(R.id.premiumTextView)
         val descriptionText: TextView = itemView.findViewById(R.id.descriptionTextView)
     }
 
