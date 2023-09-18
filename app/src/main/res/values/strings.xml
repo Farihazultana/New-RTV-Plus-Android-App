@@ -9,4 +9,9 @@
     <string name="please_enter_your_half_yearly_scratch_card_coupon">Please enter your half-yearly scratch card coupon</string>
     <string name="confirm_paymentBTN">Confirm Payment</string>
     <string name="redeem_coupon">Redeem Coupon</string>
+    <string name="tk_15_for_7_days">TK 15 For 7 Days</string>
+    <string name="click_to_subscribeBTN">Click to Subscribe</string>
+    <string name="tk_50_for_1_month">TK 50 For 1 Month</string>
+    <string name="tk_275_for_6_months">TK 275 For 6 Months</string>
+    <string name="tk_500_for_1_year">TK 500 For 1 Year</string>
 </resources>
