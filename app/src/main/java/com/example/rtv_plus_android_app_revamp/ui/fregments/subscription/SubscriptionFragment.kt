@@ -3,52 +3,63 @@ package com.example.rtv_plus_android_app_revamp.ui.fregments.subscription
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.widget.Toolbar
 import androidx.navigation.Navigation.findNavController
 import com.example.rtv_plus_android_app_revamp.R
+import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscribeBottomBinding
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscriptionBinding
 
 class SubscriptionFragment : Fragment() {
     private lateinit var binding: FragmentSubscriptionBinding
+    private lateinit var bottomBinding: FragmentSubscribeBottomBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentSubscriptionBinding.inflate(inflater, container, false)
-        //toolBar = binding.toolbar;
-        //toolBar.title = "Subscribe"
+        bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
+
+
+        //go to previous screen
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
         toolBarIconSubscribe.setOnClickListener {
             val navController = findNavController(binding.root)
             navController.navigate(R.id.HomeFragment)
         }
 
-        binding.btWeeklySubscription.setOnClickListener{
-            showBottomSheet()
+
+        binding.btWeeklySubscription.setOnClickListener {
+            showBottomSheet("TK 15 for 7 days")
         }
         binding.btMonthlySubscription.setOnClickListener {
-            showBottomSheet()
+            showBottomSheet("TK 50 for 1 Month")
         }
         binding.btSixMonthSubscription.setOnClickListener {
-            showBottomSheet()
+            showBottomSheet("TK 275 for 6 Months")
         }
         binding.btYearlySubscription.setOnClickListener {
-            showBottomSheet()
+            showBottomSheet("TK 500 for 1 Year")
         }
 
         return binding.root
     }
 
-    private fun showBottomSheet(){
+    private fun showBottomSheet(packageText: String) {
         val bottomSheetFragment = SubscribeBottomFragment()
+
+        val args = Bundle()
+        args.putString("packageText", packageText)
+        bottomSheetFragment.arguments = args
+
+        // Pass the bottomBinding to the bottomSheetFragment
+        bottomSheetFragment.bottomBinding = bottomBinding
+
         bottomSheetFragment.show(
             childFragmentManager, bottomSheetFragment.tag
         )
     }
+
 
 }
