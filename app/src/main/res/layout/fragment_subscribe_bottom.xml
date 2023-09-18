@@ -12,15 +12,23 @@
         android:layout_height="wrap_content"
         android:padding="20dp">
 
+        <View
+            android:layout_width="64dp"
+            android:layout_height="5dp"
+            android:background="@drawable/round_corner_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/tv_package"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:textColor="@color/black"
-            android:textSize="24sp"
+            android:layout_marginTop="16dp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/grey"
+            app:layout_constraintStart_toStartOf="@+id/appCompatButton"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -63,6 +71,7 @@
                             android:id="@+id/rb_Local"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -71,7 +80,6 @@
                             android:id="@+id/tv_LocalPayment"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
                             android:text="@string/local_payment"
                             android:textColor="@color/black"
@@ -135,8 +143,8 @@
                             android:id="@+id/textView4"
                             android:layout_width="243dp"
                             android:layout_height="46dp"
-                            android:layout_marginStart="8dp"
                             android:text="@string/pay_using_bkash_nagad_rocket_amp_cards"
+                            android:textColor="@color/grey"
                             app:layout_constraintStart_toEndOf="@+id/rb_Local"
                             app:layout_constraintTop_toBottomOf="@+id/tv_LocalPayment" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -161,6 +169,7 @@
                             android:id="@+id/rb_Redeem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -169,7 +178,6 @@
                             android:id="@+id/tv_Redeem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
                             android:layout_marginEnd="196dp"
                             android:text="@string/redeem_coupon"
                             android:textColor="@color/black"
@@ -178,12 +186,23 @@
                             app:layout_constraintStart_toEndOf="@+id/rb_Redeem"
                             app:layout_constraintTop_toTopOf="@+id/rb_Redeem" />
 
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="80dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/ic_coupon"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_Redeem"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/tv_Redeem"
+                            app:layout_constraintTop_toTopOf="@+id/tv_Redeem" />
+
                         <TextView
                             android:layout_width="268dp"
                             android:layout_height="41dp"
-                            android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
                             android:text="@string/please_enter_your_half_yearly_scratch_card_coupon"
+                            android:textColor="@color/grey"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/rb_Redeem"
                             app:layout_constraintTop_toBottomOf="@+id/tv_Redeem" />
