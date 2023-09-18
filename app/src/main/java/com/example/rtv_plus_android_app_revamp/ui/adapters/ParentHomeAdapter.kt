@@ -1,6 +1,7 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import com.example.rtv_plus_android_app_revamp.data.models.home.Data
 import com.smarteist.autoimageslider.SliderView
 import java.util.TimerTask
 
-class ParentHomeAdapter( var homeData: List<Data>) :
+class ParentHomeAdapter(var homeData: List<Data>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -43,20 +44,21 @@ class ParentHomeAdapter( var homeData: List<Data>) :
 
         when (holder) {
             is ContentViewHolder -> {
-                holder.childListAdapter = ChildHomeAdapter(currentItem.contents, currentItem.contentviewtype)
-                holder.recyclerView.layoutManager = LinearLayoutManager(
-                    holder.recyclerView.context,
-                    LinearLayoutManager.HORIZONTAL,
-                    false
-                )
+                if (!currentItem.contents.isNullOrEmpty()) {
+                    holder.childListAdapter =
+                        ChildHomeAdapter(currentItem.contents, currentItem.contentviewtype)
+                    holder.recyclerView.layoutManager = LinearLayoutManager(
+                        holder.recyclerView.context,
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                    )
 
-                if (currentItem.contentviewtype == "4") {
-                    holder.textView.visibility = View.GONE
-                } else {
                     holder.textView.text = currentItem.catname
+                    holder.recyclerView.adapter = holder.childListAdapter
+                } else {
+                    holder.textView.visibility = View.GONE
+                    holder.recyclerView.visibility = View.GONE
                 }
-
-                holder.recyclerView.adapter = holder.childListAdapter
             }
 
             is BannerViewHolder -> {
