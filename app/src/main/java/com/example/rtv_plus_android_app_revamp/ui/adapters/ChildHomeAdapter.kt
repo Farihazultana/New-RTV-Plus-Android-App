@@ -23,12 +23,11 @@ class ChildHomeAdapter(
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_BANNER -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.row_obj_banner, parent, false)
-                BannerViewHolder(view)
-            }
-
+//            TYPE_BANNER -> {
+//                val view = LayoutInflater.from(parent.context)
+//                    .inflate(R.layout.row_obj_banner, parent, false)
+//                BannerViewHolder(view)
+//            }
             TYPE_CONTENT -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.row_obj_child_home_data, parent, false)
@@ -42,15 +41,14 @@ class ChildHomeAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentItem = contentData[position]
         when (holder) {
-            is BannerViewHolder -> {
-                holder.sliderAdapter = SliderAdapter(contentData)
-                holder.sliderView.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
-                holder.sliderView.setSliderAdapter(holder.sliderAdapter)
-                holder.sliderView.scrollTimeInSec = 3
-                holder.sliderView.isAutoCycle = true
-                holder.sliderView.startAutoCycle()
-            }
-
+//            is BannerViewHolder -> {
+//                holder.sliderAdapter = SliderAdapter(contentData)
+//                holder.sliderView.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
+//                holder.sliderView.setSliderAdapter(holder.sliderAdapter)
+//                holder.sliderView.scrollTimeInSec = 3
+//                holder.sliderView.isAutoCycle = true
+//                holder.sliderView.startAutoCycle()
+//            }
             is ContentViewHolder -> {
 
                 Glide.with(holder.imageView.context)
@@ -78,12 +76,10 @@ class ChildHomeAdapter(
             TYPE_CONTENT
         }
     }
-
-    inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val sliderView: SliderView = itemView.findViewById(R.id.imageSlider)
-        lateinit var sliderAdapter: SliderAdapter
-    }
-
+//    inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+//        val sliderView: SliderView = itemView.findViewById(R.id.imageSlider)
+//        lateinit var sliderAdapter: SliderAdapter
+//    }
     inner class ContentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.image_view_id)
         val titleTextView: TextView = itemView.findViewById(R.id.title_textView)
