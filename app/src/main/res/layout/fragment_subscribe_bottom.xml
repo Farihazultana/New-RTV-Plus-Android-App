@@ -73,6 +73,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
+                            app:buttonTint="@color/green"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -171,9 +172,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
+                            app:buttonTint="@color/green"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.3" />
 
                         <TextView
                             android:id="@+id/tv_Redeem"
@@ -204,7 +207,7 @@
                             android:layout_marginTop="8dp"
                             android:text="@string/please_enter_your_half_yearly_scratch_card_coupon"
                             android:textColor="@color/grey"
-                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintBottom_toBottomOf="@+id/rb_Redeem"
                             app:layout_constraintStart_toEndOf="@+id/rb_Redeem"
                             app:layout_constraintTop_toBottomOf="@+id/tv_Redeem" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
