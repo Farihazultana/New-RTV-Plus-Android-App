@@ -19,7 +19,6 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -40,10 +39,11 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+
 }
 
 dependencies {
-
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
@@ -72,6 +72,8 @@ dependencies {
 
     //Glide
     implementation ("com.github.bumptech.glide:glide:4.15.1")
+    //Image Slider
+    implementation ("com.github.smarteist:autoimageslider:1.4.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

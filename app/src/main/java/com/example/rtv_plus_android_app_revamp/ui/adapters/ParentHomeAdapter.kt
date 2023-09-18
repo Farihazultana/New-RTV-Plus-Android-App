@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Data
+import java.util.TimerTask
 
 class ParentHomeAdapter(var homeData: List<Data>) :
     RecyclerView.Adapter<ParentHomeAdapter.ViewHolder>() {
@@ -20,13 +22,6 @@ class ParentHomeAdapter(var homeData: List<Data>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentItem = homeData[position]
 
-
-        if (currentItem.contentviewtype == "5") {
-            holder.textView.visibility = View.GONE
-        } else {
-            holder.textView.text = currentItem.catname
-        }
-
         holder.childListAdapter =
             ChildHomeAdapter(currentItem.contents, contentViewType = currentItem.contentviewtype)
         holder.recyclerView.layoutManager = LinearLayoutManager(
@@ -34,6 +29,13 @@ class ParentHomeAdapter(var homeData: List<Data>) :
             LinearLayoutManager.HORIZONTAL,
             false
         )
+        if (currentItem.contentviewtype == "4") {
+            holder.textView.visibility = View.GONE
+
+        } else {
+            holder.textView.text = currentItem.catname
+        }
+
         holder.recyclerView.adapter = holder.childListAdapter
     }
 
