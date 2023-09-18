@@ -12,6 +12,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class SubscribeBottomFragment : BottomSheetDialogFragment() {
 
     lateinit var bottomBinding: FragmentSubscribeBottomBinding
+    private var isLocalSelected = false
+    private var isRedeemSelected = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,23 +28,86 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
         val rbLocal = bottomBinding.rbLocal
         val rbRedeem = bottomBinding.rbRedeem
 
+        rbLocal.setOnClickListener {
+            isLocalSelected = true
+            isRedeemSelected = false
+            updateUI()
+        }
+
+        rbRedeem.setOnClickListener {
+            isLocalSelected = false
+            isRedeemSelected = true
+            updateUI()
+        }
+
         bottomBinding.cvLocalPayment.setOnClickListener {
-            rbLocal.isChecked = true
-            rbRedeem.isChecked = false
-            bottomBinding.cvLocalPayment.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card_background_color))
-            bottomBinding.cvRedeemCoupon.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            isLocalSelected = true
+            isRedeemSelected = false
+            updateUI()
         }
 
         bottomBinding.cvRedeemCoupon.setOnClickListener {
-            rbRedeem.isChecked = true
-            rbLocal.isChecked = false
-            bottomBinding.cvRedeemCoupon.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card_background_color))
-            bottomBinding.cvLocalPayment.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            isLocalSelected = false
+            isRedeemSelected = true
+            updateUI()
         }
+
+        updateUI()
 
         return view
     }
 
+    private fun updateUI() {
+        val localCardView = bottomBinding.cvLocalPayment
+        val redeemCardView = bottomBinding.cvRedeemCoupon
 
+        if (isLocalSelected) {
+            bottomBinding.rbLocal.isChecked = true
+            bottomBinding.rbRedeem.isChecked = false
+            localCardView.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.card_background_color
+                )
+            )
+            redeemCardView.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.white
+                )
+            )
+        } else if (isRedeemSelected) {
+            bottomBinding.rbLocal.isChecked = false
+            bottomBinding.rbRedeem.isChecked = true
+            redeemCardView.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.card_background_color
+                )
+            )
+            localCardView.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.white
+                )
+            )
+        } else {
+            // Neither is selected, you can update the UI accordingly if needed
+            bottomBinding.rbLocal.isChecked = false
+            bottomBinding.rbRedeem.isChecked = false
+            localCardView.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.white
+                )
+            )
+            redeemCardView.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.white
+                )
+            )
+        }
+    }
 
 }
