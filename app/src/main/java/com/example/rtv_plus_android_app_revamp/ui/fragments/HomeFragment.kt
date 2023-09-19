@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,12 +43,10 @@ class HomeFragment : Fragment() {
             homeViewModel.homeData.collect { result ->
                 when (result) {
                     is ResultType.Loading -> {
-                        // Handle loading state (e.g., show a progress indicator)
+                        binding.progressBar.visibility = View.VISIBLE
                     }
                     is ResultType.Success -> {
-                        // Handle success state and update UI with result.data
                         val homeData = result.data
-                        Log.e("homedata", homeData.toString())
                         parentHomeAdapter.homeData = homeData.data
                         binding.progressBar.visibility = View.GONE
                         binding.parentRecyclerview.visibility = View.VISIBLE
@@ -55,9 +54,9 @@ class HomeFragment : Fragment() {
                     }
 
                     is ResultType.Error -> {
-                        // Handle error state (e.g., show an error message)
                         val errorMessage = result.exception.message
-                        // Show the error message to the user
+                        Toast.makeText(requireContext(), "Something is wrong. Please try again", Toast.LENGTH_SHORT).show()
+
                     }
                 }
             }
