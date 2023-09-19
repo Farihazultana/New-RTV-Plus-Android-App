@@ -1,10 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.utils
 
-class AppUtils {
-
-    fun AppScreenSize()
-    {
-
-    }
+object AppUtils {
+    const val BASE_URL = "https://rtvplus.tv/api/"
 
 }
