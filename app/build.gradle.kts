@@ -39,8 +39,6 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-
-
 }
 
 dependencies {
@@ -50,6 +48,10 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.2")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.2")
+
+    // lottie animation
+    implementation ("com.airbnb.android:lottie:5.2.0")
+
     //responsive screen size
     implementation ("com.intuit.sdp:sdp-android:1.1.0")
     implementation ("com.intuit.ssp:ssp-android:1.1.0")

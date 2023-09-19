@@ -3,7 +3,13 @@
     <style name="Base.Theme.RTVPlusAndroidAppRevamp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/green</item>
     </style>
 
     <style name="Theme.RTVPlusAndroidAppRevamp" parent="Base.Theme.RTVPlusAndroidAppRevamp" />
+    <style name="ToolbarTitleText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
 </resources>

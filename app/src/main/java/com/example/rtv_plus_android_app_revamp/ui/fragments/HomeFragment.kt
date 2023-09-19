@@ -1,7 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -54,7 +53,7 @@ class HomeFragment : Fragment() {
                     }
 
                     is ResultType.Error -> {
-                        val errorMessage = result.exception.message
+                        //val errorMessage = result.exception.message
                         Toast.makeText(requireContext(), "Something is wrong. Please try again", Toast.LENGTH_SHORT).show()
 
                     }
