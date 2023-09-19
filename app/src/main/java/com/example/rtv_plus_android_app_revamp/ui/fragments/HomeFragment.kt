@@ -56,6 +56,7 @@ class HomeFragment : Fragment() {
                     is ResultType.Error -> {
                         val errorMessage = result.exception.message
                         Toast.makeText(requireContext(), "Something is wrong. Please try again", Toast.LENGTH_SHORT).show()
+                        binding.progressBar.visibility = View.GONE
 
                     }
                 }

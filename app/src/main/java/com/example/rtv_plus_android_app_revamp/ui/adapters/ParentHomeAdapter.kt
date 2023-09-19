@@ -1,25 +1,41 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
+import android.annotation.SuppressLint
 import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.marginTop
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Data
 import com.smarteist.autoimageslider.SliderView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import org.w3c.dom.Text
 import java.util.TimerTask
+import kotlin.random.Random
 
 class ParentHomeAdapter(var homeData: List<Data>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var job: Job? = null
+
     companion object {
         private const val TYPE_BANNER = 0
         private const val TYPE_CONTENT = 1
+        private const val TYPE_THUMBNAIL = 2
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -36,10 +52,16 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                 ContentViewHolder(view)
             }
 
+            TYPE_THUMBNAIL -> {
+                val view = inflater.inflate(R.layout.row_obj_type_thumbnail, parent, false)
+                ThumbnailViewHolder(view)
+            }
+
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentItem = homeData[position]
 
@@ -70,6 +92,71 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                 holder.sliderView.isAutoCycle = true
                 holder.sliderView.startAutoCycle()
             }
+
+            is ThumbnailViewHolder -> {
+
+                if (!currentItem.contents.isNullOrEmpty()) {
+
+                    val crossFadeFactory = DrawableCrossFadeFactory.Builder()
+                        .setCrossFadeEnabled(true)
+                        .build()
+
+                    holder.thumbnailImage.setOnLongClickListener {
+                        job?.cancel()
+                        job = null
+                        true
+                    }
+
+
+                    if (job == null) {
+                        job = CoroutineScope(Dispatchers.Main).launch {
+                            while (isActive) {
+
+                                var randNum = Random.nextInt(1, currentItem.contents.size)
+
+//                                val onTouchListener = View.OnTouchListener { _, event ->
+//                                    when (event.action) {
+//                                        MotionEvent.ACTION_DOWN -> {
+//
+//                                            true // Return true to consume the event
+//                                        }
+//
+//                                        MotionEvent.ACTION_UP -> {
+//                                        randNum = Random.nextInt(1, currentItem.contents.size)
+//
+//                                            true // Return true to consume the event
+//                                        }
+//
+//                                        else -> false
+//                                    }
+//                                }
+
+                            //    holder.thumbnailImage.setOnTouchListener(onTouchListener)
+
+                                val imageUrl = currentItem.contents[randNum].image_location
+
+
+
+                                Glide.with(holder.thumbnailImage.context)
+                                    .load(imageUrl)
+                                    .placeholder(R.drawable.ic_launcher_background)
+                                    .transition(
+                                        DrawableTransitionOptions.withCrossFade(
+                                            crossFadeFactory
+                                        )
+                                    )
+                                    .into(holder.thumbnailImage)
+
+                                delay(1000)
+                            }
+                        }
+                    }
+                } else {
+                    holder.thumbnailImage.visibility = View.GONE
+                }
+
+
+            }
         }
     }
 
@@ -81,6 +168,8 @@ class ParentHomeAdapter(var homeData: List<Data>) :
         val currentItem = homeData[position]
         return if (currentItem.contentviewtype == "4") {
             TYPE_BANNER
+        } else if (currentItem.contentviewtype == "1") {
+            TYPE_THUMBNAIL
         } else {
             TYPE_CONTENT
         }
@@ -97,4 +186,14 @@ class ParentHomeAdapter(var homeData: List<Data>) :
         val sliderView: SliderView = itemView.findViewById(R.id.imageSlider)
         lateinit var sliderAdapter: SliderAdapter
     }
+
+    inner class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val thumbnailImage: ImageView = itemView.findViewById(R.id.thumbnailImage)
+    }
+
+    fun cancelUpdates() {
+        job?.cancel()
+        job = null
+    }
+
 }
