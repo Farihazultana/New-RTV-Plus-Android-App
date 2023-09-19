@@ -10,11 +10,6 @@
         android:name="com.example.rtv_plus_android_app_revamp.ui.fragments.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
-    <fragment
-        android:id="@+id/SearchFragment"
-        android:name="com.example.rtv_plus_android_app_revamp.ui.fragments.SearchFragment"
-        android:label="Search"
-        tools:layout="@layout/fragment_search" />
 
     <fragment
         android:id="@+id/LiveTvFragment"

@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
-                R.id.SearchFragment -> navController.navigate(R.id.SearchFragment)
                 R.id.LiveTvFragment -> navController.navigate(R.id.LiveTvFragment)
                 R.id.SubscriptionFragment -> navController.navigate(R.id.SubscriptionFragment)
                 R.id.MoreFragment -> navController.navigate(R.id.MoreFragment)

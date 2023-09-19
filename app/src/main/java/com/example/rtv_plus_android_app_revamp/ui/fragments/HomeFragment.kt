@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,8 +10,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentHomeBinding
+import com.example.rtv_plus_android_app_revamp.ui.activities.SearchActivity
 import com.example.rtv_plus_android_app_revamp.ui.adapters.ParentHomeAdapter
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.HomeViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
@@ -28,6 +34,12 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        binding.searchIcon.setOnClickListener(View.OnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
+        })
+
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
