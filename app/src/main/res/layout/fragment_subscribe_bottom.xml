@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/subscription_bottom_sheet_bg"
-    tools:context=".ui.fregments.subscription.SubscribeBottomFragment">
+    tools:context=".ui.fragments.subscription.SubscribeBottomFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

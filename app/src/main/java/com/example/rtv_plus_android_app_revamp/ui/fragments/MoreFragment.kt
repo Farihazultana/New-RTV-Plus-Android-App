@@ -1,12 +1,10 @@
-package com.example.rtv_plus_android_app_revamp.ui.fregments
+package com.example.rtv_plus_android_app_revamp.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.rtv_plus_android_app_revamp.R
-import com.example.rtv_plus_android_app_revamp.databinding.FragmentLiveTvBinding
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentMoreBinding
 
 class MoreFragment : Fragment() {
