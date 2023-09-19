@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragments.subscription.SubscriptionFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -146,9 +147,9 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/top_left_round_corner_bg"
                     android:text="@string/click_to_subscribeBTN"
+                    android:textAllCaps="false"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textAllCaps="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -252,9 +253,9 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/top_left_round_corner_bg"
                     android:text="@string/click_to_subscribeBTN"
+                    android:textAllCaps="false"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textAllCaps="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
