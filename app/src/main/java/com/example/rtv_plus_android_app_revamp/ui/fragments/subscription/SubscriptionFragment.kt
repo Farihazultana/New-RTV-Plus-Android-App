@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     private lateinit var binding: FragmentSubscriptionBinding
     private lateinit var bottomBinding: FragmentSubscribeBottomBinding
+    private lateinit var subscriptionItemBinding: SubscriptionItemBinding
     private lateinit var subscriptionAdapter: SubscriptionAdapter
     private val subscriptionViewModel by viewModels<SubscriptionViewModel>()
 
@@ -34,6 +35,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     ): View {
         binding = FragmentSubscriptionBinding.inflate(inflater, container, false)
         bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
+
+
 
         //go to previous screen
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
