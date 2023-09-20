@@ -2,7 +2,6 @@ package com.example.rtv_plus_android_app_revamp.data.services
 
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
 import com.example.rtv_plus_android_app_revamp.data.models.subscription.SubscriptionResponse
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

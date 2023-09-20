@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
+        android:layout_width="@dimen/_135sdp"
+        android:layout_height="@dimen/_130sdp"
         app:cardCornerRadius="6dp"
         app:cardElevation="4dp"
-        android:padding="8dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/ig_checked"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@drawable/output"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +32,6 @@
                 android:id="@+id/tv_packName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
                 android:layout_marginTop="16dp"
                 android:text="Weekely"
                 android:textStyle="bold"
@@ -45,9 +45,11 @@
                 android:id="@+id/tv_subText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TK 15 for 7 days"
-                android:padding="8dp"
                 android:layout_margin="8dp"
+                android:padding="8dp"
+                android:text="TK 15 for 7 days"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/_11ssp"
                 app:layout_constraintEnd_toEndOf="@+id/tv_packName"
                 app:layout_constraintStart_toStartOf="@+id/tv_packName"
                 app:layout_constraintTop_toBottomOf="@+id/tv_packName" />

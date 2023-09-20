@@ -7,27 +7,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.subscription.SubschemesItem
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscribeBottomBinding
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscriptionBinding
-import com.example.rtv_plus_android_app_revamp.databinding.SubscriptionItemBinding
 import com.example.rtv_plus_android_app_revamp.ui.adapters.SubscriptionAdapter
-import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SubscriptionViewModel
+import com.example.rtv_plus_android_app_revamp.ui.viewmodels.ViewModels
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
-import kotlinx.coroutines.flow.collect
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     private lateinit var binding: FragmentSubscriptionBinding
     private lateinit var bottomBinding: FragmentSubscribeBottomBinding
-    private lateinit var subscriptionItemBinding: SubscriptionItemBinding
+    val bottomSheetFragment = SubscribeBottomFragment()
+    val args = Bundle()
     private lateinit var subscriptionAdapter: SubscriptionAdapter
-    private val subscriptionViewModel by viewModels<SubscriptionViewModel>()
+    private val subscriptionViewModel by viewModels<ViewModels>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +35,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     ): View {
         binding = FragmentSubscriptionBinding.inflate(inflater, container, false)
         bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
-
 
 
         //go to previous screen
@@ -65,25 +64,26 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        subscriptionViewModel.fetchSubscriptionData("8801748855192")
+        subscriptionViewModel.fetchSubscriptionData("8801825414747")
 
         subscriptionAdapter = SubscriptionAdapter(emptyList(), this)
-        binding.rvSubscriptionPacks.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvSubscriptionPacks.adapter = subscriptionAdapter
 
         viewLifecycleOwner.lifecycleScope.launch {
-            subscriptionViewModel.subscriptionData.observe(viewLifecycleOwner, Observer { result ->
+            subscriptionViewModel.subscriptionData.collect { result ->
                 when (result) {
                     is ResultType.Loading -> {
                         binding.subscribeProgressBar.visibility = View.VISIBLE
                         binding.textView.visibility = View.GONE
-                        binding.rvSubscriptionPacks.visibility = View.GONE
+
                     }
 
                     is ResultType.Success -> {
                         val subscriptionData = result.data
                         subscriptionAdapter.subscriptionData = subscriptionData.subschemes
                         binding.subscribeProgressBar.visibility = View.GONE
+                        binding.textView.visibility = View.VISIBLE
                         subscriptionAdapter.notifyDataSetChanged()
                     }
 
@@ -95,16 +95,20 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                         ).show()
                     }
                 }
-            })
+            }
         }
 
+        //btn click listener
+        binding.btnConfirmPayment.setOnClickListener {
+            showBottomSheet()
+        }
     }
 
-    private fun showBottomSheet(packageText: String?) {
-        val bottomSheetFragment = SubscribeBottomFragment()
+    private fun showBottomSheet() {
+        //val bottomSheetFragment = SubscribeBottomFragment()
 
-        val args = Bundle()
-        args.putString("packageText", packageText)
+        //val args = Bundle()
+        //args.putString("packageText", packageText)
         bottomSheetFragment.arguments = args
 
         // Pass the bottomBinding to the bottomSheetFragment
@@ -115,8 +119,14 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         )
     }
 
+    private fun showPackage(packageText: String?){
+
+    }
+
     override fun onCardClickListener(item: SubschemesItem?) {
-        showBottomSheet(item?.packName)
+        //showBottomSheet(item?.sub_text)
+        //val args = Bundle()
+        args.putString("packageText", item?.sub_text)
     }
 
 
