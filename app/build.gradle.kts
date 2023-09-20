@@ -44,6 +44,10 @@ android {
 }
 
 dependencies {
+
+    //implementation(dir, 'libs', include: ['*.jar'])
+    //implementation(fileTree("libs"))
+
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
@@ -77,8 +81,14 @@ dependencies {
     // shimmer
     implementation ("com.facebook.shimmer:shimmer:0.5.0")
 
+    implementation("com.synnapps:carouselview:0.1.5")
+
    // implementation project(path: ':carouselview')
-    implementation (path, ":carouselview")
+    //implementation (project(path, ":carouselview"))
+
+    //implementation project(path: ':carouselview')
+
+    //implementation ("com.github.jama5262:CarouselView:1.2.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
