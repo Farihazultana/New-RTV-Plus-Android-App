@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.core.view.marginTop
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,9 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Data
+import com.jama.carouselview.CarouselView
+import com.jama.carouselview.enums.IndicatorAnimationType
+import com.jama.carouselview.enums.OffsetType
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -94,6 +98,36 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                     "https://example.com/image2.jpg",
                     "https://example.com/image3.jpg"
                 )
+
+
+                holder.carouselView.apply {
+                    size = homeData.size
+                    resource = R.layout.row_obj_slider_view
+                    autoPlay = true
+                    indicatorAnimationType = IndicatorAnimationType.THIN_WORM
+                    carouselOffset = OffsetType.CENTER
+                    setCarouselViewListener { view, position ->
+                        // Example here is setting up a full image carousel
+                        val imageView = view.findViewById<ImageView>(R.id.myimage)
+                      //  imageView.setImageURI(currentItem.contents[position].image_location.toUri())
+
+                        Glide.with(imageView)
+                            .load(currentItem.contents[position].image_location)
+                            .placeholder(R.drawable.ic_launcher_background)
+                            .into(imageView)
+
+
+
+                        //imageView.setImageDrawable(resources.getDrawable(currentItem.contents[position].image_location)
+                    }
+                    // After you finish setting up, show the CarouselView
+                    show()
+                }
+            }
+
+
+
+
 //                val bannerAdapter = BannerAdapter(holder.itemView.context, bannerImages)
 //                holder.viewPager.adapter = bannerAdapter
 
@@ -119,7 +153,6 @@ class ParentHomeAdapter(var homeData: List<Data>) :
 
 
 
-            }
 
             is ThumbnailViewHolder -> {
 
@@ -209,13 +242,13 @@ class ParentHomeAdapter(var homeData: List<Data>) :
 
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         lateinit var bannerAdapter: BannerAdapter
-
-
+        val carouselView : CarouselView = itemView.findViewById(R.id.carouselViewId)
 
     }
 
     inner class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val thumbnailImage: ImageView = itemView.findViewById(R.id.thumbnailImage)
+
     }
 
     fun cancelUpdates() {
