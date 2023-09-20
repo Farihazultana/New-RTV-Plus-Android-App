@@ -77,8 +77,6 @@ dependencies {
     // shimmer
     implementation ("com.facebook.shimmer:shimmer:0.5.0")
 
-    implementation ("com.github.jama5262:CarouselView:1.2.2")
-
    // implementation project(path: ':carouselview')
     implementation (path, ":carouselview")
 
