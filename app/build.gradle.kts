@@ -74,6 +74,13 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     //Image Slider
     implementation ("com.github.smarteist:autoimageslider:1.4.0")
+    // shimmer
+    implementation ("com.facebook.shimmer:shimmer:0.5.0")
+
+    implementation ("com.github.jama5262:CarouselView:1.2.2")
+
+   // implementation project(path: ':carouselview')
+    implementation (path, ":carouselview")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

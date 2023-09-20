@@ -50,6 +50,15 @@
             android:layout_gravity="center"
             android:visibility="visible" />
 
+        <Button
+            android:id="@+id/tryAgainBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/green"
+            android:text="Try Again"
+            android:visibility="gone" />
+
         <!-- Parent RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/parent_recyclerview"

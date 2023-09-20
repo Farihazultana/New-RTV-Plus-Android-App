@@ -40,12 +40,17 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         })
 
+        binding.tryAgainBtn.setOnClickListener{
+            homeViewModel.fetchHomeData("8801841464604", "home")
+
+        }
+
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //val homeRequest = HomeRequest("8801841464604", "home")
-        homeViewModel.fetchHomeData("8801841464604", "home")
+         homeViewModel.fetchHomeData("8801841464604", "home")
 
         parentHomeAdapter = ParentHomeAdapter(emptyList())
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
@@ -56,11 +61,13 @@ class HomeFragment : Fragment() {
                 when (result) {
                     is ResultType.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
+                        binding.tryAgainBtn.visibility = View.GONE
                     }
                     is ResultType.Success -> {
                         val homeData = result.data
                         parentHomeAdapter.homeData = homeData.data
                         binding.progressBar.visibility = View.GONE
+                        binding.tryAgainBtn.visibility = View.GONE
                         binding.parentRecyclerview.visibility = View.VISIBLE
                         parentHomeAdapter.notifyDataSetChanged()
                     }
@@ -69,6 +76,7 @@ class HomeFragment : Fragment() {
                         val errorMessage = result.exception.message
                         Toast.makeText(requireContext(), "Something is wrong. Please try again", Toast.LENGTH_SHORT).show()
                         binding.progressBar.visibility = View.GONE
+                        binding.tryAgainBtn.visibility = View.VISIBLE
 
                     }
                 }

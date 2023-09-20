@@ -8,10 +8,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.marginTop
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
@@ -43,7 +45,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
 
         return when (viewType) {
             TYPE_BANNER -> {
-                val view = inflater.inflate(R.layout.row_obj_banner, parent, false)
+                val view = inflater.inflate(R.layout.row_obj_banner_viewpager, parent, false)
                 BannerViewHolder(view)
             }
 
@@ -85,12 +87,38 @@ class ParentHomeAdapter(var homeData: List<Data>) :
             }
 
             is BannerViewHolder -> {
-                holder.sliderAdapter = SliderAdapter(currentItem.contents)
-                holder.sliderView.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
-                holder.sliderView.setSliderAdapter(holder.sliderAdapter)
-                holder.sliderView.scrollTimeInSec = 3
-                holder.sliderView.isAutoCycle = true
-                holder.sliderView.startAutoCycle()
+
+
+                 val bannerImages = listOf(
+                    "https://example.com/image1.jpg",
+                    "https://example.com/image2.jpg",
+                    "https://example.com/image3.jpg"
+                )
+//                val bannerAdapter = BannerAdapter(holder.itemView.context, bannerImages)
+//                holder.viewPager.adapter = bannerAdapter
+
+
+
+
+
+//                holder.sliderAdapter = SliderAdapter(currentItem.contents)
+//                holder.sliderView.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
+//                holder.sliderView.setSliderAdapter(holder.sliderAdapter)
+//                holder.sliderView.scrollTimeInSec = 3
+//                holder.sliderView.isAutoCycle = true
+//                holder.sliderView.startAutoCycle()
+
+//                holder.insicatorAdapter =
+//                    IndicatorAdapter(currentItem.contents)
+//                holder.indicatorRecyclerview.layoutManager = LinearLayoutManager(
+//                    holder.indicatorRecyclerview.context,
+//                    LinearLayoutManager.HORIZONTAL,
+//                    false
+//                )
+//                holder.indicatorRecyclerview.adapter = holder.insicatorAdapter
+
+
+
             }
 
             is ThumbnailViewHolder -> {
@@ -107,35 +135,32 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                         true
                     }
 
-
                     if (job == null) {
                         job = CoroutineScope(Dispatchers.Main).launch {
                             while (isActive) {
 
                                 var randNum = Random.nextInt(1, currentItem.contents.size)
 
-//                                val onTouchListener = View.OnTouchListener { _, event ->
-//                                    when (event.action) {
-//                                        MotionEvent.ACTION_DOWN -> {
-//
-//                                            true // Return true to consume the event
-//                                        }
-//
-//                                        MotionEvent.ACTION_UP -> {
-//                                        randNum = Random.nextInt(1, currentItem.contents.size)
-//
-//                                            true // Return true to consume the event
-//                                        }
-//
-//                                        else -> false
-//                                    }
-//                                }
+                                val onTouchListener = View.OnTouchListener { _, event ->
+                                    when (event.action) {
+                                        MotionEvent.ACTION_DOWN -> {
 
-                            //    holder.thumbnailImage.setOnTouchListener(onTouchListener)
+                                            true // Return true to consume the event
+                                        }
+
+                                        MotionEvent.ACTION_UP -> {
+                                        randNum = Random.nextInt(1, currentItem.contents.size)
+
+                                            true // Return true to consume the event
+                                        }
+
+                                        else -> false
+                                    }
+                                }
+
+                                holder.thumbnailImage.setOnTouchListener(onTouchListener)
 
                                 val imageUrl = currentItem.contents[randNum].image_location
-
-
 
                                 Glide.with(holder.thumbnailImage.context)
                                     .load(imageUrl)
@@ -183,8 +208,10 @@ class ParentHomeAdapter(var homeData: List<Data>) :
     }
 
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val sliderView: SliderView = itemView.findViewById(R.id.imageSlider)
-        lateinit var sliderAdapter: SliderAdapter
+        lateinit var bannerAdapter: BannerAdapter
+
+
+
     }
 
     inner class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -195,5 +222,10 @@ class ParentHomeAdapter(var homeData: List<Data>) :
         job?.cancel()
         job = null
     }
+
+
+
+
+
 
 }
