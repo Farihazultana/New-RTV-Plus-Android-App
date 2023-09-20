@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.ir.backend.js.compile
+
 plugins {
     id("com.android.application")
     kotlin("kapt")
@@ -81,12 +83,15 @@ dependencies {
     // shimmer
     implementation ("com.facebook.shimmer:shimmer:0.5.0")
 
+
     implementation("com.synnapps:carouselview:0.1.5")
 
    // implementation project(path: ':carouselview')
     //implementation (project(path, ":carouselview"))
 
     //implementation project(path: ':carouselview')
+
+    implementation(project(":carouselview"))
 
     //implementation ("com.github.jama5262:CarouselView:1.2.2")
 
