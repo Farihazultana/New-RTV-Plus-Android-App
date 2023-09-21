@@ -44,11 +44,13 @@
         android:id="@+id/descriptionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_8sdp"
         android:drawablePadding="4dp"
         android:maxLength="10"
         android:text="Description text"
         android:textColor="@color/green"
         android:textSize="@dimen/_8ssp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_textView" />
 

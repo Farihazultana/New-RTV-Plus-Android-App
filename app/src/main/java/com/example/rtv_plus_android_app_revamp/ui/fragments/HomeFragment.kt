@@ -42,7 +42,6 @@ class HomeFragment : Fragment() {
 
         binding.tryAgainBtn.setOnClickListener{
             homeViewModel.fetchHomeData("8801841464604", "home")
-
         }
 
         return binding.root

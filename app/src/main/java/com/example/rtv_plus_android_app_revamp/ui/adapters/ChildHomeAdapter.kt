@@ -78,7 +78,6 @@ class ChildHomeAdapter(
                     holder.descriptionText.text = currentItem.length2
                 }
 
-
                 Glide.with(holder.imageView.context)
                     .load(currentItem.image_location)
                     .placeholder(R.drawable.ic_launcher_background)
