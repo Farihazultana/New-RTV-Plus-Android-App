@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +20,7 @@ class SubscriptionAdapter(
     private val continuePaymentButtons: List<AppCompatButton>
 ) : RecyclerView.Adapter<SubscriptionAdapter.SubscriptionViewHolder>() {
 
-    private var selectedPositions = mutableListOf<Int>()
+    private var selectedPositions = -1
 
     inner class SubscriptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val packageName: TextView = itemView.findViewById(R.id.tv_packName)
@@ -34,11 +35,11 @@ class SubscriptionAdapter(
         return SubscriptionViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: SubscriptionViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SubscriptionViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val item = subscriptionData?.get(position)
         Log.i("Tag", "onBindViewHolder: $item")
 
-        val isSelected = selectedPositions.contains(position)
+
         if (item != null) {
             val packName = item.pack_name.lowercase(Locale.ROOT)
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
@@ -48,19 +49,15 @@ class SubscriptionAdapter(
             holder.subText.text = item.sub_text
         }
 
-        holder.checkedCard.visibility = if (isSelected) View.VISIBLE else View.GONE
+        holder.checkedCard.visibility = if (selectedPositions == position) View.VISIBLE else View.GONE
 
         val continuePaymentButton = continuePaymentButtons.getOrNull(position)
-        continuePaymentButton?.visibility = if (isSelected) View.VISIBLE else View.GONE
+        //continuePaymentButton?.visibility = if (isSelected) View.VISIBLE else View.GONE
 
 
         holder.itemView.setOnClickListener {
-            if (isSelected) {
-                selectedPositions.remove(position)
-            } else {
-                selectedPositions.add(position)
-            }
-            cardClickListener.onCardClickListener(item)
+            selectedPositions = position
+            cardClickListener.onCardClickListener(position, item)
             notifyDataSetChanged()
         }
     }
@@ -70,7 +67,7 @@ class SubscriptionAdapter(
     }
 
     interface CardClickListener {
-        fun onCardClickListener(item: SubschemesItem?)
+        fun onCardClickListener(position: Int, item: SubschemesItem?)
     }
 
     private fun setSelectedPosition(position: Int) {

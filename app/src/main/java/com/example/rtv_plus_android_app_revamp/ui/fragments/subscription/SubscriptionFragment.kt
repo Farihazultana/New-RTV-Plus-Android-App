@@ -28,6 +28,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     val args = Bundle()
     private lateinit var subscriptionAdapter: SubscriptionAdapter
     private val subscriptionViewModel by viewModels<ViewModels>()
+    private var selectedPositions = -1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -100,7 +101,12 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
 
         //btn click listener
         binding.btnContinuePayment.setOnClickListener {
-            showBottomSheet()
+            if (selectedPositions != -1){
+                showBottomSheet()
+            }else{
+                Toast.makeText(requireActivity(), "PLease select your plan first", Toast.LENGTH_LONG).show()
+            }
+
         }
     }
 
@@ -119,7 +125,9 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         )
     }
 
-    override fun onCardClickListener(item: SubschemesItem?) {
+    override fun onCardClickListener(position: Int, item: SubschemesItem?) {
+        this.selectedPositions = position
+        //binding.btnContinuePayment.isEnabled = selectedPositions != -1
         //showBottomSheet(item?.sub_text)
         //val args = Bundle()
         args.putString("packageText", item?.sub_text)
