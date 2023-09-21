@@ -2,17 +2,17 @@ package com.example.rtv_plus_android_app_revamp.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.TransitionOptions
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.example.rtv_plus_android_app_revamp.R
@@ -107,42 +107,54 @@ class ParentHomeAdapter(var homeData: List<Data>) :
 
             is ThumbnailViewHolder -> {
 
-                if (!currentItem.contents.isNullOrEmpty()) {
+                holder.contentTitle.text = currentItem.catname
 
+                if (!currentItem.contents.isNullOrEmpty()) {
                     val crossFadeFactory =
                         DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
-
                     val customCrossFadeOptions =
                         DrawableTransitionOptions.withCrossFade(crossFadeFactory)
-
                     holder.thumbnailImage.setOnLongClickListener {
                         job?.cancel()
                         job = null
                         true
                     }
+                    val seekbarMax = 100
+                    holder.progressBar.max = seekbarMax
+                    job = CoroutineScope(Dispatchers.Main).launch {
+                        val delayDuration = 5000
+                        val interval = 100
 
-                    if (job == null) {
-                        job = CoroutineScope(Dispatchers.Main).launch {
-                            while (isActive) {
+                        while (isActive) {
+                            val randNum = Random.nextInt(1, currentItem.contents.size - 1)
+                            val imageUrl = currentItem.contents[randNum].image_location
 
-                                val randNum = Random.nextInt(1, currentItem.contents.size)
-                                val imageUrl = currentItem.contents[randNum].image_location
+                            holder.thumbnailImage.setOnClickListener(View.OnClickListener {
+                                val intent =
+                                    Intent(holder.itemView.context, PlayerActivity::class.java)
+                                intent.putExtra("id", currentItem.contents[randNum].contentid)
+                                holder.itemView.context.startActivity(intent)
+                            })
+                            for (i in 0 until (delayDuration / interval)) {
+                                delay(interval.toLong())
+                                holder.handler.post {
+                                    // Update the SeekBar progress
+                                    holder.progress =
+                                        ((i + 1) * seekbarMax * interval) / delayDuration
+                                    holder.progressBar.progress = holder.progress
+                                }
+                            }
+                            Glide.with(holder.thumbnailImage.context).load(imageUrl)
+                                .placeholder(R.drawable.ic_launcher_background)
+                                .transition(customCrossFadeOptions).into(holder.thumbnailImage)
 
-                                Glide.with(holder.thumbnailImage.context).load(imageUrl)
-                                    .placeholder(R.drawable.ic_launcher_background)
-                                    .transition(customCrossFadeOptions).into(holder.thumbnailImage)
-
-                                holder.thumbnailImage.setOnClickListener(View.OnClickListener {
-                                    val intent =
-                                        Intent(holder.itemView.context, PlayerActivity::class.java)
-                                    intent.putExtra("id", currentItem.contents[randNum].contentid)
-                                    holder.itemView.context.startActivity(intent)
-                                })
-
-                                delay(5000)
+                            holder.handler.post {
+                                holder.progress = 0
+                                holder.progressBar.progress = holder.progress
                             }
                         }
                     }
+
                 } else {
                     holder.thumbnailImage.visibility = View.GONE
                 }
@@ -159,7 +171,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
         val currentItem = homeData[position]
         return if (currentItem.contentviewtype == "4") {
             TYPE_BANNER
-        } else if (currentItem.contentviewtype == "1") {
+        } else if (currentItem.contentviewtype == "9") {
             TYPE_THUMBNAIL
         } else {
             TYPE_CONTENT
@@ -176,12 +188,14 @@ class ParentHomeAdapter(var homeData: List<Data>) :
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         lateinit var bannerAdapter: BannerAdapter
         val carouselView: CarouselView = itemView.findViewById(R.id.carouselViewId)
-
     }
 
     inner class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val thumbnailImage: ImageView = itemView.findViewById(R.id.thumbnailImage)
-
+        val progressBar: ProgressBar = itemView.findViewById(R.id.seekBarId)
+        val contentTitle : TextView = itemView.findViewById(R.id.contentTitle)
+        val handler: Handler = Handler(Looper.getMainLooper())
+        var progress = 0
     }
 
     fun cancelUpdates() {
