@@ -5,7 +5,6 @@ data class SubscriptionResponse(
 )
 
 data class SubschemesItem(
-
 	val id: String,
 	val iappackcode: String,
 	val userpack: String,

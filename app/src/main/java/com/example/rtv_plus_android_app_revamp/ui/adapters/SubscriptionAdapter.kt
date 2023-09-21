@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.subscription.SubschemesItem
@@ -16,8 +15,8 @@ import java.util.Locale
 
 class SubscriptionAdapter(
     var subscriptionData: List<SubschemesItem?>?,
-    private val cardClickListener: CardClickListener,
-    private val continuePaymentButtons: List<AppCompatButton>
+    private val cardClickListener: CardClickListener
+
 ) : RecyclerView.Adapter<SubscriptionAdapter.SubscriptionViewHolder>() {
 
     private var selectedPositions = -1
@@ -26,7 +25,6 @@ class SubscriptionAdapter(
         val packageName: TextView = itemView.findViewById(R.id.tv_packName)
         val subText: TextView = itemView.findViewById(R.id.tv_subText)
         val checkedCard: ImageView = itemView.findViewById(R.id.ig_checked)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
@@ -35,7 +33,10 @@ class SubscriptionAdapter(
         return SubscriptionViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: SubscriptionViewHolder, @SuppressLint("RecyclerView") position: Int) {
+    override fun onBindViewHolder(
+        holder: SubscriptionViewHolder,
+        @SuppressLint("RecyclerView") position: Int
+    ) {
         val item = subscriptionData?.get(position)
         Log.i("Tag", "onBindViewHolder: $item")
 
@@ -49,10 +50,9 @@ class SubscriptionAdapter(
             holder.subText.text = item.sub_text
         }
 
-        holder.checkedCard.visibility = if (selectedPositions == position) View.VISIBLE else View.GONE
+        holder.checkedCard.visibility =
+            if (selectedPositions == position) View.VISIBLE else View.GONE
 
-        val continuePaymentButton = continuePaymentButtons.getOrNull(position)
-        //continuePaymentButton?.visibility = if (isSelected) View.VISIBLE else View.GONE
 
 
         holder.itemView.setOnClickListener {
@@ -69,10 +69,5 @@ class SubscriptionAdapter(
     interface CardClickListener {
         fun onCardClickListener(position: Int, item: SubschemesItem?)
     }
-
-    private fun setSelectedPosition(position: Int) {
-        //selectedPosition = position
-    }
-
 
 }

@@ -24,8 +24,8 @@ import kotlinx.coroutines.launch
 class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     private lateinit var binding: FragmentSubscriptionBinding
     private lateinit var bottomBinding: FragmentSubscribeBottomBinding
-    val bottomSheetFragment = SubscribeBottomFragment()
-    val args = Bundle()
+    private val bottomSheetFragment = SubscribeBottomFragment()
+    private val args = Bundle()
     private lateinit var subscriptionAdapter: SubscriptionAdapter
     private val subscriptionViewModel by viewModels<ViewModels>()
     private var selectedPositions = -1
@@ -45,20 +45,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
             navController.navigate(R.id.HomeFragment)
         }
 
-
-//        binding.btWeeklySubscription.setOnClickListener {
-//            showBottomSheet("TK 15 for 7 days")
-//        }
-//        binding.btMonthlySubscription.setOnClickListener {
-//            showBottomSheet("TK 50 for 1 Month")
-//        }
-//        binding.btSixMonthSubscription.setOnClickListener {
-//            showBottomSheet("TK 275 for 6 Months")
-//        }
-//        binding.btYearlySubscription.setOnClickListener {
-//            showBottomSheet("TK 500 for 1 Year")
-//        }
-
         return binding.root
     }
 
@@ -67,7 +53,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
 
         subscriptionViewModel.fetchSubscriptionData("8801825414747")
 
-        subscriptionAdapter = SubscriptionAdapter(emptyList(), this, listOf(binding.btnContinuePayment))
+        subscriptionAdapter = SubscriptionAdapter(emptyList(), this)
         binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvSubscriptionPacks.adapter = subscriptionAdapter
 
@@ -77,7 +63,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                     is ResultType.Loading -> {
                         binding.subscribeProgressBar.visibility = View.VISIBLE
                         binding.textView.visibility = View.GONE
-
                     }
 
                     is ResultType.Success -> {
@@ -101,10 +86,14 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
 
         //btn click listener
         binding.btnContinuePayment.setOnClickListener {
-            if (selectedPositions != -1){
+            if (selectedPositions != -1) {
                 showBottomSheet()
-            }else{
-                Toast.makeText(requireActivity(), "PLease select your plan first", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(
+                    requireActivity(),
+                    "PLease select your plan first",
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
         }
@@ -129,7 +118,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         this.selectedPositions = position
         //binding.btnContinuePayment.isEnabled = selectedPositions != -1
         //showBottomSheet(item?.sub_text)
-        //val args = Bundle()
         args.putString("packageText", item?.sub_text)
     }
 
