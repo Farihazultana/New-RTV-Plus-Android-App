@@ -1,6 +1,8 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -10,10 +12,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.TransitionOptions
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Data
+import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
 import com.jama.carouselview.CarouselView
 import com.jama.carouselview.enums.IndicatorAnimationType
 import com.jama.carouselview.enums.OffsetType
@@ -68,9 +72,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                     holder.childListAdapter =
                         ChildHomeAdapter(currentItem.contents, currentItem.contentviewtype)
                     holder.recyclerView.layoutManager = LinearLayoutManager(
-                        holder.recyclerView.context,
-                        LinearLayoutManager.HORIZONTAL,
-                        false
+                        holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false
                     )
                     holder.textView.text = currentItem.catname
                     holder.recyclerView.adapter = holder.childListAdapter
@@ -90,10 +92,14 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                     carouselOffset = OffsetType.CENTER
                     setCarouselViewListener { view, position ->
                         val imageView = view.findViewById<ImageView>(R.id.myimage)
-                        Glide.with(imageView)
-                            .load(currentItem.contents[position].image_location)
-                            .placeholder(R.drawable.ic_launcher_background)
-                            .into(imageView)
+                        Glide.with(imageView).load(currentItem.contents[position].image_location)
+                            .placeholder(R.drawable.ic_launcher_background).into(imageView)
+
+                        imageView.setOnClickListener(View.OnClickListener {
+                            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                            intent.putExtra("id", currentItem.contents[position].contentid)
+                            holder.itemView.context.startActivity(intent)
+                        })
                     }
                     show()
                 }
@@ -103,9 +109,11 @@ class ParentHomeAdapter(var homeData: List<Data>) :
 
                 if (!currentItem.contents.isNullOrEmpty()) {
 
-                    val crossFadeFactory = DrawableCrossFadeFactory.Builder()
-                        .setCrossFadeEnabled(true)
-                        .build()
+                    val crossFadeFactory =
+                        DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
+
+                    val customCrossFadeOptions =
+                        DrawableTransitionOptions.withCrossFade(crossFadeFactory)
 
                     holder.thumbnailImage.setOnLongClickListener {
                         job?.cancel()
@@ -117,20 +125,20 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                         job = CoroutineScope(Dispatchers.Main).launch {
                             while (isActive) {
 
-                                var randNum = Random.nextInt(1, currentItem.contents.size)
+                                val randNum = Random.nextInt(1, currentItem.contents.size)
                                 val imageUrl = currentItem.contents[randNum].image_location
 
-                                Glide.with(holder.thumbnailImage.context)
-                                    .load(imageUrl)
+                                Glide.with(holder.thumbnailImage.context).load(imageUrl)
                                     .placeholder(R.drawable.ic_launcher_background)
-                                    .transition(
-                                        DrawableTransitionOptions.withCrossFade(
-                                            crossFadeFactory
-                                        )
-                                    )
-                                    .into(holder.thumbnailImage)
+                                    .transition(customCrossFadeOptions).into(holder.thumbnailImage)
 
-                                delay(1000)
+                                holder.thumbnailImage.setOnClickListener(View.OnClickListener {
+                                    val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                                    intent.putExtra("id", currentItem.contents[randNum].contentid)
+                                    holder.itemView.context.startActivity(intent)
+                                })
+
+                                delay(5000)
                             }
                         }
                     }
