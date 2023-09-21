@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
+import android.content.Intent
 import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Data
+import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
+import com.example.rtv_plus_android_app_revamp.ui.activities.SeeAllActivity
 import com.smarteist.autoimageslider.SliderView
 import org.w3c.dom.Text
 import java.util.TimerTask
@@ -55,6 +58,12 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                     )
                     holder.textView.text = currentItem.catname
                     holder.recyclerView.adapter = holder.childListAdapter
+                    holder.seeAll.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, SeeAllActivity::class.java)
+                        intent.putExtra("catcode", currentItem.catcode)
+                        intent.putExtra("catname", currentItem.catname)
+                        holder.itemView.context.startActivity(intent)
+                    }
                 } else {
                     holder.textView.visibility = View.GONE
                     holder.recyclerView.visibility = View.GONE
@@ -97,4 +106,5 @@ class ParentHomeAdapter(var homeData: List<Data>) :
         val sliderView: SliderView = itemView.findViewById(R.id.imageSlider)
         lateinit var sliderAdapter: SliderAdapter
     }
+
 }
