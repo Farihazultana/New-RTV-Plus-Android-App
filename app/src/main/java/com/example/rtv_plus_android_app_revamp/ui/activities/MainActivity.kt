@@ -25,20 +25,29 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
+
+        var selectedItemId: Int = -1
+
         binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
-                R.id.LiveTvFragment -> navController.navigate(R.id.LiveTvFragment)
-                R.id.SubscriptionFragment -> navController.navigate(R.id.SubscriptionFragment)
-                R.id.MoreFragment -> navController.navigate(R.id.MoreFragment)
+            val itemId = menuItem.itemId
+            if (selectedItemId != itemId) {
+                when (itemId) {
+                    R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
+                    R.id.LiveTvFragment -> navController.navigate(R.id.LiveTvFragment)
+                    R.id.SubscriptionFragment -> navController.navigate(R.id.SubscriptionFragment)
+                    R.id.MoreFragment -> navController.navigate(R.id.MoreFragment)
+                }
+                selectedItemId = itemId
             }
             true
         }
+
         binding.bottomNavigationBarId.setItemIconTintList(
             ContextCompat.getColorStateList(
                 this,
                 R.drawable.selected_nav_item_color
             )
-        );
+        )
+
     }
 }

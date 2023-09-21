@@ -1,20 +1,14 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
 import android.annotation.SuppressLint
-import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.net.toUri
-import androidx.core.view.marginTop
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
@@ -23,15 +17,12 @@ import com.example.rtv_plus_android_app_revamp.data.models.home.Data
 import com.jama.carouselview.CarouselView
 import com.jama.carouselview.enums.IndicatorAnimationType
 import com.jama.carouselview.enums.OffsetType
-import com.smarteist.autoimageslider.SliderView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
-import java.util.TimerTask
 import kotlin.random.Random
 
 class ParentHomeAdapter(var homeData: List<Data>) :
@@ -49,7 +40,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
 
         return when (viewType) {
             TYPE_BANNER -> {
-                val view = inflater.inflate(R.layout.row_obj_banner_viewpager, parent, false)
+                val view = inflater.inflate(R.layout.row_obj_banner_carouselview, parent, false)
                 BannerViewHolder(view)
             }
 
@@ -91,15 +82,6 @@ class ParentHomeAdapter(var homeData: List<Data>) :
             }
 
             is BannerViewHolder -> {
-
-
-                 val bannerImages = listOf(
-                    "https://example.com/image1.jpg",
-                    "https://example.com/image2.jpg",
-                    "https://example.com/image3.jpg"
-                )
-
-
                 holder.carouselView.apply {
                     size = homeData.size
                     resource = R.layout.row_obj_slider_view
@@ -107,52 +89,15 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                     indicatorAnimationType = IndicatorAnimationType.THIN_WORM
                     carouselOffset = OffsetType.CENTER
                     setCarouselViewListener { view, position ->
-                        // Example here is setting up a full image carousel
                         val imageView = view.findViewById<ImageView>(R.id.myimage)
-                      //  imageView.setImageURI(currentItem.contents[position].image_location.toUri())
-
                         Glide.with(imageView)
                             .load(currentItem.contents[position].image_location)
                             .placeholder(R.drawable.ic_launcher_background)
                             .into(imageView)
-
-
-
-                        //imageView.setImageDrawable(resources.getDrawable(currentItem.contents[position].image_location)
                     }
-                    // After you finish setting up, show the CarouselView
                     show()
                 }
             }
-
-
-
-
-//                val bannerAdapter = BannerAdapter(holder.itemView.context, bannerImages)
-//                holder.viewPager.adapter = bannerAdapter
-
-
-
-
-
-//                holder.sliderAdapter = SliderAdapter(currentItem.contents)
-//                holder.sliderView.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
-//                holder.sliderView.setSliderAdapter(holder.sliderAdapter)
-//                holder.sliderView.scrollTimeInSec = 3
-//                holder.sliderView.isAutoCycle = true
-//                holder.sliderView.startAutoCycle()
-
-//                holder.insicatorAdapter =
-//                    IndicatorAdapter(currentItem.contents)
-//                holder.indicatorRecyclerview.layoutManager = LinearLayoutManager(
-//                    holder.indicatorRecyclerview.context,
-//                    LinearLayoutManager.HORIZONTAL,
-//                    false
-//                )
-//                holder.indicatorRecyclerview.adapter = holder.insicatorAdapter
-
-
-
 
             is ThumbnailViewHolder -> {
 
@@ -173,26 +118,6 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                             while (isActive) {
 
                                 var randNum = Random.nextInt(1, currentItem.contents.size)
-
-                                val onTouchListener = View.OnTouchListener { _, event ->
-                                    when (event.action) {
-                                        MotionEvent.ACTION_DOWN -> {
-
-                                            true // Return true to consume the event
-                                        }
-
-                                        MotionEvent.ACTION_UP -> {
-                                        randNum = Random.nextInt(1, currentItem.contents.size)
-
-                                            true // Return true to consume the event
-                                        }
-
-                                        else -> false
-                                    }
-                                }
-
-                                holder.thumbnailImage.setOnTouchListener(onTouchListener)
-
                                 val imageUrl = currentItem.contents[randNum].image_location
 
                                 Glide.with(holder.thumbnailImage.context)
@@ -212,7 +137,6 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                 } else {
                     holder.thumbnailImage.visibility = View.GONE
                 }
-
 
             }
         }
@@ -242,7 +166,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
 
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         lateinit var bannerAdapter: BannerAdapter
-        val carouselView : CarouselView = itemView.findViewById(R.id.carouselViewId)
+        val carouselView: CarouselView = itemView.findViewById(R.id.carouselViewId)
 
     }
 
@@ -255,10 +179,4 @@ class ParentHomeAdapter(var homeData: List<Data>) :
         job?.cancel()
         job = null
     }
-
-
-
-
-
-
 }
