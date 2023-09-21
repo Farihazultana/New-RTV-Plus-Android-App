@@ -133,7 +133,8 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                                     .transition(customCrossFadeOptions).into(holder.thumbnailImage)
 
                                 holder.thumbnailImage.setOnClickListener(View.OnClickListener {
-                                    val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                                    val intent =
+                                        Intent(holder.itemView.context, PlayerActivity::class.java)
                                     intent.putExtra("id", currentItem.contents[randNum].contentid)
                                     holder.itemView.context.startActivity(intent)
                                 })
