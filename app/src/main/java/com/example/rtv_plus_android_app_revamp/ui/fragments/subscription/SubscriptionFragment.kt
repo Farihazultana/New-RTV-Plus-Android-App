@@ -66,7 +66,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
 
         subscriptionViewModel.fetchSubscriptionData("8801825414747")
 
-        subscriptionAdapter = SubscriptionAdapter(emptyList(), this)
+        subscriptionAdapter = SubscriptionAdapter(emptyList(), this, listOf(binding.btnContinuePayment))
         binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvSubscriptionPacks.adapter = subscriptionAdapter
 
@@ -99,7 +99,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         }
 
         //btn click listener
-        binding.btnConfirmPayment.setOnClickListener {
+        binding.btnContinuePayment.setOnClickListener {
             showBottomSheet()
         }
     }
@@ -117,10 +117,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         bottomSheetFragment.show(
             childFragmentManager, bottomSheetFragment.tag
         )
-    }
-
-    private fun showPackage(packageText: String?){
-
     }
 
     override fun onCardClickListener(item: SubschemesItem?) {
