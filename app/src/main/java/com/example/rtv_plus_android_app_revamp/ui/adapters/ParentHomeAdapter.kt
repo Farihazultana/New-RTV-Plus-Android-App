@@ -121,12 +121,12 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                     }
                     val seekbarMax = 100
                     holder.progressBar.max = seekbarMax
+
                     job = CoroutineScope(Dispatchers.Main).launch {
                         val delayDuration = 5000
                         val interval = 100
-
                         while (isActive) {
-                            val randNum = Random.nextInt(1, currentItem.contents.size - 1)
+                           var randNum = Random.nextInt(1, currentItem.contents.size)
                             val imageUrl = currentItem.contents[randNum].image_location
 
                             holder.thumbnailImage.setOnClickListener(View.OnClickListener {
