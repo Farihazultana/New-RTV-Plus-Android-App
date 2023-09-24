@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeRequest
@@ -17,13 +18,14 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
     private val _homeData = MutableStateFlow<ResultType<HomeResponse>>(ResultType.Loading)
     val homeData: StateFlow<ResultType<HomeResponse>> = _homeData
 
-    fun fetchHomeData(msisdn : String , view : String) {
+    fun fetchHomeData(msisdn: String, view: String) {
         viewModelScope.launch {
             try {
-                val result = homeRepository.getHomeData(msisdn,view)
+                val result = homeRepository.getHomeData(msisdn, view)
                 _homeData.value = result
             } catch (e: Exception) {
                 _homeData.value = ResultType.Error(e)
+                Log.e("HomeViewModel", e.toString())
             }
         }
     }

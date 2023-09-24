@@ -1,6 +1,7 @@
 package com.example.rtv_plus_android_app_revamp.data.services
 
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
+import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Field
@@ -14,4 +15,13 @@ interface ApiServices {
         @Field("msisdn") msisdn: String,
         @Field("view") view: String
     ): Response<HomeResponse>
+
+    @FormUrlEncoded
+    @POST("flixlist_json_app_single_2.php")
+    suspend fun getSingleData(
+        @Field("msisdn") msisdn: String,
+        @Field("cc") cc: String,
+        @Field("fromsrc") fromsrc : String
+    ): Response<SingleContentResponse>
+
 }
