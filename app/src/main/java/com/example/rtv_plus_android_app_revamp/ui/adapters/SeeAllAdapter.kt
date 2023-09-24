@@ -16,6 +16,7 @@ class SeeAllAdapter (var seeAllData: List<Content?>?) :
 
     inner class SeeAllViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         var contentImage: ImageView = itemView.findViewById(R.id.image_view_id)
+        var premiumText: TextView = itemView.findViewById(R.id.premiumTextView)
         var contentTitle: TextView = itemView.findViewById(R.id.title_textView)
         var contentDuration: TextView = itemView.findViewById(R.id.descriptionTextView)
     }
@@ -35,6 +36,9 @@ class SeeAllAdapter (var seeAllData: List<Content?>?) :
             Glide.with(holder.itemView.context)
                 .load(item.image_location)
                 .into(holder.contentImage)
+        }
+        if (item?.isfree?.toInt() == 0) {
+            holder.premiumText.visibility = View.VISIBLE
         }
         if (item != null){
             holder.contentTitle.text = item.name
