@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
@@ -30,11 +31,22 @@ class SeeAllActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-//        val toolBarIconSubscribe = binding.toolBarIconSubscribe
-//        toolBarIconSubscribe.setOnClickListener {
-//            val navController = Navigation.findNavController(binding.root)
-//            navController.navigate(R.id.HomeFragment)
-//        }
+
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Check if there are fragments in the back stack
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                } else {
+                    // If the back stack is empty, perform the default back action
+                    isEnabled = false
+                    onBackPressed()
+                }
+            }
+        }
+
+        onBackPressedDispatcher.addCallback(this, callback)
 
         val catCode = intent.getStringExtra("catcode")
         val catName = intent.getStringExtra("catname")
@@ -74,5 +86,9 @@ class SeeAllActivity : AppCompatActivity() {
 
 
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 }
