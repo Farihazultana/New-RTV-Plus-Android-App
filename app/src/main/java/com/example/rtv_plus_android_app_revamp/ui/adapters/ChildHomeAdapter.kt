@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Content
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
-import com.smarteist.autoimageslider.SliderView
 
 class ChildHomeAdapter(
     private var contentData: List<Content>,
