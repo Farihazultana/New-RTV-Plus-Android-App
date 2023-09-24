@@ -40,6 +40,7 @@ class SimilarItemsAdapter(var similarContentList: List<Similarcontent>) :
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
             intent.putExtra("id", currentItem.contentid)
+            intent.putExtra("type","single")
             holder.itemView.context.startActivity(intent)
         }
     }

@@ -1,6 +1,7 @@
 package com.example.rtv_plus_android_app_revamp.data.services
 
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
+import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
 import retrofit2.Call
 import retrofit2.Response
@@ -23,5 +24,13 @@ interface ApiServices {
         @Field("cc") cc: String,
         @Field("fromsrc") fromsrc : String
     ): Response<SingleContentResponse>
+
+    @FormUrlEncoded
+    @POST("flix_json_app_dramaserial.php")
+    suspend fun getPlayListData(
+        @Field("username") username: String,
+        @Field("cc") cc: String,
+        @Field("resolution") resolution : String
+    ): Response<PlayListResponse>
 
 }

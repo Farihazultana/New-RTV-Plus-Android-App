@@ -67,6 +67,14 @@ class ChildHomeAdapter(
                         0
                     )
                     holder.descriptionText.text = "Episodes-${currentItem.epcount}"
+
+                    holder.itemView.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                        intent.putExtra("id", currentItem.contentid)
+                        intent.putExtra("type","playlist")
+                        holder.itemView.context.startActivity(intent)
+                    }
+
                 } else {
                     val drawableStart = R.drawable.baseline_access_time_24
                     holder.descriptionText.setCompoundDrawablesWithIntrinsicBounds(
@@ -76,6 +84,13 @@ class ChildHomeAdapter(
                         0
                     )
                     holder.descriptionText.text = currentItem.length2
+
+                    holder.itemView.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                        intent.putExtra("id", currentItem.contentid)
+                        intent.putExtra("type","single")
+                        holder.itemView.context.startActivity(intent)
+                    }
                 }
 
                 Glide.with(holder.imageView.context)
@@ -83,11 +98,7 @@ class ChildHomeAdapter(
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(holder.imageView)
 
-                holder.itemView.setOnClickListener {
-                    val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                    intent.putExtra("id", currentItem.contentid)
-                    holder.itemView.context.startActivity(intent)
-                }
+
             }
         }
     }
