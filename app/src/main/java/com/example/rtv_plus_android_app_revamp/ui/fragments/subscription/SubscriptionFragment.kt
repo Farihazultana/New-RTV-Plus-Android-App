@@ -29,14 +29,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     private lateinit var subscriptionAdapter: SubscriptionAdapter
     private val subscriptionViewModel by viewModels<ViewModels>()
     private var selectedPositions = -1
-import androidx.navigation.Navigation.findNavController
-import com.example.rtv_plus_android_app_revamp.R
-import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscribeBottomBinding
-import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscriptionBinding
-
-class SubscriptionFragment : Fragment() {
-    private lateinit var binding: FragmentSubscriptionBinding
-    private lateinit var bottomBinding: FragmentSubscribeBottomBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,28 +45,6 @@ class SubscriptionFragment : Fragment() {
             navController.navigate(R.id.HomeFragment)
         }
 
-
-        binding.btWeeklySubscription.setOnClickListener {
-            showBottomSheet("TK 15 for 7 days")
-        }
-        binding.btMonthlySubscription.setOnClickListener {
-            showBottomSheet("TK 50 for 1 Month")
-        }
-        binding.btSixMonthSubscription.setOnClickListener {
-            showBottomSheet("TK 275 for 6 Months")
-        }
-        binding.btYearlySubscription.setOnClickListener {
-            showBottomSheet("TK 500 for 1 Year")
-        }
-
-        return binding.root
-    }
-
-    private fun showBottomSheet(packageText: String) {
-        val bottomSheetFragment = SubscribeBottomFragment()
-
-        val args = Bundle()
-        args.putString("packageText", packageText)
         return binding.root
     }
 
@@ -93,6 +63,7 @@ class SubscriptionFragment : Fragment() {
                     is ResultType.Loading -> {
                         binding.subscribeProgressBar.visibility = View.VISIBLE
                         binding.textView.visibility = View.GONE
+                        binding.btnContinuePayment.visibility = View.GONE
                     }
 
                     is ResultType.Success -> {
@@ -100,6 +71,7 @@ class SubscriptionFragment : Fragment() {
                         subscriptionAdapter.subscriptionData = subscriptionData.subschemes
                         binding.subscribeProgressBar.visibility = View.GONE
                         binding.textView.visibility = View.VISIBLE
+                        binding.btnContinuePayment.visibility = View.VISIBLE
                         subscriptionAdapter.notifyDataSetChanged()
                     }
 
@@ -149,7 +121,11 @@ class SubscriptionFragment : Fragment() {
         //binding.btnContinuePayment.isEnabled = selectedPositions != -1
         //showBottomSheet(item?.sub_text)
         args.putString("packageText", item?.sub_text)
+        if (selectedPositions != -1) {
+            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.green))
+        } else {
+            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
+        }
     }
-
 
 }

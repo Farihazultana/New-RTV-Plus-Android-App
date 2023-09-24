@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 
 import androidx.fragment.app.Fragment
@@ -15,7 +16,6 @@ import com.example.rtv_plus_android_app_revamp.ui.activities.SearchActivity
 import com.example.rtv_plus_android_app_revamp.ui.adapters.ParentHomeAdapter
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.ViewModels
 
-import com.example.rtv_plus_android_app_revamp.ui.viewmodels.HomeViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -39,7 +39,7 @@ class HomeFragment : Fragment() {
         })
 
         binding.tryAgainBtn.setOnClickListener{
-            homeViewModel.fetchHomeData("8801841464604", "home")
+            viewModels.fetchHomeData("8801841464604", "home")
         }
 
 
@@ -49,11 +49,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //val homeRequest = HomeRequest("8801841464604", "home")
         viewModels.fetchHomeData("8801841464604", "home")
-
-         homeViewModel.fetchHomeData("8801841464604", "home")
-
-        homeViewModel.fetchHomeData("8801841464604", "home")
-
 
         parentHomeAdapter = ParentHomeAdapter(emptyList())
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
