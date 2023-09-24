@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".ui.fragments.SubscriptionFragment">
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragments.subscription.SubscriptionFragment">
 
@@ -36,7 +37,6 @@
                 android:textColor="@color/black"
                 android:textSize="24sp"/>
         </androidx.appcompat.widget.Toolbar>
-
 
 
         <TextView

@@ -19,6 +19,7 @@ class HomeRepository @Inject constructor(private val apiServices: ApiServices) {
             }
             return ResultType.Error(Exception("Failed to fetch home data"))
         } catch (e: Exception) {
+
             return ResultType.Error(e)
         }
     }
