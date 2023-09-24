@@ -4,18 +4,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.ActivitySeeAllBinding
 import com.example.rtv_plus_android_app_revamp.ui.adapters.SeeAllAdapter
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.ViewModels
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -31,22 +28,9 @@ class SeeAllActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // Check if there are fragments in the back stack
-                if (supportFragmentManager.backStackEntryCount > 0) {
-                    supportFragmentManager.popBackStack()
-                } else {
-                    // If the back stack is empty, perform the default back action
-                    isEnabled = false
-                    onBackPressed()
-                }
-            }
+        binding.toolBarBackIconSubscribe.setOnClickListener{
+            onBackPressed()
         }
-
-        onBackPressedDispatcher.addCallback(this, callback)
 
         val catCode = intent.getStringExtra("catcode")
         val catName = intent.getStringExtra("catname")
@@ -59,7 +43,7 @@ class SeeAllActivity : AppCompatActivity() {
 
         if (catCode != null){
             lifecycleScope.launch {
-                seeAllViewModels.seeAllData.collect(){
+                seeAllViewModels.seeAllData.collect{
                     when(it){
                         is ResultType.Loading -> {
                             binding.subscribeProgressBar.visibility= View.VISIBLE
@@ -83,12 +67,20 @@ class SeeAllActivity : AppCompatActivity() {
                 }
             }
         }
-
-
-
     }
-
     override fun onBackPressed() {
+        val fragmentManager = supportFragmentManager
+        val backStackEntryCount = fragmentManager.backStackEntryCount
+
+        if (backStackEntryCount > 0) {
+            for (i in backStackEntryCount - 1 downTo 0) {
+                val entry = fragmentManager.getBackStackEntryAt(i)
+                if (entry.name == "HomeFragment") {
+                    fragmentManager.popBackStack(entry.id, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    return
+                }
+            }
+        }
         super.onBackPressed()
     }
 }
