@@ -30,7 +30,7 @@ class ChildHomeAdapter(
 //            }
             TYPE_CONTENT -> {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.row_obj_child_home_data, parent, false)
+                    .inflate(R.layout.row_item, parent, false)
                 ContentViewHolder(view)
             }
 
