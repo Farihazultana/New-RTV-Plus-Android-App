@@ -1,6 +1,5 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
-
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Handler
@@ -38,28 +37,6 @@ class ParentHomeAdapter(var homeData: List<Data>) :
         private const val TYPE_BANNER = 0
         private const val TYPE_CONTENT = 1
         private const val TYPE_THUMBNAIL = 2
-
-import android.os.Handler
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.view.marginTop
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.rtv_plus_android_app_revamp.R
-import com.example.rtv_plus_android_app_revamp.data.models.home.Data
-import com.smarteist.autoimageslider.SliderView
-import org.w3c.dom.Text
-import java.util.TimerTask
-
-class ParentHomeAdapter(var homeData: List<Data>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    companion object {
-        private const val TYPE_BANNER = 0
-        private const val TYPE_CONTENT = 1
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -67,9 +44,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
 
         return when (viewType) {
             TYPE_BANNER -> {
-
                 val view = inflater.inflate(R.layout.row_obj_banner_carouselview, parent, false)
-
                 BannerViewHolder(view)
             }
 
@@ -83,14 +58,11 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                 ThumbnailViewHolder(view)
             }
 
-
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
-
     @SuppressLint("ClickableViewAccessibility")
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentItem = homeData[position]
 
@@ -100,13 +72,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                     holder.childListAdapter =
                         ChildHomeAdapter(currentItem.contents, currentItem.contentviewtype)
                     holder.recyclerView.layoutManager = LinearLayoutManager(
-
                         holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false
-
-                        holder.recyclerView.context,
-                        LinearLayoutManager.HORIZONTAL,
-                        false
-
                     )
                     holder.textView.text = currentItem.catname
                     holder.recyclerView.adapter = holder.childListAdapter
@@ -118,7 +84,6 @@ class ParentHomeAdapter(var homeData: List<Data>) :
             }
 
             is BannerViewHolder -> {
-
                 holder.carouselView.apply {
                     size = homeData.size
                     resource = R.layout.row_obj_slider_view
@@ -194,14 +159,6 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                     holder.thumbnailImage.visibility = View.GONE
                 }
 
-
-                holder.sliderAdapter = SliderAdapter(currentItem.contents)
-                holder.sliderView.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
-                holder.sliderView.setSliderAdapter(holder.sliderAdapter)
-                holder.sliderView.scrollTimeInSec = 3
-                holder.sliderView.isAutoCycle = true
-                holder.sliderView.startAutoCycle()
-
             }
         }
     }
@@ -214,10 +171,8 @@ class ParentHomeAdapter(var homeData: List<Data>) :
         val currentItem = homeData[position]
         return if (currentItem.contentviewtype == "4") {
             TYPE_BANNER
-
         } else if (currentItem.contentviewtype == "9") {
             TYPE_THUMBNAIL
-
         } else {
             TYPE_CONTENT
         }
@@ -231,7 +186,6 @@ class ParentHomeAdapter(var homeData: List<Data>) :
     }
 
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
         lateinit var bannerAdapter: BannerAdapter
         val carouselView: CarouselView = itemView.findViewById(R.id.carouselViewId)
     }
@@ -247,9 +201,5 @@ class ParentHomeAdapter(var homeData: List<Data>) :
     fun cancelUpdates() {
         job?.cancel()
         job = null
-
-        val sliderView: SliderView = itemView.findViewById(R.id.imageSlider)
-        lateinit var sliderAdapter: SliderAdapter
-
     }
 }

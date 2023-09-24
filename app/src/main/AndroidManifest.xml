@@ -23,10 +23,6 @@
             android:name=".ui.activities.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.MainActivity"
-            android:name=".ui.activities.PlayerActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.activities.SplashScreenActivity"
 
             android:exported="true">

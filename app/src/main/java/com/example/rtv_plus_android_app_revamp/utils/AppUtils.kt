@@ -4,7 +4,4 @@ object AppUtils {
 
     const val BASE_URL = "https://api-v200.rtvplus.tv/"
 
-    const val BASE_URL = "https://rtvplus.tv/api/"
-
-
 }
