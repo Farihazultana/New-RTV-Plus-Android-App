@@ -2,7 +2,6 @@ package com.example.rtv_plus_android_app_revamp.ui.adapters
 
 import android.content.Intent
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -20,10 +19,6 @@ import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Data
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.SeeAllActivity
-import com.smarteist.autoimageslider.SliderView
-import org.w3c.dom.Text
-import java.util.TimerTask
-import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
 import com.jama.carouselview.CarouselView
 import com.jama.carouselview.enums.IndicatorAnimationType
 import com.jama.carouselview.enums.OffsetType
