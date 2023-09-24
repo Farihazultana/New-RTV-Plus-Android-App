@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,8 +39,30 @@ class SeeAllAdapter (var seeAllData: List<Content?>?) :
         if (item != null){
             holder.contentTitle.text = item.name
         }
-        if (item != null){
-            holder.contentDuration.text = item.duration
+//        if (item != null){
+//            holder.contentDuration.text = item.duration
+//        }
+
+        if (item?.contenttype == "playlist") {
+            val drawableStart = R.drawable.baseline_format_list_numbered_24
+            holder.contentDuration.setCompoundDrawablesWithIntrinsicBounds(
+                drawableStart,
+                0,
+                0,
+                0
+            )
+            holder.contentDuration.text = "Episodes-${item.epcount}"
+            Log.i("TagM", "onBindViewHolder: $item")
+        } else {
+            val drawableStart = R.drawable.baseline_access_time_24
+            holder.contentDuration.setCompoundDrawablesWithIntrinsicBounds(
+                drawableStart,
+                0,
+                0,
+                0
+            )
+            holder.contentDuration.text = item?.duration
+            Log.i("TagN", "onBindViewHolder: $item")
         }
     }
 
