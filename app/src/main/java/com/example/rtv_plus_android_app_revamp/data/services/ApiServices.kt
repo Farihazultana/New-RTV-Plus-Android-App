@@ -1,7 +1,7 @@
 package com.example.rtv_plus_android_app_revamp.data.services
 
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
-import retrofit2.Call
+import com.example.rtv_plus_android_app_revamp.data.models.subscription.SubscriptionResponse
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -14,4 +14,10 @@ interface ApiServices {
         @Field("msisdn") msisdn: String,
         @Field("view") view: String
     ): Response<HomeResponse>
+
+    @FormUrlEncoded
+    @POST("flix_subschemes.php")
+    suspend fun getSubscriptionData(
+        @Field("msisdn") msisdn: String
+    ): Response<SubscriptionResponse>
 }

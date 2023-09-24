@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments.subscription
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -55,6 +56,13 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
         updateUI()
 
         return view
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+
+        bottomBinding.rbLocal.isChecked = false
+        bottomBinding.rbRedeem.isChecked = false
     }
 
     private fun updateUI() {
