@@ -9,5 +9,6 @@ data class Content(
     val epcount: String,
     val image_location: String,
     val isfree: String,
-    val name: String
+    val name: String,
+    val length2: String
 )

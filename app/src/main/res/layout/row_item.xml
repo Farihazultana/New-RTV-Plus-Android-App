@@ -5,7 +5,8 @@
     android:layout_width="@dimen/_135sdp"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp">
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="8dp">
 
     <ImageView
         android:id="@+id/image_view_id"
@@ -45,6 +46,7 @@
         android:id="@+id/descriptionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:layout_marginBottom="@dimen/_8sdp"
         android:drawablePadding="4dp"
         android:maxLength="100"

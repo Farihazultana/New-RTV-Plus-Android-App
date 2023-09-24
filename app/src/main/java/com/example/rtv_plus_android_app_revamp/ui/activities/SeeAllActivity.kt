@@ -30,11 +30,11 @@ class SeeAllActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        val toolBarIconSubscribe = binding.toolBarIconSubscribe
-        toolBarIconSubscribe.setOnClickListener {
-            val navController = Navigation.findNavController(binding.root)
-            navController.navigate(R.id.HomeFragment)
-        }
+//        val toolBarIconSubscribe = binding.toolBarIconSubscribe
+//        toolBarIconSubscribe.setOnClickListener {
+//            val navController = Navigation.findNavController(binding.root)
+//            navController.navigate(R.id.HomeFragment)
+//        }
 
         val catCode = intent.getStringExtra("catcode")
         val catName = intent.getStringExtra("catname")

@@ -11,10 +11,10 @@ import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.seeAll.Content
 
-class SeeAllAdapter (var seeAllData: List<Content?>?) :
+class SeeAllAdapter(var seeAllData: List<Content?>?) :
     RecyclerView.Adapter<SeeAllAdapter.SeeAllViewHolder>() {
 
-    inner class SeeAllViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+    inner class SeeAllViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var contentImage: ImageView = itemView.findViewById(R.id.image_view_id)
         var premiumText: TextView = itemView.findViewById(R.id.premiumTextView)
         var contentTitle: TextView = itemView.findViewById(R.id.title_textView)
@@ -32,7 +32,7 @@ class SeeAllAdapter (var seeAllData: List<Content?>?) :
 
     override fun onBindViewHolder(holder: SeeAllViewHolder, position: Int) {
         val item = seeAllData?.get(position)
-        if (item != null){
+        if (item != null) {
             Glide.with(holder.itemView.context)
                 .load(item.image_location)
                 .into(holder.contentImage)
@@ -40,7 +40,7 @@ class SeeAllAdapter (var seeAllData: List<Content?>?) :
         if (item?.isfree?.toInt() == 0) {
             holder.premiumText.visibility = View.VISIBLE
         }
-        if (item != null){
+        if (item != null) {
             holder.contentTitle.text = item.name
         }
 //        if (item != null){
@@ -65,12 +65,12 @@ class SeeAllAdapter (var seeAllData: List<Content?>?) :
                 0,
                 0
             )
-            holder.contentDuration.text = item?.duration
+            holder.contentDuration.text = item?.length2
             Log.i("TagN", "onBindViewHolder: $item")
         }
     }
 
-    interface itemClickListener{
+    interface itemClickListener {
         fun onItemClickListener(position: Int, item: Content?)
     }
 }
