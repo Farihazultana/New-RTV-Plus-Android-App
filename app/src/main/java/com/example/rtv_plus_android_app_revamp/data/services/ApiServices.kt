@@ -3,13 +3,13 @@ package com.example.rtv_plus_android_app_revamp.data.services
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
-import retrofit2.Call
 import com.example.rtv_plus_android_app_revamp.data.models.seeAll.SeeAllResponse
 import com.example.rtv_plus_android_app_revamp.data.models.subscription.SubscriptionResponse
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiServices {
     @FormUrlEncoded
@@ -37,7 +37,7 @@ interface ApiServices {
 
     @POST("flix_subschemes.php")
     suspend fun getSubscriptionData(
-        @Field("msisdn") msisdn: String
+        @Query("msisdn") msisdn: String
     ): Response<SubscriptionResponse>
 
     @FormUrlEncoded
