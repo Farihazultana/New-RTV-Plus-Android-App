@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 class SeeAllActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySeeAllBinding
-    private lateinit var  seeAllAdapter: SeeAllAdapter
+    private lateinit var seeAllAdapter: SeeAllAdapter
     private val seeAllViewModels by viewModels<ViewModels>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +28,7 @@ class SeeAllActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        binding.toolBarBackIconSubscribe.setOnClickListener{
+        binding.toolBarBackIconSubscribe.setOnClickListener {
             onBackPressed()
         }
 
@@ -38,24 +38,25 @@ class SeeAllActivity : AppCompatActivity() {
         seeAllViewModels.fetchSeeAllData("1", catCode.toString(), "0", "1")
 
         seeAllAdapter = SeeAllAdapter(emptyList())
-        binding.rvSeeAll.layoutManager = GridLayoutManager(this,2)
+        binding.rvSeeAll.layoutManager = GridLayoutManager(this, 2)
         binding.rvSeeAll.adapter = seeAllAdapter
 
-        if (catCode != null){
+        if (catCode != null) {
             lifecycleScope.launch {
-                seeAllViewModels.seeAllData.collect{
-                    when(it){
+                seeAllViewModels.seeAllData.collect {
+                    when (it) {
                         is ResultType.Loading -> {
-                            binding.subscribeProgressBar.visibility= View.VISIBLE
+                            binding.subscribeProgressBar.visibility = View.VISIBLE
                         }
 
                         is ResultType.Success -> {
                             val seeAllData = it.data
                             seeAllAdapter.seeAllData = seeAllData.contents
                             binding.tvSeeAllTitle.text = catName
-                            binding.subscribeProgressBar.visibility= View.GONE
+                            binding.subscribeProgressBar.visibility = View.GONE
                             seeAllAdapter.notifyDataSetChanged()
                         }
+
                         is ResultType.Error -> {
                             Toast.makeText(
                                 this@SeeAllActivity,
@@ -68,6 +69,7 @@ class SeeAllActivity : AppCompatActivity() {
             }
         }
     }
+
     override fun onBackPressed() {
         val fragmentManager = supportFragmentManager
         val backStackEntryCount = fragmentManager.backStackEntryCount
