@@ -17,6 +17,7 @@ import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscriptionB
 import com.example.rtv_plus_android_app_revamp.ui.adapters.SubscriptionAdapter
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SubscriptionViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -43,6 +44,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         toolBarIconSubscribe.setOnClickListener {
             val navController = findNavController(binding.root)
             navController.navigate(R.id.HomeFragment)
+            val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+            bottomNavigationView.selectedItemId = R.id.HomeFragment
         }
 
         return binding.root
@@ -127,6 +130,5 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
             binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
         }
     }
-
 
 }
