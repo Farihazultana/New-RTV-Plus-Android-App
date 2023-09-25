@@ -18,6 +18,7 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Data
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
+import com.example.rtv_plus_android_app_revamp.ui.activities.SeeAllActivity
 import com.jama.carouselview.CarouselView
 import com.jama.carouselview.enums.IndicatorAnimationType
 import com.jama.carouselview.enums.OffsetType
@@ -76,6 +77,12 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                     )
                     holder.textView.text = currentItem.catname
                     holder.recyclerView.adapter = holder.childListAdapter
+                    holder.seeAll.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, SeeAllActivity::class.java)
+                        intent.putExtra("catcode", currentItem.catcode)
+                        intent.putExtra("catname", currentItem.catname)
+                        holder.itemView.context.startActivity(intent)
+                    }
                 } else {
                     holder.textView.visibility = View.GONE
                     holder.recyclerView.visibility = View.GONE
