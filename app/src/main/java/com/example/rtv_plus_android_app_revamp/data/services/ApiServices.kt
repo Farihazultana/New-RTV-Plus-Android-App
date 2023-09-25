@@ -4,6 +4,7 @@ import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
 import com.example.rtv_plus_android_app_revamp.data.models.seeAll.SeeAllResponse
+import com.example.rtv_plus_android_app_revamp.data.models.signIn.SignInResponse
 import com.example.rtv_plus_android_app_revamp.data.models.subscription.SubscriptionResponse
 import retrofit2.Response
 import retrofit2.http.Field
@@ -48,4 +49,12 @@ interface ApiServices {
         @Field("tc") tc:String,
         @Field("testval")  testval: String
     ): Response<SeeAllResponse>
+
+    @FormUrlEncoded
+    @POST("flix_makemylogingettoken.php")
+    suspend fun getSignInData(
+        @Field("username") username: String,
+        @Field("password") password:String,
+        @Field("haspin")  haspin: String
+    ): Response<SignInResponse>
 }
