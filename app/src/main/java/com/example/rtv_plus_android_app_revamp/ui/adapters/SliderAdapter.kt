@@ -60,7 +60,6 @@ class SliderAdapter(imageUrl: List<Content>) :
         var imageView: ImageView = itemView!!.findViewById(R.id.myimage)
     }
 
-
     fun getGlobalPosition(): Int {
         return globalPosition
     }

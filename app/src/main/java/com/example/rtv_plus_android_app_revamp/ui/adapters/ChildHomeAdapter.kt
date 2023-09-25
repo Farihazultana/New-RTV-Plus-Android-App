@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Content
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
+import com.smarteist.autoimageslider.SliderView
 
 class ChildHomeAdapter(
     private var contentData: List<Content>,
@@ -30,6 +31,7 @@ class ChildHomeAdapter(
 //            }
             TYPE_CONTENT -> {
                 val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.row_obj_child_home_data, parent, false)
                     .inflate(R.layout.row_item, parent, false)
                 ContentViewHolder(view)
             }
@@ -66,6 +68,14 @@ class ChildHomeAdapter(
                         0
                     )
                     holder.descriptionText.text = "Episodes-${currentItem.epcount}"
+
+                    holder.itemView.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                        intent.putExtra("id", currentItem.contentid)
+                        intent.putExtra("type","playlist")
+                        holder.itemView.context.startActivity(intent)
+                    }
+
                 } else {
                     val drawableStart = R.drawable.baseline_access_time_24
                     holder.descriptionText.setCompoundDrawablesWithIntrinsicBounds(
@@ -78,6 +88,14 @@ class ChildHomeAdapter(
                 }
 
 
+                    holder.itemView.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                        intent.putExtra("id", currentItem.contentid)
+                        intent.putExtra("type","single")
+                        holder.itemView.context.startActivity(intent)
+                    }
+                }
+
                 Glide.with(holder.imageView.context)
                     .load(currentItem.image_location)
                     .placeholder(R.drawable.ic_launcher_background)
@@ -88,6 +106,7 @@ class ChildHomeAdapter(
                     intent.putExtra("id", currentItem.contentid)
                     holder.itemView.context.startActivity(intent)
                 }
+
             }
         }
     }

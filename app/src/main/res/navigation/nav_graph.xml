@@ -25,10 +25,11 @@
 
     <fragment
         android:id="@+id/SubscriptionFragment"
+        android:name="com.example.rtv_plus_android_app_revamp.ui.fragments.SubscriptionFragment"
         android:name="com.example.rtv_plus_android_app_revamp.ui.fragments.subscription.SubscriptionFragment"
         android:label="Subscription"
         tools:layout="@layout/fragment_subscription" />
-  
+
     <fragment
         android:id="@+id/MoreFragment"
         android:name="com.example.rtv_plus_android_app_revamp.ui.fragments.MoreFragment"
