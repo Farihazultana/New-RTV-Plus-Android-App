@@ -1,4 +1,3 @@
-
 package com.example.rtv_plus_android_app_revamp.ui.fragments.subscription
 
 import android.os.Bundle
@@ -64,7 +63,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                     is ResultType.Loading -> {
                         binding.subscribeProgressBar.visibility = View.VISIBLE
                         binding.textView.visibility = View.GONE
-                        binding.btnContinuePayment.visibility = View.GONE
                     }
 
                     is ResultType.Success -> {
@@ -72,7 +70,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                         subscriptionAdapter.subscriptionData = subscriptionData.subschemes
                         binding.subscribeProgressBar.visibility = View.GONE
                         binding.textView.visibility = View.VISIBLE
-                        binding.btnContinuePayment.visibility = View.VISIBLE
                         subscriptionAdapter.notifyDataSetChanged()
                     }
 
@@ -83,6 +80,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+
                 }
             }
         }
@@ -122,15 +120,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         //binding.btnContinuePayment.isEnabled = selectedPositions != -1
         //showBottomSheet(item?.sub_text)
         args.putString("packageText", item?.sub_text)
-        if (selectedPositions != -1) {
-            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.green))
-        } else {
-            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
-        }
     }
 
 
 }
-
-
-

@@ -32,7 +32,6 @@ class ChildHomeAdapter(
             TYPE_CONTENT -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.row_obj_child_home_data, parent, false)
-                    .inflate(R.layout.row_item, parent, false)
                 ContentViewHolder(view)
             }
 
@@ -85,8 +84,6 @@ class ChildHomeAdapter(
                         0
                     )
                     holder.descriptionText.text = currentItem.length2
-                }
-
 
                     holder.itemView.setOnClickListener {
                         val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
@@ -101,11 +98,6 @@ class ChildHomeAdapter(
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(holder.imageView)
 
-                holder.itemView.setOnClickListener {
-                    val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                    intent.putExtra("id", currentItem.contentid)
-                    holder.itemView.context.startActivity(intent)
-                }
 
             }
         }

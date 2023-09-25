@@ -17,7 +17,7 @@ class SimilarItemsAdapter(var similarContentList: List<Similarcontent>) :
     RecyclerView.Adapter<SimilarItemsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        Log.e("ssssssssssssssssssss", "item ${similarContentList.size.toString()}")
+        Log.e("ssssssssssssssssssss", "item ${similarContentList.size}")
 
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.row_obj_similar_content, parent, false)

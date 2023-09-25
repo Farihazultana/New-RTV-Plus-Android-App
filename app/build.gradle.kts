@@ -71,12 +71,6 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("com.squareup.retrofit2:converter-gson:2.0.0-beta4")
 
-    //ViewModel , livedata
-    val lifecycle_version = "2.5.1"
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
-    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
-
     //Glide
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     //Image Slider

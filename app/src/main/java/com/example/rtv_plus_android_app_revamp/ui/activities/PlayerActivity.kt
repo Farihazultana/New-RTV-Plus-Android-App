@@ -9,22 +9,17 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityPlayerBinding
-import com.example.rtv_plus_android_app_revamp.ui.adapters.ParentHomeAdapter
 import com.example.rtv_plus_android_app_revamp.ui.adapters.PlayListAdapter
 import com.example.rtv_plus_android_app_revamp.ui.adapters.SimilarItemsAdapter
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.PlayListViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SingleContentViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PlayerActivity : AppCompatActivity() {
@@ -35,14 +30,6 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playListAdapter: PlayListAdapter
 
     @SuppressLint("SetTextI18n")
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.example.rtv_plus_android_app_revamp.R
-import com.example.rtv_plus_android_app_revamp.databinding.ActivityMainBinding
-import com.example.rtv_plus_android_app_revamp.databinding.ActivityPlayerBinding
-
-class PlayerActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityPlayerBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -50,10 +37,6 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(view)
 
         val receivedValue = intent.getStringExtra("id")
-        if (receivedValue != null) {
-            val textView = binding.idTv
-            textView.text = receivedValue
-        }
         val contentType = intent.getStringExtra("type")
 
         if (receivedValue != null && contentType == "single") {
@@ -123,7 +106,7 @@ class PlayerActivity : AppCompatActivity() {
                     is ResultType.Loading -> {
                         binding.progressbar.visibility = View.VISIBLE
                         binding.nastedScrollView.visibility = View.GONE
-
+                       
                     }
 
                     is ResultType.Success<*> -> {
