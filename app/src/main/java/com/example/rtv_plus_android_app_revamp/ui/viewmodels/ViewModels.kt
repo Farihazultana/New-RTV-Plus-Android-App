@@ -17,18 +17,18 @@ import javax.inject.Inject
 @HiltViewModel
 class ViewModels @Inject constructor(private val repository: Repository) : ViewModel() {
     //home viewModel
-    private val _homeData = MutableStateFlow<ResultType<HomeResponse>>(ResultType.Loading)
-    val homeData: StateFlow<ResultType<HomeResponse>> = _homeData
-    fun fetchHomeData(msisdn : String , view : String) {
-        viewModelScope.launch {
-            try {
-                val result = repository.getHomeData(msisdn,view)
-                _homeData.value = result
-            } catch (e: Exception) {
-                _homeData.value = ResultType.Error(e)
-            }
-        }
-    }
+//    private val _homeData = MutableStateFlow<ResultType<HomeResponse>>(ResultType.Loading)
+//    val homeData: StateFlow<ResultType<HomeResponse>> = _homeData
+//    fun fetchHomeData(msisdn : String , view : String) {
+//        viewModelScope.launch {
+//            try {
+//                val result = repository.getHomeData(msisdn,view)
+//                _homeData.value = result
+//            } catch (e: Exception) {
+//                _homeData.value = ResultType.Error(e)
+//            }
+//        }
+//    }
 
     //subscription viewModel
     private val _subscriptionData = MutableStateFlow<ResultType<SubscriptionResponse>>(ResultType.Loading)

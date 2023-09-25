@@ -9,20 +9,20 @@ import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import javax.inject.Inject
 
 class Repository @Inject constructor(private val apiServices: ApiServices) {
-    suspend fun getHomeData(msisdn : String, view: String): ResultType<HomeResponse> {
-        try {
-            val response = apiServices.getHomeData(msisdn,view)
-            if (response.isSuccessful) {
-                val data = response.body()
-                if (data != null) {
-                    return ResultType.Success(data)
-                }
-            }
-            return ResultType.Error(Exception("Failed to fetch home data"))
-        } catch (e: Exception) {
-            return ResultType.Error(e)
-        }
-    }
+//    suspend fun getHomeData(msisdn : String, view: String): ResultType<HomeResponse> {
+//        try {
+//            val response = apiServices.getHomeData(msisdn,view)
+//            if (response.isSuccessful) {
+//                val data = response.body()
+//                if (data != null) {
+//                    return ResultType.Success(data)
+//                }
+//            }
+//            return ResultType.Error(Exception("Failed to fetch home data"))
+//        } catch (e: Exception) {
+//            return ResultType.Error(e)
+//        }
+//    }
 
     suspend fun getSubscriptionData(msisdn : String): ResultType<SubscriptionResponse> {
         try {

@@ -80,6 +80,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+
                 }
             }
         }

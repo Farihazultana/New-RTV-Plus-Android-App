@@ -26,4 +26,5 @@ class NetworkModule {
     fun providesApiService(retrofit: Retrofit): ApiServices {
         return retrofit.create(ApiServices::class.java)
     }
+
 }

@@ -53,6 +53,8 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             updateUI()
         }
 
+        updateUI()
+
         return view
     }
 
@@ -98,6 +100,7 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
                 )
             )
         } else {
+            // Neither is selected, you can update the UI accordingly if needed
             bottomBinding.rbLocal.isChecked = false
             bottomBinding.rbRedeem.isChecked = false
             localCardView.setBackgroundColor(
