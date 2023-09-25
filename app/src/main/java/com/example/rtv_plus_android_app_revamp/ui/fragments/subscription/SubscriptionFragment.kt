@@ -15,7 +15,7 @@ import com.example.rtv_plus_android_app_revamp.data.models.subscription.Subschem
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscribeBottomBinding
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscriptionBinding
 import com.example.rtv_plus_android_app_revamp.ui.adapters.SubscriptionAdapter
-import com.example.rtv_plus_android_app_revamp.ui.viewmodels.ViewModels
+import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SubscriptionViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -27,7 +27,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     private val bottomSheetFragment = SubscribeBottomFragment()
     private val args = Bundle()
     private lateinit var subscriptionAdapter: SubscriptionAdapter
-    private val subscriptionViewModel by viewModels<ViewModels>()
+    private val subscriptionViewModel by viewModels<SubscriptionViewModel>()
     private var selectedPositions = -1
 
     override fun onCreateView(
@@ -63,6 +63,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                     is ResultType.Loading -> {
                         binding.subscribeProgressBar.visibility = View.VISIBLE
                         binding.textView.visibility = View.GONE
+                        binding.btnContinuePayment.visibility = View.GONE
                     }
 
                     is ResultType.Success -> {
@@ -70,6 +71,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                         subscriptionAdapter.subscriptionData = subscriptionData.subschemes
                         binding.subscribeProgressBar.visibility = View.GONE
                         binding.textView.visibility = View.VISIBLE
+                        binding.btnContinuePayment.visibility = View.VISIBLE
                         subscriptionAdapter.notifyDataSetChanged()
                     }
 
@@ -80,7 +82,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-
                 }
             }
         }
@@ -120,6 +121,11 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         //binding.btnContinuePayment.isEnabled = selectedPositions != -1
         //showBottomSheet(item?.sub_text)
         args.putString("packageText", item?.sub_text)
+        if (selectedPositions != -1) {
+            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.green))
+        } else {
+            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
+        }
     }
 
 

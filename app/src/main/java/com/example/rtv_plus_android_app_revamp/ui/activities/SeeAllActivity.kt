@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.rtv_plus_android_app_revamp.databinding.ActivitySeeAllBinding
 import com.example.rtv_plus_android_app_revamp.ui.adapters.SeeAllAdapter
-import com.example.rtv_plus_android_app_revamp.ui.viewmodels.ViewModels
+import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SeeAllViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -20,7 +20,7 @@ class SeeAllActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySeeAllBinding
     private lateinit var seeAllAdapter: SeeAllAdapter
-    private val seeAllViewModels by viewModels<ViewModels>()
+    private val seeAllViewModels by viewModels<SeeAllViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
