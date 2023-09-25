@@ -98,21 +98,33 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="You may also like"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_16ssp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+            <TextView
+                android:id="@+id/episodeNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                android:textSize="@dimen/_10ssp"
+                android:textColor="@color/gray"
+                app:layout_constraintStart_toStartOf="@+id/suggestionTitle"
+                app:layout_constraintTop_toBottomOf="@+id/suggestionTitle" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/similarItemRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/suggestionTitle" />
+                app:layout_constraintTop_toBottomOf="@+id/episodeNum" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

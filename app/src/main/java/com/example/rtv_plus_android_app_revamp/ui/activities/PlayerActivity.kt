@@ -111,7 +111,7 @@ class PlayerActivity : AppCompatActivity() {
                     is ResultType.Loading -> {
                         binding.progressbar.visibility = View.VISIBLE
                         binding.nastedScrollView.visibility = View.GONE
-                        // Handle loading state if needed
+                       
                     }
 
                     is ResultType.Success<*> -> {
@@ -127,6 +127,8 @@ class PlayerActivity : AppCompatActivity() {
                             .into(binding.imageView)
 
                         binding.title.text = content.dramaname
+                        binding.episodeNum.visibility = View.VISIBLE
+                        binding.episodeNum.text = "${content.episodelist.size.toString()} Episodes"
 
                         if (!content.episodelist.isNullOrEmpty()) {
                             binding.similarItemRecyclerView.adapter = playListAdapter
