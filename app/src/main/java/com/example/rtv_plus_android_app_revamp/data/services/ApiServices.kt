@@ -9,7 +9,6 @@ import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
-import retrofit2.http.Query
 
 interface ApiServices {
     @FormUrlEncoded
@@ -35,9 +34,10 @@ interface ApiServices {
         @Field("resolution") resolution : String
     ): Response<PlayListResponse>
 
+    @FormUrlEncoded
     @POST("flix_subschemes.php")
     suspend fun getSubscriptionData(
-        @Query("msisdn") msisdn: String
+        @Field("msisdn") msisdn: String
     ): Response<SubscriptionResponse>
 
     @FormUrlEncoded
