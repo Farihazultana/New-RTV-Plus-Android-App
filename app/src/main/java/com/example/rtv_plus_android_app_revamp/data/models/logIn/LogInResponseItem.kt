@@ -1,6 +1,6 @@
-package com.example.rtv_plus_android_app_revamp.data.models.signIn
+package com.example.rtv_plus_android_app_revamp.data.models.logIn
 
-data class SignInResponseItem(
+data class LogInResponseItem(
     val audioad: Boolean,
     val autorenew: Any,
     val concurrent: Int,

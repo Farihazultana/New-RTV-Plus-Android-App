@@ -1,6 +1,7 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -30,7 +32,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class ParentHomeAdapter(var homeData: List<Data>) :
+class ParentHomeAdapter(private var myContext: Context,var homeData: List<Data>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var job: Job? = null
 
@@ -71,7 +73,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
             is ContentViewHolder -> {
                 if (!currentItem.contents.isNullOrEmpty()) {
                     holder.childListAdapter =
-                        ChildHomeAdapter(currentItem.contents, currentItem.contentviewtype)
+                        ChildHomeAdapter(myContext,currentItem.contents, currentItem.contentviewtype)
                     holder.recyclerView.layoutManager = LinearLayoutManager(
                         holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false
                     )
@@ -141,6 +143,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                                     Intent(holder.itemView.context, PlayerActivity::class.java)
                                 intent.putExtra("id", currentItem.contents[randNum].contentid)
                                 holder.itemView.context.startActivity(intent)
+
                             })
                             for (i in 0 until (delayDuration / interval)) {
                                 delay(interval.toLong())

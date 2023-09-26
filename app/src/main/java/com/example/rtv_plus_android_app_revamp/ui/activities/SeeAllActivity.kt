@@ -20,7 +20,7 @@ class SeeAllActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySeeAllBinding
     private lateinit var seeAllAdapter: SeeAllAdapter
-    private val seeAllViewModels by viewModels<SeeAllViewModel>()
+    private val seeAllViewModel by viewModels<SeeAllViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,7 +35,7 @@ class SeeAllActivity : AppCompatActivity() {
         val catCode = intent.getStringExtra("catcode")
         val catName = intent.getStringExtra("catname")
 
-        seeAllViewModels.fetchSeeAllData("1", catCode.toString(), "0", "1")
+        seeAllViewModel.fetchSeeAllData("1", catCode.toString(), "0", "1")
 
         seeAllAdapter = SeeAllAdapter(emptyList())
         binding.rvSeeAll.layoutManager = GridLayoutManager(this, 2)
@@ -43,7 +43,7 @@ class SeeAllActivity : AppCompatActivity() {
 
         if (catCode != null) {
             lifecycleScope.launch {
-                seeAllViewModels.seeAllData.collect {
+                seeAllViewModel.seeAllData.collect {
                     when (it) {
                         is ResultType.Loading -> {
                             binding.subscribeProgressBar.visibility = View.VISIBLE

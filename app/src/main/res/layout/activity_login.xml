@@ -25,7 +25,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_300sdp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:background="@drawable/registration_card_bg"
         app:cardCornerRadius="@dimen/_35sdp"
@@ -151,12 +151,15 @@
                 android:id="@+id/appCompatButton3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginBottom="24dp"
                 android:drawableStart="@drawable/ic_fb"
                 android:text=" Facebook"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 app:backgroundTint="@color/design_default_color_primary_dark"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/appCompatButton4"
                 app:layout_constraintStart_toStartOf="@+id/viewLeft"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -165,7 +168,6 @@
                 android:id="@+id/appCompatButton4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
                 android:drawableStart="@drawable/ic_google"
                 android:text=" Google"
                 android:textAlignment="center"
@@ -200,14 +202,13 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="Forgot Password?"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/materialCardView"
         app:layout_constraintStart_toStartOf="@+id/materialCardView"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView" />
 
     <TextView
-        android:id="@+id/appCompatTextView"
+        android:id="@+id/tvGoToRegistration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -227,9 +228,9 @@
         android:backgroundTint="@color/grey"
         android:orientation="horizontal"
         android:background="@drawable/horizontal_line"
-        app:layout_constraintEnd_toEndOf="@+id/appCompatTextView"
-        app:layout_constraintStart_toStartOf="@+id/appCompatTextView"
-        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
+        app:layout_constraintEnd_toEndOf="@+id/tvGoToRegistration"
+        app:layout_constraintStart_toStartOf="@+id/tvGoToRegistration"
+        app:layout_constraintTop_toBottomOf="@+id/tvGoToRegistration" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

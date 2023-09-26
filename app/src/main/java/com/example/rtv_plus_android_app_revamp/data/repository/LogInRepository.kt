@@ -1,15 +1,15 @@
 package com.example.rtv_plus_android_app_revamp.data.repository
 
 import android.util.Log
-import com.example.rtv_plus_android_app_revamp.data.models.signIn.SignInResponse
+import com.example.rtv_plus_android_app_revamp.data.models.logIn.LogInResponse
 import com.example.rtv_plus_android_app_revamp.data.services.ApiServices
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import javax.inject.Inject
 
-class SignInRepository @Inject constructor(private val apiServices: ApiServices){
-    suspend fun getSignInData(userName: String, password: String, haspin: String): ResultType<SignInResponse> {
+class LogInRepository @Inject constructor(private val apiServices: ApiServices){
+    suspend fun getLogInData(userName: String, password: String, haspin: String): ResultType<LogInResponse> {
         try {
-            val response = apiServices.getSignInData(userName,password,haspin)
+            val response = apiServices.getLogInData(userName,password,haspin)
             Log.i("TAGS", "successful api call: ${response.code()}")
             if (response.isSuccessful) {
                 val data = response.body()

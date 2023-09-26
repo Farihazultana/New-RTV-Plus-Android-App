@@ -48,7 +48,7 @@ class HomeFragment : Fragment() {
         //val homeRequest = HomeRequest("8801841464604", "home")
          homeViewModel.fetchHomeData("8801841464604", "home")
 
-        parentHomeAdapter = ParentHomeAdapter(emptyList())
+        parentHomeAdapter = ParentHomeAdapter(requireContext(),emptyList())
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
