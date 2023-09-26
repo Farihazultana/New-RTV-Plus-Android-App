@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentMoreBinding
+import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
+import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
@@ -15,6 +17,10 @@ class MoreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMoreBinding.inflate(inflater, container, false)
+
+        binding.btnLogout.setOnClickListener {
+            SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.LogInKey)
+        }
         return binding.root
     }
 }

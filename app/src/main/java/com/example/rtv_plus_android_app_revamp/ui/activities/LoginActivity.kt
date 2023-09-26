@@ -21,6 +21,12 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val logInViewModel by viewModels<LogInViewModel>()
+    var logInResultData: String?=null
+    companion object{
+        val LogInKey= "LogIn_Result"
+        val PhoneInput = "PhoneKey"
+    }
+
 
     @SuppressLint("CommitPrefEdits")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +36,16 @@ class LoginActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        logInViewModel.fetchLogInData("8801825414747", "123457", "no")
+
+        val phoneText = SharedPreferencesUtil.getData(this@LoginActivity, PhoneInput, "default_value")
+        Log.i("TagP", "onCreate: $phoneText")
+
+        binding.btnLogIn.setOnClickListener {
+            logInViewModel.fetchLogInData(phoneText.toString(), "123457", "no")
+
+        }
+
+
 
         lifecycleScope.launch {
             logInViewModel.logInData.collect {
@@ -39,8 +54,12 @@ class LoginActivity : AppCompatActivity() {
                         val logInResult = it.data
                         for (item in logInResult) {
                             val result = item.result
+                            logInResultData=result
                             Log.i("LogIN", "onCreate: $result")
-                            SharedPreferencesUtil.saveData(this@LoginActivity, "LogIn_Result", result)
+                            SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
+                            val phoneInput = binding.etPhoneText.text.toString()
+                            Log.i("PhoneInput", "Phone Input : $phoneInput")
+                            SharedPreferencesUtil.saveData(this@LoginActivity, PhoneInput,phoneInput)
                         }
 
                     }
@@ -62,6 +81,8 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this@LoginActivity, RegistrationActivity::class.java)
             startActivity(intent)
         }
+
+
 
     }
 }

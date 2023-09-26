@@ -28,6 +28,7 @@ tools:context=".ui.activities.RegistrationActivity">
     android:layout_height="@dimen/_300sdp"
     android:layout_marginTop="8dp"
     app:background="@drawable/registration_card_bg"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/_35sdp"
     app:cardElevation="@dimen/_6sdp"
     app:cardUseCompatPadding="true"

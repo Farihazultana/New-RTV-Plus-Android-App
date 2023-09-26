@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:background="@drawable/registration_card_bg"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/_35sdp"
         app:cardElevation="@dimen/_6sdp"
         app:cardUseCompatPadding="true"
@@ -59,6 +60,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPhoneText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/green"
@@ -100,7 +102,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/etPhone" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/appCompatButton2"
+                android:id="@+id/btn_LogIn"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
                 android:layout_marginStart="@dimen/_8sdp"
@@ -122,7 +124,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/textView6"
                 app:layout_constraintEnd_toStartOf="@+id/textView6"
                 app:layout_constraintHorizontal_bias="0.307"
-                app:layout_constraintStart_toStartOf="@+id/appCompatButton2"
+                app:layout_constraintStart_toStartOf="@+id/btn_LogIn"
                 app:layout_constraintTop_toTopOf="@+id/textView6" />
 
             <TextView
@@ -132,9 +134,9 @@
                 android:text="Or"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/_10ssp"
-                app:layout_constraintEnd_toEndOf="@+id/appCompatButton2"
-                app:layout_constraintStart_toStartOf="@+id/appCompatButton2"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatButton2" />
+                app:layout_constraintEnd_toEndOf="@+id/btn_LogIn"
+                app:layout_constraintStart_toStartOf="@+id/btn_LogIn"
+                app:layout_constraintTop_toBottomOf="@+id/btn_LogIn" />
 
             <View
                 android:id="@+id/viewRight"
@@ -142,7 +144,7 @@
                 android:layout_height="1dp"
                 android:background="@drawable/horizontal_line"
                 app:layout_constraintBottom_toBottomOf="@+id/textView6"
-                app:layout_constraintEnd_toEndOf="@+id/appCompatButton2"
+                app:layout_constraintEnd_toEndOf="@+id/btn_LogIn"
                 app:layout_constraintHorizontal_bias="0.44"
                 app:layout_constraintStart_toEndOf="@+id/textView6"
                 app:layout_constraintTop_toTopOf="@+id/textView6" />
