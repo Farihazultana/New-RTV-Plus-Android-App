@@ -6,43 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".ui.activities.PlayerActivity">
 
-
-    <com.google.android.exoplayer2.ui.StyledPlayerView
-        android:id="@+id/playerView"
+    <FrameLayout
+        android:id="@+id/playerContainer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_180sdp"
-        app:resize_mode="fill"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/playerView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_180sdp"
+            android:fitsSystemWindows="false"
+            android:keepScreenOn="true"
+            app:resize_mode="fill"
+            app:show_buffering="when_playing"
+            app:controller_layout_id="@layout/controller_layout"
+            app:show_vr_button="true" />
 
-    <!--    <androidx.media3.ui.PlayerView-->
-    <!--        android:id="@+id/playerView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="@dimen/_180sdp"-->
-    <!--        android:fitsSystemWindows="false"-->
-    <!--        android:keepScreenOn="true"-->
-    <!--        app:artwork_display_mode="fill"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.5"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:played_color="@color/green"-->
-    <!--        app:resize_mode="fill"-->
-    <!--        app:show_buffering="when_playing"-->
-    <!--        app:show_shuffle_button="true"-->
-    <!--        app:show_vr_button="true" />-->
+    </FrameLayout>
+
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nastedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playerView">
+        app:layout_constraintTop_toBottomOf="@id/playerContainer">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

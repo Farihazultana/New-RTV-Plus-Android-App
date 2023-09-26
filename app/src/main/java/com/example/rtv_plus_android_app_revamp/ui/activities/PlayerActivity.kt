@@ -1,13 +1,21 @@
 package com.example.rtv_plus_android_app_revamp.ui.activities
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
@@ -19,11 +27,8 @@ import com.example.rtv_plus_android_app_revamp.ui.adapters.SimilarItemsAdapter
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.PlayListViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SingleContentViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.util.MimeTypes
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class PlayerActivity : AppCompatActivity() {
@@ -32,11 +37,6 @@ class PlayerActivity : AppCompatActivity() {
     private val playListViewModel by viewModels<PlayListViewModel>()
     private lateinit var similarItemsAdapter: SimilarItemsAdapter
     private lateinit var playListAdapter: PlayListAdapter
-
-
-    private lateinit var playerView: PlayerView
-    private lateinit var exoPlayer: ExoPlayer
-    private var isFullScreen = false
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,24 +50,33 @@ class PlayerActivity : AppCompatActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-//        val player = ExoPlayer.Builder(this)
-//            .setAudioAttributes(
-//                AudioAttributes.DEFAULT, true
-//            )
-//            .setHandleAudioBecomingNoisy(true)
-//            .build()
-//
-//        binding.playerView.player = player
-
-        val player = ExoPlayer.Builder(this).build()
-        binding.playerView.player = player
-
-        val mediaItem = MediaItem.Builder()
-            .setUri("https://media.geeksforgeeks.org/wp-content/uploads/20201217163353/Screenrecorder-2020-12-17-16-32-03-350.mp4")
-            .setMimeType(MimeTypes.APPLICATION_MP4)
+        val player = ExoPlayer.Builder(this)
+            .setAudioAttributes(
+                androidx.media3.common.AudioAttributes.DEFAULT, true
+            )
+            .setHandleAudioBecomingNoisy(true)
             .build()
 
-        player.setMediaItem(mediaItem)
+        binding.playerView.player = player
+
+        val playerView = binding.playerView
+        val button: ImageView = findViewById(R.id.fullscreen)
+        button.setOnClickListener {
+            val isFullscreen = isFullscreen()
+            setFullscreen(!isFullscreen)
+            Toast.makeText(this, "Button clicked", Toast.LENGTH_SHORT).show()
+        }
+
+
+//        val player = ExoPlayer.Builder(this).build()
+//        binding.playerView.player = player
+//
+//        val mediaItem = MediaItem.Builder()
+//            .setUri("https://media.geeksforgeeks.org/wp-content/uploads/20201217163353/Screenrecorder-2020-12-17-16-32-03-350.mp4")
+//            .setMimeType(MimeTypes.APPLICATION_MP4)
+//            .build()
+//
+//        player.setMediaItem(mediaItem)
 
 
         if (receivedValue != null && contentType == "single") {
@@ -96,38 +105,32 @@ class PlayerActivity : AppCompatActivity() {
                         binding.type.text = content.type
                         binding.length.text = content.length2
 
-
-
-
                         // Build the media item.
-//                        val mediaItem =
-//                            MediaItem.fromUri("https://media.geeksforgeeks.org/wp-content/uploads/20201217163353/Screenrecorder-2020-12-17-16-32-03-350.mp4")
-//                        player.setMediaItem(mediaItem)
-//                        player.prepare()
-//                        player.play()
-//
-//                        player.addListener(
-//                            object : Player.Listener {
-//                                override fun onIsPlayingChanged(isPlaying: Boolean) {
-//                                    if (isPlaying) {
-//                                        // Active playback.
-//                                    } else {
-//                                        Toast.makeText(
-//                                            this@PlayerActivity,
-//                                            "Something is wrong, please try again",
-//                                            Toast.LENGTH_SHORT
-//                                        ).show()
-//                                        // Not playing because playback is paused, ended, suppressed, or the player
-//                                        // is buffering, stopped or failed. Check player.playWhenReady,
-//                                        // player.playbackState, player.playbackSuppressionReason and
-//                                        // player.playerError for details.
-//                                    }
-//                                }
-//                            }
-//                        )
+                        val mediaItem =
+                            MediaItem.fromUri("https://media.geeksforgeeks.org/wp-content/uploads/20201217163353/Screenrecorder-2020-12-17-16-32-03-350.mp4")
+                        player.setMediaItem(mediaItem)
+                        player.prepare()
+                        player.play()
 
-
-
+                        player.addListener(
+                            object : Player.Listener {
+                                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                                    if (isPlaying) {
+                                        // Active playback.
+                                    } else {
+                                        Toast.makeText(
+                                            this@PlayerActivity,
+                                            "Something is wrong, please try again",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        // Not playing because playback is paused, ended, suppressed, or the player
+                                        // is buffering, stopped or failed. Check player.playWhenReady,
+                                        // player.playbackState, player.playbackSuppressionReason and
+                                        // player.playerError for details.
+                                    }
+                                }
+                            }
+                        )
 
                         if (content.similar.isNotEmpty()) {
                             binding.similarItemRecyclerView.adapter = similarItemsAdapter
@@ -207,4 +210,27 @@ class PlayerActivity : AppCompatActivity() {
         binding.similarItemRecyclerView.layoutManager = LinearLayoutManager(this)
 
     }
+
+    fun isFullscreen(): Boolean {
+        return requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    }
+
+    fun setFullscreen(fullscreen: Boolean) {
+        val playerView = binding.playerView
+        val button: ImageView = findViewById(R.id.fullscreen)
+        if (fullscreen) {
+
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            button.visibility = View.GONE
+            playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+            playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            button.visibility = View.VISIBLE
+            playerView.layoutParams.height =
+                resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._180sdp) // Replace with your desired height
+            playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+    }
+
 }

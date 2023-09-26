@@ -85,20 +85,16 @@ dependencies {
 
     implementation("com.synnapps:carouselview:0.1.5")
 
-    implementation ("com.google.android.exoplayer:exoplayer:2.19.1")
-    implementation ("com.google.android.exoplayer:exoplayer-ui:2.19.1")
-    implementation ("com.google.android.exoplayer:exoplayer-smoothstreaming:r2.4.0")
-    implementation ("com.google.android.exoplayer:exoplayer-core:2.19.1")
+//    implementation ("com.google.android.exoplayer:exoplayer:2.19.1")
+//    implementation ("com.google.android.exoplayer:exoplayer-ui:2.19.1")
+//    implementation ("com.google.android.exoplayer:exoplayer-smoothstreaming:r2.4.0")
+//    implementation ("com.google.android.exoplayer:exoplayer-core:2.19.1")
 
-//    implementation ("androidx.media3:media3-exoplayer:1.1.1")
-//    implementation ("androidx.media3:media3-exoplayer-dash:1.1.1")
-//    implementation ("androidx.media3:media3-ui:1.1.1")
+    implementation ("androidx.media3:media3-exoplayer:1.1.1")
+    implementation ("androidx.media3:media3-exoplayer-dash:1.1.1")
+    implementation ("androidx.media3:media3-ui:1.1.1")
 
-
-
-
-
-
+    
     implementation(project(":carouselview"))
 
     testImplementation("junit:junit:4.13.2")
