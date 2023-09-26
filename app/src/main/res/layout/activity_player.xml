@@ -6,18 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".ui.activities.PlayerActivity">
 
-    <LinearLayout
-        android:id="@+id/playerLayout"
+
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+        android:id="@+id/playerView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_200sdp"
-        android:background="@drawable/thumbnail"
-        android:orientation="vertical"
+        android:layout_height="@dimen/_180sdp"
+        app:resize_mode="fill"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+
+    <!--    <androidx.media3.ui.PlayerView-->
+    <!--        android:id="@+id/playerView"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="@dimen/_180sdp"-->
+    <!--        android:fitsSystemWindows="false"-->
+    <!--        android:keepScreenOn="true"-->
+    <!--        app:artwork_display_mode="fill"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.5"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:played_color="@color/green"-->
+    <!--        app:resize_mode="fill"-->
+    <!--        app:show_buffering="when_playing"-->
+    <!--        app:show_shuffle_button="true"-->
+    <!--        app:show_vr_button="true" />-->
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nastedScrollView"
@@ -26,7 +42,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playerLayout">
+        app:layout_constraintTop_toBottomOf="@id/playerView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -49,7 +65,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:text="This is content title"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -60,7 +75,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Release Year: 2021"
                 android:textColor="@color/green"
                 android:textSize="@dimen/_12ssp"
                 app:layout_constraintStart_toStartOf="@+id/title"
@@ -73,7 +87,6 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_background_textview"
                 android:padding="@dimen/_2sdp"
-                android:text="Single Drama"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="@+id/releaseYear"
                 app:layout_constraintTop_toBottomOf="@+id/releaseYear" />
@@ -86,7 +99,6 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_background_textview"
                 android:padding="@dimen/_2sdp"
-                android:text="42m 22s"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toEndOf="@+id/type"
                 app:layout_constraintTop_toBottomOf="@+id/releaseYear" />
@@ -97,7 +109,6 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="You may also like"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -108,9 +119,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"
-                android:textSize="@dimen/_10ssp"
                 android:textColor="@color/gray"
+                android:textSize="@dimen/_10ssp"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/suggestionTitle"
                 app:layout_constraintTop_toBottomOf="@+id/suggestionTitle" />
 
