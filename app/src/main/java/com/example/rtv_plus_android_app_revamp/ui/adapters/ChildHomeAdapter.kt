@@ -15,7 +15,6 @@ import com.example.rtv_plus_android_app_revamp.data.models.home.Content
 import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
-import com.smarteist.autoimageslider.SliderView
 
 class ChildHomeAdapter(
     private var myContext: Context,
@@ -74,19 +73,18 @@ class ChildHomeAdapter(
                     holder.descriptionText.text = "Episodes-${currentItem.epcount}"
 
                     holder.itemView.setOnClickListener {
-//                        val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-//                        intent.putExtra("id", currentItem.contentid)
-//                        intent.putExtra("type","playlist")
-//                        holder.itemView.context.startActivity(intent)
-
-                        val spRes = SharedPreferencesUtil.getData(myContext, "LogIn_Result","default_value" )
+                        val spRes = SharedPreferencesUtil.getData(
+                            myContext,
+                            LoginActivity.LogInKey,
+                            "default_value"
+                        )
                         Log.i("SPref", "onBindViewHolder: $spRes")
-                        if(spRes=="success"){
+                        if (spRes == "success") {
                             val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                             intent.putExtra("id", currentItem.contentid)
-                            intent.putExtra("type","playlist")
+                            intent.putExtra("type", "playlist")
                             holder.itemView.context.startActivity(intent)
-                        }else{
+                        } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
                             holder.itemView.context.startActivity(intent)
                         }
@@ -103,19 +101,18 @@ class ChildHomeAdapter(
                     holder.descriptionText.text = currentItem.length2
 
                     holder.itemView.setOnClickListener {
-//                        val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-//                        intent.putExtra("id", currentItem.contentid)
-//                        intent.putExtra("type","single")
-//                        holder.itemView.context.startActivity(intent)
-
-                        val spRes = SharedPreferencesUtil.getData(myContext, "LogIn_Result","default_value" )
+                        val spRes = SharedPreferencesUtil.getData(
+                            myContext,
+                            LoginActivity.LogInKey,
+                            "default_value"
+                        )
                         Log.i("SPref", "onBindViewHolder: $spRes")
-                        if(spRes=="success"){
+                        if (spRes == "success") {
                             val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                             intent.putExtra("id", currentItem.contentid)
-                            intent.putExtra("type","single")
+                            intent.putExtra("type", "single")
                             holder.itemView.context.startActivity(intent)
-                        }else{
+                        } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
                             holder.itemView.context.startActivity(intent)
                         }

@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -19,8 +19,10 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Data
+import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.SeeAllActivity
+import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import com.jama.carouselview.CarouselView
 import com.jama.carouselview.enums.IndicatorAnimationType
 import com.jama.carouselview.enums.OffsetType
@@ -104,11 +106,18 @@ class ParentHomeAdapter(private var myContext: Context,var homeData: List<Data>)
                         Glide.with(imageView).load(currentItem.contents[position].image_location)
                             .placeholder(R.drawable.ic_launcher_background).into(imageView)
 
-                        imageView.setOnClickListener(View.OnClickListener {
-                            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                            intent.putExtra("id", currentItem.contents[position].contentid)
-                            holder.itemView.context.startActivity(intent)
-                        })
+                        imageView.setOnClickListener{
+                            val spRes = SharedPreferencesUtil.getData(myContext, LoginActivity.LogInKey,"default_value" )
+                            Log.i("SPref", "onBindViewHolder: $spRes")
+                            if(spRes=="success"){
+                                val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                                intent.putExtra("id", currentItem.contents[position].contentid)
+                                holder.itemView.context.startActivity(intent)
+                            }else{
+                                val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                                holder.itemView.context.startActivity(intent)
+                            }
+                        }
                     }
                     show()
                 }
@@ -138,13 +147,19 @@ class ParentHomeAdapter(private var myContext: Context,var homeData: List<Data>)
                            var randNum = Random.nextInt(1, currentItem.contents.size)
                             val imageUrl = currentItem.contents[randNum].image_location
 
-                            holder.thumbnailImage.setOnClickListener(View.OnClickListener {
-                                val intent =
-                                    Intent(holder.itemView.context, PlayerActivity::class.java)
-                                intent.putExtra("id", currentItem.contents[randNum].contentid)
-                                holder.itemView.context.startActivity(intent)
-
-                            })
+                            holder.thumbnailImage.setOnClickListener{
+                                val spRes = SharedPreferencesUtil.getData(myContext, LoginActivity.LogInKey,"default_value" )
+                                Log.i("SPref", "onBindViewHolder: $spRes")
+                                if(spRes=="success"){
+                                    val intent =
+                                        Intent(holder.itemView.context, PlayerActivity::class.java)
+                                    intent.putExtra("id", currentItem.contents[randNum].contentid)
+                                    holder.itemView.context.startActivity(intent)
+                                }else{
+                                    val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                                    holder.itemView.context.startActivity(intent)
+                                }
+                            }
                             for (i in 0 until (delayDuration / interval)) {
                                 delay(interval.toLong())
                                 holder.handler.post {

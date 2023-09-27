@@ -55,6 +55,7 @@ interface ApiServices {
     suspend fun getLogInData(
         @Field("username") username: String,
         @Field("password") password:String,
-        @Field("haspin")  haspin: String
+        @Field("haspin")  haspin: String,
+        @Field("tc") tc:String,
     ): Response<LogInResponse>
 }

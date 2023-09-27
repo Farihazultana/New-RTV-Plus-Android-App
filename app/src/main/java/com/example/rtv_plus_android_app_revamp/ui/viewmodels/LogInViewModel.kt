@@ -15,10 +15,10 @@ import javax.inject.Inject
 class LogInViewModel @Inject constructor(private val repository: LogInRepository) : ViewModel() {
     private val _logInData = MutableStateFlow<ResultType<LogInResponse>>(ResultType.Loading)
     val logInData: StateFlow<ResultType<LogInResponse>> = _logInData
-    fun fetchLogInData(userName: String, password: String, haspin: String) {
+    fun fetchLogInData(userName: String, password: String, haspin: String, tc:String,) {
         viewModelScope.launch {
             try {
-                val result = repository.getLogInData(userName, password, haspin)
+                val result = repository.getLogInData(userName, password, haspin, tc)
                 _logInData.value = result
             } catch (e: Exception) {
                 _logInData.value = ResultType.Error(e)

@@ -1,7 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.activities
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -21,12 +20,12 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val logInViewModel by viewModels<LogInViewModel>()
-    var logInResultData: String?=null
-    companion object{
-        val LogInKey= "LogIn_Result"
-        val PhoneInput = "PhoneKey"
-    }
+    private var phoneText: String? = null
 
+    companion object {
+        const val LogInKey = "LogIn_Result"
+        const val PhoneInputKey = "PhoneKey"
+    }
 
     @SuppressLint("CommitPrefEdits")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,15 +35,44 @@ class LoginActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-
-        val phoneText = SharedPreferencesUtil.getData(this@LoginActivity, PhoneInput, "default_value")
-        Log.i("TagP", "onCreate: $phoneText")
-
         binding.btnLogIn.setOnClickListener {
-            logInViewModel.fetchLogInData(phoneText.toString(), "123457", "no")
+            val enteredPhone = binding.etPhoneText.text.toString()
+            val enteredPassword = binding.etPasswordText.text.toString()
+
+            if (enteredPhone.isNotEmpty() || enteredPassword.isNotEmpty()){
+                if (enteredPhone.length == 11) {
+                    phoneText = "88$enteredPhone"
+                    Log.i("TagP", "Phone Input from EditText: $phoneText")
+
+                    if (enteredPassword.isNotEmpty()) {
+                        logInViewModel.fetchLogInData(phoneText!!, "123457", "yes", "1")
+                    }
+                    else {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Password can't be empty! Please input first.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+                else {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Phone number should be 11 digits",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+            else {
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Phone number & Password can't be empty! Please input first.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
 
         }
-
 
 
         lifecycleScope.launch {
@@ -54,14 +82,31 @@ class LoginActivity : AppCompatActivity() {
                         val logInResult = it.data
                         for (item in logInResult) {
                             val result = item.result
-                            logInResultData=result
-                            Log.i("LogIN", "onCreate: $result")
+                            Log.i("LogIN", "Log In result to be saved: $result")
                             SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
-                            val phoneInput = binding.etPhoneText.text.toString()
-                            Log.i("PhoneInput", "Phone Input : $phoneInput")
-                            SharedPreferencesUtil.saveData(this@LoginActivity, PhoneInput,phoneInput)
-                        }
 
+                            if (result == "success") {
+                                Log.i("TAGP", "LogIn: $result")
+                                SharedPreferencesUtil.saveData(
+                                    this@LoginActivity,
+                                    PhoneInputKey,
+                                    phoneText!!
+                                ).toString()
+                                finish()
+//                                val getPhoneNumSP = SharedPreferencesUtil.getData(
+//                                    this@LoginActivity,
+//                                    PhoneInputKey,
+//                                    "defaultValue"
+//                                )
+//                                Log.i("PhoneInput", "Saved Phone Input from SP : $getPhoneNumSP")
+                            } else {
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "Username or Password incorrect. Try Again!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
                     }
 
                     is ResultType.Error -> {
@@ -81,8 +126,5 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this@LoginActivity, RegistrationActivity::class.java)
             startActivity(intent)
         }
-
-
-
     }
 }

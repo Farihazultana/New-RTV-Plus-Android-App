@@ -7,9 +7,9 @@ import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import javax.inject.Inject
 
 class LogInRepository @Inject constructor(private val apiServices: ApiServices){
-    suspend fun getLogInData(userName: String, password: String, haspin: String): ResultType<LogInResponse> {
+    suspend fun getLogInData(userName: String, password: String, haspin: String, tc:String): ResultType<LogInResponse> {
         try {
-            val response = apiServices.getLogInData(userName,password,haspin)
+            val response = apiServices.getLogInData(userName,password,haspin, tc)
             Log.i("TAGS", "successful api call: ${response.code()}")
             if (response.isSuccessful) {
                 val data = response.body()
