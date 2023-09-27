@@ -66,6 +66,7 @@
                     android:backgroundTint="@color/green"
                     android:drawableStart="@drawable/ic_phone"
                     android:hint="Phone"
+                    android:maxLength="11"
                     android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
 

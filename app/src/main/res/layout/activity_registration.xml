@@ -58,11 +58,13 @@ tools:context=".ui.activities.RegistrationActivity">
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPhoneText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/green"
                 android:drawableStart="@drawable/ic_phone"
                 android:hint="Phone"
+                android:maxLength="11"
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -78,7 +80,7 @@ tools:context=".ui.activities.RegistrationActivity">
             app:layout_constraintTop_toBottomOf="@+id/editText" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/appCompatButton2"
+            android:id="@+id/btnRegistration"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:layout_marginStart="@dimen/_8sdp"
