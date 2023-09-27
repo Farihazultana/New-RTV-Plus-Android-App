@@ -98,6 +98,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                         imageView.setOnClickListener(View.OnClickListener {
                             val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                             intent.putExtra("id", currentItem.contents[position].contentid)
+                            intent.putExtra("type","single")
                             holder.itemView.context.startActivity(intent)
                         })
                     }

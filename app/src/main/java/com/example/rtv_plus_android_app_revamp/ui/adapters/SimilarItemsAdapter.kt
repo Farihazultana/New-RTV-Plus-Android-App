@@ -48,7 +48,6 @@ class SimilarItemsAdapter(var similarContentList: List<Similarcontent>) :
     override fun getItemCount(): Int {
         Log.e("ssssssssssssssssssss", "item ${similarContentList.size.toString()}")
         return similarContentList.size
-
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

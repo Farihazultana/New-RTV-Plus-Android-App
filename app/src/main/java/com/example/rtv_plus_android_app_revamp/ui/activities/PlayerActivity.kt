@@ -127,7 +127,6 @@ class PlayerActivity : AppCompatActivity() {
                             Log.d("ssssssssssssssssssss", "item empty")
                         }
                     }
-
                     is ResultType.Error -> {
                         Toast.makeText(
                             this@PlayerActivity,

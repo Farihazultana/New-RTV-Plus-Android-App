@@ -33,12 +33,14 @@
         android:id="@id/exo_play_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_32sdp"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:foregroundGravity="center_vertical"
         android:src="@drawable/baseline_play_circle_filled_24"
         app:layout_constraintBottom_toTopOf="@+id/bottomSheetContainer"
         app:layout_constraintEnd_toStartOf="@+id/exo_ffwd"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/exo_rew" />
+        app:layout_constraintStart_toEndOf="@+id/exo_rew"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomSheetContainer"
