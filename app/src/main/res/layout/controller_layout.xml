@@ -33,7 +33,7 @@
         android:id="@id/exo_play_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_20sdp"
         android:foregroundGravity="center_vertical"
         android:src="@drawable/baseline_play_circle_filled_24"
         app:layout_constraintBottom_toTopOf="@+id/bottomSheetContainer"

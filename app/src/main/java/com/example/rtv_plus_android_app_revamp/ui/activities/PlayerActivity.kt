@@ -247,7 +247,11 @@ class PlayerActivity : AppCompatActivity() {
             // Set the activity orientation back to portrait
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_24)
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_VISIBLE)
+
+
+            window.decorView.systemUiVisibility =
+                (View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
             playerView.layoutParams.height =
                 resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._180sdp)
             playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
