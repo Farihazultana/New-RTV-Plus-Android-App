@@ -1,17 +1,22 @@
 package com.example.rtv_plus_android_app_revamp.ui.activities
 
+import android.R
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityRegistrationBinding
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.RegistrationViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class RegistrationActivity : AppCompatActivity() {
@@ -31,6 +36,23 @@ class RegistrationActivity : AppCompatActivity() {
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        binding.etPhoneText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val charCount = p0?.length ?: 0
+                binding.tvInputCounter.text = "$charCount/11"
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        }
+        )
 
         binding.btnRegistration.setOnClickListener {
             val enteredPhone = binding.etPhoneText.text.toString()
@@ -74,4 +96,6 @@ class RegistrationActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+
 }

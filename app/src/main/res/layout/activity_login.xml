@@ -27,9 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:background="@drawable/registration_card_bg"
         app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="@dimen/_35sdp"
+        app:cardCornerRadius="@dimen/_7sdp"
         app:cardElevation="@dimen/_6sdp"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,9 +36,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.137"
-        app:strokeColor="@color/light_green"
-        app:strokeWidth="@dimen/_1sdp">
+        app:layout_constraintVertical_bias="0.137">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -65,6 +62,7 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/green"
                     android:drawableStart="@drawable/ic_phone"
+                    android:textCursorDrawable="@null"
                     android:hint="Phone"
                     android:maxLength="11"
                     android:inputType="phone" />
@@ -89,12 +87,14 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/green"
                     android:drawableStart="@drawable/ic_lock_open"
+                    android:drawableEnd="@drawable/ic_eye_closed"
+                    android:textCursorDrawable="@null"
                     android:hint="Password"
                     android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/tvInputCounter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0/11"
@@ -107,25 +107,24 @@
                 android:id="@+id/btn_LogIn"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginStart="@dimen/_11sdp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_11sdp"
                 android:backgroundTint="@color/green"
                 android:text="Login"
                 android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="@+id/etPhone"
+                app:layout_constraintEnd_toEndOf="@+id/etPassword"
                 app:layout_constraintHorizontal_bias="0.322"
-                app:layout_constraintStart_toStartOf="@+id/etPhone"
+                app:layout_constraintStart_toStartOf="@+id/etPassword"
                 app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
             <View
                 android:id="@+id/viewLeft"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/_100ssp"
                 android:layout_height="1dp"
                 android:background="@drawable/horizontal_line"
                 app:layout_constraintBottom_toBottomOf="@+id/textView6"
                 app:layout_constraintEnd_toStartOf="@+id/textView6"
-                app:layout_constraintHorizontal_bias="0.307"
                 app:layout_constraintStart_toStartOf="@+id/btn_LogIn"
                 app:layout_constraintTop_toTopOf="@+id/textView6" />
 
@@ -136,24 +135,24 @@
                 android:text="Or"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/_10ssp"
-                app:layout_constraintEnd_toEndOf="@+id/btn_LogIn"
-                app:layout_constraintStart_toStartOf="@+id/btn_LogIn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_LogIn" />
 
             <View
                 android:id="@+id/viewRight"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/_100ssp"
                 android:layout_height="1dp"
                 android:background="@drawable/horizontal_line"
                 app:layout_constraintBottom_toBottomOf="@+id/textView6"
                 app:layout_constraintEnd_toEndOf="@+id/btn_LogIn"
-                app:layout_constraintHorizontal_bias="0.44"
+                app:layout_constraintHorizontal_bias="0.39"
                 app:layout_constraintStart_toEndOf="@+id/textView6"
                 app:layout_constraintTop_toTopOf="@+id/textView6" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/appCompatButton3"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_100sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="10dp"
@@ -162,15 +161,16 @@
                 android:text=" Facebook"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                app:backgroundTint="@color/design_default_color_primary_dark"
+                app:backgroundTint="#0866FF"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/appCompatButton4"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/viewLeft"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/appCompatButton4"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_100sdp"
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_google"
                 android:text=" Google"

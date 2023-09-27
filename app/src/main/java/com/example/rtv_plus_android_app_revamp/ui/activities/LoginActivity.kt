@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -34,6 +36,23 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        binding.etPhoneText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val charCount = p0?.length ?: 0
+                binding.tvInputCounter.text = "$charCount/11"
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        }
+        )
 
         binding.btnLogIn.setOnClickListener {
             val enteredPhone = binding.etPhoneText.text.toString()

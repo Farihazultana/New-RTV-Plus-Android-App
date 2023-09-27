@@ -27,9 +27,8 @@ tools:context=".ui.activities.RegistrationActivity">
     android:layout_width="match_parent"
     android:layout_height="@dimen/_300sdp"
     android:layout_marginTop="8dp"
-    app:background="@drawable/registration_card_bg"
     app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="@dimen/_35sdp"
+    app:cardCornerRadius="@dimen/_7sdp"
     app:cardElevation="@dimen/_6sdp"
     app:cardUseCompatPadding="true"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -38,7 +37,6 @@ tools:context=".ui.activities.RegistrationActivity">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/textView2"
     app:layout_constraintVertical_bias="0.137"
-    app:strokeColor="@color/light_green"
     app:strokeWidth="@dimen/_1sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,6 +61,7 @@ tools:context=".ui.activities.RegistrationActivity">
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/green"
                 android:drawableStart="@drawable/ic_phone"
+                android:textCursorDrawable="@null"
                 android:hint="Phone"
                 android:maxLength="11"
                 android:inputType="phone" />
@@ -70,7 +69,7 @@ tools:context=".ui.activities.RegistrationActivity">
 
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/tvInputCounter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0/11"
@@ -83,9 +82,9 @@ tools:context=".ui.activities.RegistrationActivity">
             android:id="@+id/btnRegistration"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
-            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_11sdp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_11sdp"
             android:layout_marginBottom="95dp"
             android:backgroundTint="@color/green"
             android:text="Registration"
@@ -127,7 +126,7 @@ tools:context=".ui.activities.RegistrationActivity">
         app:layout_constraintEnd_toEndOf="@+id/materialCardView"
         app:layout_constraintStart_toStartOf="@+id/materialCardView"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView"
-        app:layout_constraintVertical_bias="0.7" />
+        app:layout_constraintVertical_bias="0.56" />
 
 <View
     android:layout_width="0dp"
