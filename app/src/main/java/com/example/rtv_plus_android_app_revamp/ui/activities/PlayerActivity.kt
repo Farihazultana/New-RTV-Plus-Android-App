@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -15,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
@@ -29,7 +27,6 @@ import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SingleContentViewMo
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
@@ -37,6 +34,8 @@ class PlayerActivity : AppCompatActivity() {
     private val playListViewModel by viewModels<PlayListViewModel>()
     private lateinit var similarItemsAdapter: SimilarItemsAdapter
     private lateinit var playListAdapter: PlayListAdapter
+    private lateinit var player: ExoPlayer
+    var clickedItemIndex = 0
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,35 +48,28 @@ class PlayerActivity : AppCompatActivity() {
         val contentType = intent.getStringExtra("type")
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window.decorView.systemUiVisibility =
+            (View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
 
-        val player = ExoPlayer.Builder(this)
-            .setAudioAttributes(
-                androidx.media3.common.AudioAttributes.DEFAULT, true
-            )
-            .setHandleAudioBecomingNoisy(true)
-            .build()
+        player = ExoPlayer.Builder(this).setAudioAttributes(
+            androidx.media3.common.AudioAttributes.DEFAULT, true
+        ).setHandleAudioBecomingNoisy(true).build()
 
         binding.playerView.player = player
 
-        val playerView = binding.playerView
+        if (isFullscreen()) {
+            binding.playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            binding.playerView.layoutParams.height =
+                resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._180sdp)
+
+        }
         val button: ImageView = findViewById(R.id.fullscreen)
+
         button.setOnClickListener {
             val isFullscreen = isFullscreen()
             setFullscreen(!isFullscreen)
-            Toast.makeText(this, "Button clicked", Toast.LENGTH_SHORT).show()
         }
-
-
-//        val player = ExoPlayer.Builder(this).build()
-//        binding.playerView.player = player
-//
-//        val mediaItem = MediaItem.Builder()
-//            .setUri("https://media.geeksforgeeks.org/wp-content/uploads/20201217163353/Screenrecorder-2020-12-17-16-32-03-350.mp4")
-//            .setMimeType(MimeTypes.APPLICATION_MP4)
-//            .build()
-//
-//        player.setMediaItem(mediaItem)
-
 
         if (receivedValue != null && contentType == "single") {
             singleContentViewModel.fetchSingleContent(
@@ -100,37 +92,30 @@ class PlayerActivity : AppCompatActivity() {
                         Glide.with(binding.imageView.context).load(content.image_location)
                             .placeholder(R.drawable.ic_launcher_background).into(binding.imageView)
 
+                        binding.suggestionTitle.text = content.similar[0].similarcatname
                         binding.title.text = content.name
                         binding.releaseYear.text = "Release Year: ${content.released}"
                         binding.type.text = content.type
                         binding.length.text = content.length2
 
                         // Build the media item.
-                        val mediaItem =
-                            MediaItem.fromUri("https://media.geeksforgeeks.org/wp-content/uploads/20201217163353/Screenrecorder-2020-12-17-16-32-03-350.mp4")
+                        val mediaItem = MediaItem.fromUri(content.url)
                         player.setMediaItem(mediaItem)
                         player.prepare()
                         player.play()
 
-                        player.addListener(
-                            object : Player.Listener {
-                                override fun onIsPlayingChanged(isPlaying: Boolean) {
-                                    if (isPlaying) {
-                                        // Active playback.
-                                    } else {
-                                        Toast.makeText(
-                                            this@PlayerActivity,
-                                            "Something is wrong, please try again",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        // Not playing because playback is paused, ended, suppressed, or the player
-                                        // is buffering, stopped or failed. Check player.playWhenReady,
-                                        // player.playbackState, player.playbackSuppressionReason and
-                                        // player.playerError for details.
-                                    }
+                        player.addListener(object : Player.Listener {
+                            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                                if (isPlaying) {
+                                    // Active playback.
+                                } else {
+                                    // Not playing because playback is paused, ended, suppressed, or the player
+                                    // is buffering, stopped or failed. Check player.playWhenReady,
+                                    // player.playbackState, player.playbackSuppressionReason and
+                                    // player.playerError for details.
                                 }
                             }
-                        )
+                        })
 
                         if (content.similar.isNotEmpty()) {
                             binding.similarItemRecyclerView.adapter = similarItemsAdapter
@@ -139,7 +124,7 @@ class PlayerActivity : AppCompatActivity() {
                             binding.progressBar.visibility = View.GONE
                             similarItemsAdapter.notifyDataSetChanged()
                         } else {
-                            Log.e("ssssssssssssssssssss", "item empty")
+                            Log.d("ssssssssssssssssssss", "item empty")
                         }
                     }
 
@@ -153,13 +138,11 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
         } else {
-
             binding.title.visibility = View.GONE
             binding.releaseYear.visibility = View.GONE
             binding.type.visibility = View.GONE
             binding.length.visibility = View.GONE
             binding.imageView.visibility = View.GONE
-
 
             playListViewModel.fetchPlayListContent("8801825414747", receivedValue.toString(), "hd")
 
@@ -186,6 +169,25 @@ class PlayerActivity : AppCompatActivity() {
 
                         if (content.episodelist.isNotEmpty()) {
                             binding.similarItemRecyclerView.adapter = playListAdapter
+
+                            var mediaItem =
+                                MediaItem.fromUri(content.episodelist[clickedItemIndex].freeurl)
+                            player.setMediaItem(mediaItem)
+                            player.prepare()
+                            player.play()
+
+                            playListAdapter.setOnItemClickListener(object :
+                                PlayListAdapter.OnItemClickListener {
+                                override fun onItemClick(position: Int) {
+                                    // Update the clicked item's index
+                                    clickedItemIndex = position
+                                    mediaItem =
+                                        MediaItem.fromUri(content.episodelist[clickedItemIndex].freeurl)
+                                    player.setMediaItem(mediaItem)
+                                    player.prepare()
+                                    player.play()
+                                }
+                            })
                             playListAdapter.episodeList = content.episodelist
                             binding.progressBar.visibility = View.GONE
                             similarItemsAdapter.notifyDataSetChanged()
@@ -204,11 +206,24 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
         }
-
         similarItemsAdapter = SimilarItemsAdapter(emptyList())
         playListAdapter = PlayListAdapter(emptyList())
         binding.similarItemRecyclerView.layoutManager = LinearLayoutManager(this)
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        player.stop()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        player.stop()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        player.stop()
     }
 
     fun isFullscreen(): Boolean {
@@ -217,20 +232,48 @@ class PlayerActivity : AppCompatActivity() {
 
     fun setFullscreen(fullscreen: Boolean) {
         val playerView = binding.playerView
-        val button: ImageView = findViewById(R.id.fullscreen)
-        if (fullscreen) {
+        val fullScreenbutton: ImageView = findViewById(R.id.fullscreen)
 
+        if (fullscreen) {
+            // Set the activity orientation to landscape
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            button.visibility = View.GONE
+            fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_exit_24)
+
+            window.decorView.systemUiVisibility =
+                (View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+
             playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
         } else {
+            // Set the activity orientation back to portrait
+            fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_24)
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            button.visibility = View.VISIBLE
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_VISIBLE)
             playerView.layoutParams.height =
-                resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._180sdp) // Replace with your desired height
+                resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._180sdp)
             playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
         }
     }
+
+
+//    fun setFullscreen(fullscreen: Boolean) {
+//        val playerView = binding.playerView
+//        val button: ImageView = findViewById(R.id.fullscreen)
+//        if (fullscreen) {
+//
+//            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+//            button.visibility = View.GONE
+//            playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+//            playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+//
+//
+//        } else {
+//            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+//            button.visibility = View.VISIBLE
+//            playerView.layoutParams.height =
+//                resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._180sdp)
+//            playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+//        }
+//    }
 
 }

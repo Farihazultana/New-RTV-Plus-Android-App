@@ -59,8 +59,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:scrubber_color="@color/green"
-            app:played_color="@color/green" />
+            app:played_color="@color/green"
+            app:scrubber_color="@color/green" />
 
         <TextView
             android:id="@id/exo_position"
@@ -90,7 +90,7 @@
             android:id="@id/exo_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="@dimen/_8sdp"
             android:src="@drawable/baseline_settings_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/fullscreen"
@@ -100,7 +100,7 @@
             android:id="@id/fullscreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/_16sdp"
             android:src="@drawable/baseline_fullscreen_24"
             app:layout_constraintBottom_toBottomOf="@+id/exo_settings"
             app:layout_constraintEnd_toEndOf="parent"

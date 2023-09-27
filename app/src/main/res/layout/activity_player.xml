@@ -6,28 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".ui.activities.PlayerActivity">
 
-    <FrameLayout
-        android:id="@+id/playerContainer"
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_180sdp"
+        android:fitsSystemWindows="false"
+        android:keepScreenOn="true"
+        app:controller_layout_id="@layout/controller_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.media3.ui.PlayerView
-            android:id="@+id/playerView"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_180sdp"
-            android:fitsSystemWindows="false"
-            android:keepScreenOn="true"
-            app:resize_mode="fill"
-            app:show_buffering="when_playing"
-            app:controller_layout_id="@layout/controller_layout"
-            app:show_vr_button="true" />
-
-    </FrameLayout>
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:resize_mode="fill"
+        app:show_buffering="when_playing"
+        app:show_vr_button="true" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nastedScrollView"
@@ -37,7 +29,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playerContainer">
+        app:layout_constraintTop_toBottomOf="@id/playerView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -103,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -125,7 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
