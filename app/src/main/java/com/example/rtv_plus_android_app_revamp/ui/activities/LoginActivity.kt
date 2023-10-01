@@ -1,16 +1,22 @@
 package com.example.rtv_plus_android_app_revamp.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityLoginBinding
+import com.example.rtv_plus_android_app_revamp.ui.viewmodels.ForgetPasswordViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.LogInViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
@@ -22,7 +28,9 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val logInViewModel by viewModels<LogInViewModel>()
+    private val forgetPasswordViewModel by viewModels<ForgetPasswordViewModel>()
     private var phoneText: String? = null
+    private lateinit var dialog: Dialog
 
     companion object {
         const val LogInKey = "LogIn_Result"
@@ -137,6 +145,35 @@ class LoginActivity : AppCompatActivity() {
                     }
 
                     else -> {}
+                }
+            }
+        }
+
+        dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_forget_password)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.setCancelable(true)
+        var btnSendRequest = dialog.findViewById<Button>(R.id.btnSendRequest)
+        binding.tvForgotPassword.setOnClickListener {
+            dialog.show()
+            btnSendRequest?.setOnClickListener{
+                val enteredUsername = dialog.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etUsername).text.toString()
+                forgetPasswordViewModel.fetchForgetPasswordData(enteredUsername, "123457", "123456")
+                lifecycleScope.launch {
+                    forgetPasswordViewModel.forgetPasswordData.collect{
+                        when(it){
+                            is ResultType.Success -> {
+                                val result = it.data
+                                Toast.makeText(this@LoginActivity, result.status, Toast.LENGTH_LONG).show()
+                            }
+                            is ResultType.Error -> {
+                                Toast.makeText(this@LoginActivity, "Something is wrong, please try again!", Toast.LENGTH_LONG).show()
+                            }
+                            else -> {
+
+                            }
+                        }
+                    }
                 }
             }
         }

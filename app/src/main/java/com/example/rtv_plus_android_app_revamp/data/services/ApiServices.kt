@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.data.services
 
+import com.example.rtv_plus_android_app_revamp.data.models.forgetPassword.ForgetPasswordResponse
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
@@ -65,4 +66,12 @@ interface ApiServices {
     suspend fun getRegistrationData(
         @Field("msisdn") msisdn: String
     ): Response<RegistrationResponse>
+
+    @FormUrlEncoded
+    @POST("flix_change_password.php")
+    suspend fun getForgetPasswordData(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("newpass") newpass: String
+    ) : Response<ForgetPasswordResponse>
 }
