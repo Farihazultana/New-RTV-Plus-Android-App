@@ -1,15 +1,12 @@
 package com.example.rtv_plus_android_app_revamp.ui.activities
 
-import android.R
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityRegistrationBinding
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.RegistrationViewModel
@@ -93,6 +90,7 @@ class RegistrationActivity : AppCompatActivity() {
 
         binding.tvGoToLogIn.setOnClickListener {
             val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
         }
     }
