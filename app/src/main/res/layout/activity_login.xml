@@ -76,6 +76,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="16dp"
+                app:passwordToggleEnabled="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -87,10 +88,10 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/green"
                     android:drawableStart="@drawable/ic_lock_open"
-                    android:drawableEnd="@drawable/ic_eye_closed"
                     android:textCursorDrawable="@null"
                     android:hint="Password"
-                    android:inputType="phone" />
+                    android:inputType="textPassword"
+                    android:ems="15"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
