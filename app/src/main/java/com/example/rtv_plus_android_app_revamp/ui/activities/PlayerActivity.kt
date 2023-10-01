@@ -1,6 +1,7 @@
 package com.example.rtv_plus_android_app_revamp.ui.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +14,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -50,6 +53,7 @@ class PlayerActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.decorView.systemUiVisibility =
             (View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
 
         player = ExoPlayer.Builder(this).setAudioAttributes(
             androidx.media3.common.AudioAttributes.DEFAULT, true
@@ -117,6 +121,14 @@ class PlayerActivity : AppCompatActivity() {
                             }
                         })
 
+                        binding.shareIcon.setOnClickListener {
+                            val shareIntent = Intent(Intent.ACTION_SEND)
+                            shareIntent.type = "text/plain"
+                            val shareMessage = content.sharable
+                            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+                            startActivity(Intent.createChooser(shareIntent, "Share via"))
+                        }
+
                         if (content.similar.isNotEmpty()) {
                             binding.similarItemRecyclerView.adapter = similarItemsAdapter
                             similarItemsAdapter.similarContentList =
@@ -127,6 +139,7 @@ class PlayerActivity : AppCompatActivity() {
                             Log.d("ssssssssssssssssssss", "item empty")
                         }
                     }
+
                     is ResultType.Error -> {
                         Toast.makeText(
                             this@PlayerActivity,
@@ -187,6 +200,15 @@ class PlayerActivity : AppCompatActivity() {
                                     player.play()
                                 }
                             })
+
+                            binding.shareIcon.setOnClickListener {
+                                val shareIntent = Intent(Intent.ACTION_SEND)
+                                shareIntent.type = "text/plain"
+                                val shareMessage = content.sharable
+                                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+                                startActivity(Intent.createChooser(shareIntent, "Share via"))
+                            }
+
                             playListAdapter.episodeList = content.episodelist
                             binding.progressBar.visibility = View.GONE
                             similarItemsAdapter.notifyDataSetChanged()
