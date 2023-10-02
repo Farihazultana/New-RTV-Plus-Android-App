@@ -156,7 +156,10 @@ class LoginActivity : AppCompatActivity() {
         dialog.setContentView(R.layout.dialog_forget_password)
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.setCancelable(true)
+        dialog.window!!.attributes!!.windowAnimations = R.style.animation
+
         val btnSendRequest = dialog.findViewById<Button>(R.id.btnSendRequest)
+
         binding.tvForgotPassword.setOnClickListener {
             dialog.show()
             btnSendRequest?.setOnClickListener{
