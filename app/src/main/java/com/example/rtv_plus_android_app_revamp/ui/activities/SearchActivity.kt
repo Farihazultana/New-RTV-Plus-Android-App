@@ -28,6 +28,7 @@ class SearchActivity : AppCompatActivity() {
     private var searchQuery: String? = null
     private var voiceSearchQuery: String? = null
     val handler = Handler(Looper.getMainLooper())
+
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -153,6 +154,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
