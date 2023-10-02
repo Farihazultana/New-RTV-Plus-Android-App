@@ -3,7 +3,6 @@ package com.example.rtv_plus_android_app_revamp.data.services
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
-import retrofit2.Call
 import com.example.rtv_plus_android_app_revamp.data.models.seeAll.SeeAllResponse
 import com.example.rtv_plus_android_app_revamp.data.models.subscription.SubscriptionResponse
 import retrofit2.Response
@@ -35,6 +34,7 @@ interface ApiServices {
         @Field("resolution") resolution : String
     ): Response<PlayListResponse>
 
+    @FormUrlEncoded
     @POST("flix_subschemes.php")
     suspend fun getSubscriptionData(
         @Field("msisdn") msisdn: String
