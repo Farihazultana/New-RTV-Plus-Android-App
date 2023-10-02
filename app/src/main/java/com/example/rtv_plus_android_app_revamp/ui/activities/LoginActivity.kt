@@ -45,6 +45,7 @@ class LoginActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        //Text Counter for Phone number 0/11
         binding.etPhoneText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -62,6 +63,7 @@ class LoginActivity : AppCompatActivity() {
         }
         )
 
+        //LogIn
         binding.btnLogIn.setOnClickListener {
             val enteredPhone = binding.etPhoneText.text.toString()
             val enteredPassword = binding.etPasswordText.text.toString()
@@ -149,16 +151,30 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        // Forget Password
         dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_forget_password)
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.setCancelable(true)
-        var btnSendRequest = dialog.findViewById<Button>(R.id.btnSendRequest)
+        val btnSendRequest = dialog.findViewById<Button>(R.id.btnSendRequest)
         binding.tvForgotPassword.setOnClickListener {
             dialog.show()
             btnSendRequest?.setOnClickListener{
                 val enteredUsername = dialog.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etUsername).text.toString()
-                forgetPasswordViewModel.fetchForgetPasswordData(enteredUsername, "123457", "123456")
+
+                if(enteredUsername.isNotEmpty()){
+                    if(enteredUsername.length == 11){
+                        val phoneText = "88$enteredUsername"
+                        forgetPasswordViewModel.fetchForgetPasswordData(phoneText, "123457", "123456")
+                    }else if (enteredUsername.length < 11){
+                        Toast.makeText(this@LoginActivity, "Please type valid mobile number", Toast.LENGTH_LONG).show()
+                    }else{
+                        Toast.makeText(this@LoginActivity,"Mobile number size is invalid - 13", Toast.LENGTH_LONG).show()
+                    }
+                }else{
+                    Toast.makeText(this@LoginActivity,"Please type valid mobile number", Toast.LENGTH_LONG).show()
+                }
+
                 lifecycleScope.launch {
                     forgetPasswordViewModel.forgetPasswordData.collect{
                         when(it){
@@ -178,6 +194,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        //Not Registered Click here
         binding.tvGoToRegistration.setOnClickListener {
             val intent = Intent(this@LoginActivity, RegistrationActivity::class.java)
             startActivity(intent)
