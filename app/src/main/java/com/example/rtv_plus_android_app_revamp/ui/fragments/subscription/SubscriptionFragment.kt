@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation.findNavController
@@ -39,7 +40,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
 
 
-        //go to previous screen
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
         toolBarIconSubscribe.setOnClickListener {
             val navController = findNavController(binding.root)
@@ -53,6 +53,18 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //go to previous screen
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+
+                val navController = findNavController(binding.root)
+                navController.navigate(R.id.HomeFragment)
+                val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+                bottomNavigationView.selectedItemId = R.id.HomeFragment
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         subscriptionViewModel.fetchSubscriptionData("8801825414747")
 

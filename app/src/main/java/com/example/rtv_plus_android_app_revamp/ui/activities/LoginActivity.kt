@@ -2,17 +2,20 @@ package com.example.rtv_plus_android_app_revamp.ui.activities
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.ContentValues.TAG
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.IntentSender
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityLoginBinding
@@ -20,8 +23,16 @@ import com.example.rtv_plus_android_app_revamp.ui.viewmodels.ForgetPasswordViewM
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.LogInViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -31,6 +42,14 @@ class LoginActivity : AppCompatActivity() {
     private val forgetPasswordViewModel by viewModels<ForgetPasswordViewModel>()
     private var phoneText: String? = null
     private lateinit var dialog: Dialog
+
+    private lateinit var googleSignInOptions: GoogleSignInOptions
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private val _requestCodeSignIn = 1000
+    private var showOneTapUI = true
+
+    private lateinit var oneTapClient: SignInClient
+    private lateinit var signUpRequest: BeginSignInRequest
 
     companion object {
         const val LogInKey = "LogIn_Result"
@@ -68,31 +87,28 @@ class LoginActivity : AppCompatActivity() {
             val enteredPhone = binding.etPhoneText.text.toString()
             val enteredPassword = binding.etPasswordText.text.toString()
 
-            if (enteredPhone.isNotEmpty() || enteredPassword.isNotEmpty()){
+            if (enteredPhone.isNotEmpty() || enteredPassword.isNotEmpty()) {
                 if (enteredPhone.length == 11) {
                     phoneText = "88$enteredPhone"
                     Log.i("TagP", "Phone Input from EditText: $phoneText")
 
                     if (enteredPassword.isNotEmpty()) {
                         logInViewModel.fetchLogInData(phoneText!!, "123457", "yes", "1")
-                    }
-                    else {
+                    } else {
                         Toast.makeText(
                             this@LoginActivity,
                             "Password can't be empty! Please input first.",
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                }
-                else {
+                } else {
                     Toast.makeText(
                         this@LoginActivity,
                         "Phone number should be 11 digits",
                         Toast.LENGTH_LONG
                     ).show()
                 }
-            }
-            else {
+            } else {
                 Toast.makeText(
                     this@LoginActivity,
                     "Phone number & Password can't be empty! Please input first.",
@@ -102,8 +118,6 @@ class LoginActivity : AppCompatActivity() {
 
 
         }
-
-
         lifecycleScope.launch {
             logInViewModel.logInData.collect {
                 when (it) {
@@ -154,7 +168,10 @@ class LoginActivity : AppCompatActivity() {
         // Forget Password
         dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_forget_password)
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         dialog.setCancelable(true)
         dialog.window!!.attributes!!.windowAnimations = R.style.animation
 
@@ -162,32 +179,56 @@ class LoginActivity : AppCompatActivity() {
 
         binding.tvForgotPassword.setOnClickListener {
             dialog.show()
-            btnSendRequest?.setOnClickListener{
-                val enteredUsername = dialog.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etUsername).text.toString()
+            btnSendRequest?.setOnClickListener {
+                val enteredUsername =
+                    dialog.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etUsername).text.toString()
 
-                if(enteredUsername.isNotEmpty()){
-                    if(enteredUsername.length == 11){
+                if (enteredUsername.isNotEmpty()) {
+                    if (enteredUsername.length == 11) {
                         val phoneText = "88$enteredUsername"
-                        forgetPasswordViewModel.fetchForgetPasswordData(phoneText, "123457", "123456")
-                    }else if (enteredUsername.length < 11){
-                        Toast.makeText(this@LoginActivity, "Please type valid mobile number", Toast.LENGTH_LONG).show()
-                    }else{
-                        Toast.makeText(this@LoginActivity,"Mobile number size is invalid - 13", Toast.LENGTH_LONG).show()
+                        forgetPasswordViewModel.fetchForgetPasswordData(
+                            phoneText,
+                            "123457",
+                            "123456"
+                        )
+                    } else if (enteredUsername.length < 11) {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Please type valid mobile number",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Mobile number size is invalid - 13",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
-                }else{
-                    Toast.makeText(this@LoginActivity,"Please type valid mobile number", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Please type valid mobile number",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
 
                 lifecycleScope.launch {
-                    forgetPasswordViewModel.forgetPasswordData.collect{
-                        when(it){
+                    forgetPasswordViewModel.forgetPasswordData.collect {
+                        when (it) {
                             is ResultType.Success -> {
                                 val result = it.data
-                                Toast.makeText(this@LoginActivity, result.status, Toast.LENGTH_LONG).show()
+                                Toast.makeText(this@LoginActivity, result.status, Toast.LENGTH_LONG)
+                                    .show()
                             }
+
                             is ResultType.Error -> {
-                                Toast.makeText(this@LoginActivity, "Something is wrong, please try again!", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "Something is wrong, please try again!",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
+
                             else -> {
 
                             }
@@ -197,10 +238,103 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        //Google Sign In
+//        googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build()
+//        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions)
+//
+//        binding.btnGoogleSignIn.setOnClickListener {
+//            signIn()
+//        }
+
+        oneTapClient = Identity.getSignInClient(this)
+        signUpRequest = BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    // Your server's client ID, not your Android client ID.
+                    .setServerClientId(getString(R.string.web_client_id))
+                    // Show all accounts on the device.
+                    .setFilterByAuthorizedAccounts(false)
+                    .build()
+            )
+            .build()
+
+        var intentSender: ActivityResultLauncher<IntentSenderRequest>
+
+        binding.btnGoogleSignIn.setOnClickListener {
+            oneTapClient.beginSignIn(signUpRequest)
+                .addOnSuccessListener(this@LoginActivity) { result ->
+                    try {
+                        startIntentSenderForResult(
+                            result.pendingIntent.intentSender, _requestCodeSignIn,
+                            null, 0, 0, 0
+                        )
+                        Log.i("OneTap", "Successful")
+                    } catch (e: IntentSender.SendIntentException) {
+                        Log.e(TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
+                        Log.i("OneTap", "Couldn't start One Tap UI: ${e.localizedMessage}")
+                    }
+                }
+                .addOnFailureListener(this) { e ->
+                    // No Google Accounts found. Just continue presenting the signed-out UI.
+                    Log.d(TAG, e.localizedMessage!!)
+                    Log.i("OneTap", "addOnFailureListener : No Google Accounts found. Just continue presenting the signed-out UI : ${e.localizedMessage}")
+                }
+        }
+
         //Not Registered Click here
         binding.tvGoToRegistration.setOnClickListener {
             val intent = Intent(this@LoginActivity, RegistrationActivity::class.java)
             startActivity(intent)
         }
     }
+
+//    private fun signIn(){
+//        val signIntent : Intent = googleSignInClient.signInIntent
+//        startActivityForResult(signIntent,_requestCodeSignIn)
+//    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            _requestCodeSignIn -> {
+                try {
+                    val credential = oneTapClient.getSignInCredentialFromIntent(data)
+                    val idToken = credential.googleIdToken
+                    when {
+                        idToken != null -> {
+                            // Got an ID token from Google. Use it to authenticate
+                            // with your backend.
+                            Log.d(TAG, "Got ID token.")
+                        }
+
+                        else -> {
+                            // Shouldn't happen.
+                            Log.d(TAG, "No ID token!")
+                        }
+                    }
+                } catch (e: ApiException) {
+                    // ...
+                }
+            }
+        }
+    }
+
+    private fun handleSignInResult(result: GoogleSignInResult) {
+        if (result.isSuccess) {
+            val account = result.signInAccount
+            val displayName = account?.displayName
+            val email = account?.email
+            // You can now use the user's information as needed
+        } else {
+            // Handle sign-in failure
+        }
+    }
+
+    private fun navigateToHomeFragment(){
+        finish()
+
+    }
+
 }

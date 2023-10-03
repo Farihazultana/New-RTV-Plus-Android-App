@@ -94,6 +94,9 @@ dependencies {
     // lottie animation
     implementation ("com.airbnb.android:lottie:5.2.0")
 
+    //Google Sign In
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
+
     //responsive screen size
     implementation ("com.intuit.sdp:sdp-android:1.1.0")
     implementation ("com.intuit.ssp:ssp-android:1.1.0")
