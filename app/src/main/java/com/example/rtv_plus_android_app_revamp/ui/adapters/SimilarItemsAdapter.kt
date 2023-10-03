@@ -35,6 +35,7 @@ class SimilarItemsAdapter(var similarContentList: List<Similarcontent>) :
         // Load image using Glide (you can use your preferred image loading library)
         Glide.with(holder.itemView.context)
             .load(currentItem.image_location)
+            .placeholder(R.drawable.no_img)
             .into(holder.imageView)
 
         holder.itemView.setOnClickListener {

@@ -43,6 +43,7 @@ class SliderAdapter(imageUrl: List<Content>) :
 
         if (viewHolder != null) {
             Glide.with(viewHolder.itemView).load(sliderList[position].image_location)
+                .placeholder(R.drawable.no_img)
                 .into(viewHolder.imageView)
 
             viewHolder.itemView.setOnClickListener {

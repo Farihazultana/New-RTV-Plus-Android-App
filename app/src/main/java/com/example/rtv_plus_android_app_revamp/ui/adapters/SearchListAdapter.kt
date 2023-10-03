@@ -25,6 +25,7 @@ class SearchListAdapter(var content: List<Content?>?) :
         if (item != null) {
             Glide.with(holder.itemView.context)
                 .load(item.image_location)
+                .placeholder(R.drawable.no_img)
                 .into(holder.contentImage)
         }
         if (item?.isfree?.toInt() == 0) {

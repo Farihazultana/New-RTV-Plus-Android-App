@@ -94,7 +94,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                     setCarouselViewListener { view, position ->
                         val imageView = view.findViewById<ImageView>(R.id.myimage)
                         Glide.with(imageView).load(currentItem.contents[position].image_location)
-                            .placeholder(R.drawable.ic_launcher_background).into(imageView)
+                            .placeholder(R.drawable.no_img).into(imageView)
 
                         imageView.setOnClickListener(View.OnClickListener {
                             val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
@@ -147,7 +147,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                                 }
                             }
                             Glide.with(holder.thumbnailImage.context).load(imageUrl)
-                                .placeholder(R.drawable.ic_launcher_background)
+                                .placeholder(R.drawable.no_img)
                                 .transition(customCrossFadeOptions).into(holder.thumbnailImage)
 
                             holder.handler.post {
@@ -276,7 +276,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                             val imageView = view.findViewById<ImageView>(R.id.myimage)
                             Glide.with(imageView)
                                 .load(currentItem.contents[position].image_location)
-                                .placeholder(R.drawable.ic_launcher_background).into(imageView)
+                                .placeholder(R.drawable.no_img).into(imageView)
 
                             imageView.setOnClickListener(View.OnClickListener {
                                 val intent =
@@ -329,7 +329,7 @@ class ParentHomeAdapter(var homeData: List<Data>) :
                                     }
                                 }
                                 Glide.with(holder.thumbnailImage.context).load(imageUrl)
-                                    .placeholder(R.drawable.ic_launcher_background)
+                                    .placeholder(R.drawable.no_img)
                                     .transition(customCrossFadeOptions).into(holder.thumbnailImage)
 
                                 holder.handler.post {
