@@ -96,7 +96,7 @@ class SearchActivity : AppCompatActivity() {
                         handler.postDelayed({
                             searchViewModel.fetchSearchData("app", newText.toString())
                             binding.progressbar.visibility = View.VISIBLE
-                        }, 1500)
+                        }, 1000)
                     }
                     binding.searchVoiceBtn.visibility = View.GONE
                     binding.cancelButton.visibility = View.VISIBLE
@@ -113,7 +113,6 @@ class SearchActivity : AppCompatActivity() {
                 return true
             }
         })
-
 
         searchListAdapter = SearchListAdapter(emptyList())
         binding.searchItemRecyclerView.layoutManager = GridLayoutManager(this, 2)
