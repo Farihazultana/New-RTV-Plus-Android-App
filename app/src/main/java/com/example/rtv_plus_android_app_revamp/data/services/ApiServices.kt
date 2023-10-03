@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.data.services
 
+import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.FavoriteResponse
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
 import com.example.rtv_plus_android_app_revamp.data.models.search.SearchResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
@@ -36,7 +37,6 @@ interface ApiServices {
     ): Response<PlayListResponse>
 
     @FormUrlEncoded
-
     @POST("flix_src_app.php")
     suspend fun getSearchResultData(
         @Field("fromsrc") fromsrc: String,
@@ -56,4 +56,11 @@ interface ApiServices {
         @Field("tc") tc: String,
         @Field("testval") testval: String
     ): Response<SeeAllResponse>
+
+    @FormUrlEncoded
+    @POST("flix_mylist.php")
+    suspend fun getFavoriteContent(
+        @Field("username") username: String,
+        @Field("page") page: String
+    ): Response<FavoriteResponse>
 }

@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Content
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
-import com.smarteist.autoimageslider.SliderView
 
 class ChildHomeAdapter(
     private var contentData: List<Content>,
@@ -71,7 +70,7 @@ class ChildHomeAdapter(
                     holder.itemView.setOnClickListener {
                         val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                         intent.putExtra("id", currentItem.contentid)
-                        intent.putExtra("type","playlist")
+                        intent.putExtra("type", "playlist")
                         holder.itemView.context.startActivity(intent)
                     }
 
@@ -88,7 +87,7 @@ class ChildHomeAdapter(
                     holder.itemView.setOnClickListener {
                         val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                         intent.putExtra("id", currentItem.contentid)
-                        intent.putExtra("type","single")
+                        intent.putExtra("type", "single")
                         holder.itemView.context.startActivity(intent)
                     }
                 }
