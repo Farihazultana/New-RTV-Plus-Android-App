@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,11 @@ class PlayListAdapter(var episodeList: List<Episodelist>) :
     RecyclerView.Adapter<PlayListAdapter.ViewHolder>() {
 
     private var selectedItemPosition = 0
+    private var onItemClickListener: OnItemClickListener? = null
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -21,10 +27,8 @@ class PlayListAdapter(var episodeList: List<Episodelist>) :
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val currentItem = episodeList[position]
-
-        // Bind data to the views
         holder.titleTextView.text = currentItem.title
         holder.length.text = currentItem.duration
 
@@ -32,34 +36,21 @@ class PlayListAdapter(var episodeList: List<Episodelist>) :
             .load(currentItem.image)
             .into(holder.imageView)
 
-        // Check if the current item is selected and playing
         val isSelectedAndPlaying = position == selectedItemPosition
 
-        // Change the background color based on selection
         if (isSelectedAndPlaying) {
             holder.itemView.setBackgroundResource(R.color.sliderIndicatorColor)
         } else {
             holder.itemView.setBackgroundResource(R.color.white)
         }
-
-        // Set the visibility of the isPlaying TextView
         holder.isPlaying.visibility = if (isSelectedAndPlaying) View.VISIBLE else View.GONE
 
-        // Set an item click listener
         holder.itemView.setOnClickListener {
-            // Update the selected item position
             val previousSelectedItemPosition = selectedItemPosition
-            selectedItemPosition = holder.adapterPosition
-
-            // Notify item changes to redraw the views
+            selectedItemPosition = position
             notifyItemChanged(previousSelectedItemPosition)
             notifyItemChanged(selectedItemPosition)
-
-            // Handle item click
-//            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-//            intent.putExtra("id", currentItem.mediaid)
-//            intent.putExtra("type", "playlist")
-//            holder.itemView.context.startActivity(intent)
+            onItemClickListener?.onItemClick(position)
         }
     }
 
@@ -72,5 +63,9 @@ class PlayListAdapter(var episodeList: List<Episodelist>) :
         val titleTextView: TextView = itemView.findViewById(R.id.title)
         val length: TextView = itemView.findViewById(R.id.lengthTv)
         val isPlaying: TextView = itemView.findViewById(R.id.isPlaying)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        onItemClickListener = listener
     }
 }

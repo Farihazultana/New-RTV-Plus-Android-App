@@ -122,17 +122,20 @@ dependencies {
     // shimmer
     implementation ("com.facebook.shimmer:shimmer:0.5.0")
 
-
     implementation("com.synnapps:carouselview:0.1.5")
 
-   // implementation project(path: ':carouselview')
-    //implementation (project(path, ":carouselview"))
+//    implementation ("com.google.android.exoplayer:exoplayer:2.19.1")
+//    implementation ("com.google.android.exoplayer:exoplayer-ui:2.19.1")
+//    implementation ("com.google.android.exoplayer:exoplayer-smoothstreaming:r2.4.0")
+//    implementation ("com.google.android.exoplayer:exoplayer-core:2.19.1")
 
-    //implementation project(path: ':carouselview')
+    implementation ("androidx.media3:media3-exoplayer:1.1.1")
+    implementation ("androidx.media3:media3-exoplayer-dash:1.1.1")
+    implementation ("androidx.media3:media3-ui:1.1.1")
+    implementation ("androidx.media3:media3-exoplayer-hls:1.1.1")
 
+    
     implementation(project(":carouselview"))
-
-    //implementation ("com.github.jama5262:CarouselView:1.2.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

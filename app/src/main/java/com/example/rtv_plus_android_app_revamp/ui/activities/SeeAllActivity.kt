@@ -21,7 +21,7 @@ class SeeAllActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySeeAllBinding
     private lateinit var seeAllAdapter: SeeAllAdapter
 
-    private val seeAllViewModels by viewModels<ViewModels>()
+    private val seeAllViewModels by viewModels<SeeAllViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

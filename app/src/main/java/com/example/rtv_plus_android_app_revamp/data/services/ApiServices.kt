@@ -1,6 +1,7 @@
 package com.example.rtv_plus_android_app_revamp.data.services
 
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
+import com.example.rtv_plus_android_app_revamp.data.models.search.SearchResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
 import com.example.rtv_plus_android_app_revamp.data.models.seeAll.SeeAllResponse
@@ -23,7 +24,7 @@ interface ApiServices {
     suspend fun getSingleData(
         @Field("msisdn") msisdn: String,
         @Field("cc") cc: String,
-        @Field("fromsrc") fromsrc : String
+        @Field("fromsrc") fromsrc: String
     ): Response<SingleContentResponse>
 
     @FormUrlEncoded
@@ -31,10 +32,17 @@ interface ApiServices {
     suspend fun getPlayListData(
         @Field("username") username: String,
         @Field("cc") cc: String,
-        @Field("resolution") resolution : String
+        @Field("resolution") resolution: String
     ): Response<PlayListResponse>
 
     @FormUrlEncoded
+
+    @POST("flix_src_app.php")
+    suspend fun getSearchResultData(
+        @Field("fromsrc") fromsrc: String,
+        @Field("s") s: String
+    ): Response<SearchResponse>
+
     @POST("flix_subschemes.php")
     suspend fun getSubscriptionData(
         @Field("msisdn") msisdn: String
@@ -44,8 +52,8 @@ interface ApiServices {
     @POST("flixlist_json_app.php")
     suspend fun getSeeAllData(
         @Field("page") page: String,
-        @Field("ct") ct:String,
-        @Field("tc") tc:String,
-        @Field("testval")  testval: String
+        @Field("ct") ct: String,
+        @Field("tc") tc: String,
+        @Field("testval") testval: String
     ): Response<SeeAllResponse>
 }

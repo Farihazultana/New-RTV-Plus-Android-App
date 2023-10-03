@@ -6,27 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".ui.activities.PlayerActivity">
 
-    <LinearLayout
-        android:id="@+id/playerLayout"
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_200sdp"
-        android:background="@drawable/thumbnail"
-        android:orientation="vertical"
+        android:layout_height="@dimen/_180sdp"
+        android:fitsSystemWindows="false"
+        android:keepScreenOn="true"
+        app:controller_layout_id="@layout/controller_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:resize_mode="fill"
+        app:show_buffering="when_playing"
+        app:show_vr_button="true" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nastedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playerLayout">
+        app:layout_constraintTop_toBottomOf="@id/playerView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -34,33 +37,55 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/commentIcon"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:src="@drawable/baseline_insert_comment_24"
+                app:layout_constraintEnd_toStartOf="@+id/shareIcon"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/shareIcon"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginStart="24dp"
+                android:src="@drawable/baseline_share_44"
+                app:layout_constraintBottom_toBottomOf="@+id/commentIcon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/commentIcon"
+                app:layout_constraintTop_toTopOf="@+id/commentIcon" />
+
+            <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="@dimen/_140sdp"
                 android:layout_height="@dimen/_80sdp"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:src="@drawable/thumbnail"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/commentIcon" />
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:text="This is content title"
+                android:layout_marginTop="8dp"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/shareIcon" />
 
             <TextView
                 android:id="@+id/releaseYear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Release Year: 2021"
                 android:textColor="@color/green"
                 android:textSize="@dimen/_12ssp"
                 app:layout_constraintStart_toStartOf="@+id/title"
@@ -72,8 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_background_textview"
-                android:padding="@dimen/_2sdp"
-                android:text="Single Drama"
+                android:padding="4dp"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="@+id/releaseYear"
                 app:layout_constraintTop_toBottomOf="@+id/releaseYear" />
@@ -85,8 +109,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_background_textview"
-                android:padding="@dimen/_2sdp"
-                android:text="42m 22s"
+                android:padding="4dp"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toEndOf="@+id/type"
                 app:layout_constraintTop_toBottomOf="@+id/releaseYear" />
@@ -96,8 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="You may also like"
+                android:layout_marginTop="16dp"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -108,9 +130,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"
-                android:textSize="@dimen/_10ssp"
                 android:textColor="@color/gray"
+                android:textSize="@dimen/_10ssp"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/suggestionTitle"
                 app:layout_constraintTop_toBottomOf="@+id/suggestionTitle" />
 
@@ -119,7 +141,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
