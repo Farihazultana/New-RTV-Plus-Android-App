@@ -1,6 +1,9 @@
 package com.example.rtv_plus_android_app_revamp.data.services
 
+import com.example.rtv_plus_android_app_revamp.data.models.forgetPassword.ForgetPasswordResponse
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
+import com.example.rtv_plus_android_app_revamp.data.models.logIn.LogInResponse
+import com.example.rtv_plus_android_app_revamp.data.models.registration.RegistrationResponse
 import com.example.rtv_plus_android_app_revamp.data.models.search.SearchResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
@@ -43,6 +46,7 @@ interface ApiServices {
         @Field("s") s: String
     ): Response<SearchResponse>
 
+    @FormUrlEncoded
     @POST("flix_subschemes.php")
     suspend fun getSubscriptionData(
         @Field("msisdn") msisdn: String
@@ -56,4 +60,27 @@ interface ApiServices {
         @Field("tc") tc: String,
         @Field("testval") testval: String
     ): Response<SeeAllResponse>
+
+    @FormUrlEncoded
+    @POST("flix_makemylogingettoken.php")
+    suspend fun getLogInData(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("haspin") haspin: String,
+        @Field("tc") tc: String,
+    ): Response<LogInResponse>
+
+    @FormUrlEncoded
+    @POST("flix_signup.php")
+    suspend fun getRegistrationData(
+        @Field("msisdn") msisdn: String
+    ): Response<RegistrationResponse>
+
+    @FormUrlEncoded
+    @POST("flix_change_password.php")
+    suspend fun getForgetPasswordData(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("newpass") newpass: String
+    ) : Response<ForgetPasswordResponse>
 }
