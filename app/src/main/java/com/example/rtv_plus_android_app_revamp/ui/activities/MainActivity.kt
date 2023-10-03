@@ -48,6 +48,5 @@ class MainActivity : AppCompatActivity() {
                 R.drawable.selected_nav_item_color
             )
         )
-
     }
 }
