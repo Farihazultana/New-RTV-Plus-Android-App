@@ -48,12 +48,14 @@ class LoginActivity : AppCompatActivity() {
     private val _requestCodeSignIn = 1000
     private var showOneTapUI = true
 
-    private lateinit var oneTapClient: SignInClient
-    private lateinit var signUpRequest: BeginSignInRequest
+
 
     companion object {
         const val LogInKey = "LogIn_Result"
         const val PhoneInputKey = "PhoneKey"
+
+        lateinit var oneTapClient: SignInClient
+        lateinit var signUpRequest: BeginSignInRequest
     }
 
     @SuppressLint("CommitPrefEdits")

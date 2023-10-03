@@ -24,6 +24,11 @@ class MoreFragment : Fragment() {
 
         binding.btnLogout.setOnClickListener {
             SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.LogInKey)
+            LoginActivity.oneTapClient.signOut().addOnFailureListener{
+                Toast.makeText(context,"Something went wrong", Toast.LENGTH_SHORT).show()
+            }.addOnCompleteListener {
+                Toast.makeText(context,"You are Signed out", Toast.LENGTH_SHORT).show()
+            }
             Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
             navigateToHomeFragment()
         }
@@ -33,7 +38,8 @@ class MoreFragment : Fragment() {
     private fun navigateToHomeFragment() {
         val navController = Navigation.findNavController(binding.root)
         navController.navigate(R.id.HomeFragment)
-        val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+        val bottomNavigationView =
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
         bottomNavigationView.selectedItemId = R.id.HomeFragment
     }
 }
