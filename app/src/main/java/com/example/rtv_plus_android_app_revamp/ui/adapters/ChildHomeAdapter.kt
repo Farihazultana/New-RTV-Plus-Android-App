@@ -78,8 +78,13 @@ class ChildHomeAdapter(
                             LoginActivity.LogInKey,
                             "default_value"
                         )
+                        val spResGoogle = SharedPreferencesUtil.getData(
+                            myContext,
+                            LoginActivity.GoogleSignInKey,
+                            "default_value"
+                        )
                         Log.i("SPref", "onBindViewHolder: $spRes")
-                        if (spRes == "success") {
+                        if (spRes == "success" || LoginActivity.showOneTapUI) {
                             val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                             intent.putExtra("id", currentItem.contentid)
                             intent.putExtra("type", "playlist")
@@ -106,8 +111,13 @@ class ChildHomeAdapter(
                             LoginActivity.LogInKey,
                             "default_value"
                         )
+                        val spResGoogle = SharedPreferencesUtil.getData(
+                            myContext,
+                            LoginActivity.GoogleSignInKey,
+                            "default_value"
+                        )
                         Log.i("SPref", "onBindViewHolder: $spRes")
-                        if (spRes == "success") {
+                        if (spRes == "success" || LoginActivity.showOneTapUI) {
                             val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                             intent.putExtra("id", currentItem.contentid)
                             intent.putExtra("type", "single")

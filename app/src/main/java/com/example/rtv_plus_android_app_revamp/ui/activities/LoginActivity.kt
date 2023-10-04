@@ -6,20 +6,20 @@ import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.IntentSenderRequest
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityLoginBinding
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.ForgetPasswordViewModel
+import com.example.rtv_plus_android_app_revamp.ui.viewmodels.GoogleLogInViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.LogInViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
@@ -28,7 +28,6 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInResult
 import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -40,22 +39,25 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private val logInViewModel by viewModels<LogInViewModel>()
     private val forgetPasswordViewModel by viewModels<ForgetPasswordViewModel>()
+    private val googleLogInViewModel by viewModels<GoogleLogInViewModel>()
     private var phoneText: String? = null
     private lateinit var dialog: Dialog
 
     private lateinit var googleSignInOptions: GoogleSignInOptions
     private lateinit var googleSignInClient: GoogleSignInClient
     private val _requestCodeSignIn = 1000
-    private var showOneTapUI = true
-
+    lateinit var oneTapClient: SignInClient
+    lateinit var signUpRequest: BeginSignInRequest
 
 
     companion object {
         const val LogInKey = "LogIn_Result"
         const val PhoneInputKey = "PhoneKey"
+        const val GoogleSignInKey = "Google"
 
-        lateinit var oneTapClient: SignInClient
-        lateinit var signUpRequest: BeginSignInRequest
+
+
+        var showOneTapUI = true
     }
 
     @SuppressLint("CommitPrefEdits")
@@ -241,48 +243,53 @@ class LoginActivity : AppCompatActivity() {
         }
 
         //Google Sign In
-//        googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build()
-//        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions)
-//
-//        binding.btnGoogleSignIn.setOnClickListener {
-//            signIn()
-//        }
-
-        oneTapClient = Identity.getSignInClient(this)
-        signUpRequest = BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    // Your server's client ID, not your Android client ID.
-                    .setServerClientId(getString(R.string.web_client_id))
-                    // Show all accounts on the device.
-                    .setFilterByAuthorizedAccounts(false)
-                    .build()
-            )
-            .build()
-
-        var intentSender: ActivityResultLauncher<IntentSenderRequest>
 
         binding.btnGoogleSignIn.setOnClickListener {
-            oneTapClient.beginSignIn(signUpRequest)
-                .addOnSuccessListener(this@LoginActivity) { result ->
-                    try {
-                        startIntentSenderForResult(
-                            result.pendingIntent.intentSender, _requestCodeSignIn,
-                            null, 0, 0, 0
-                        )
-                        Log.i("OneTap", "Successful")
-                    } catch (e: IntentSender.SendIntentException) {
-                        Log.e(TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
-                        Log.i("OneTap", "Couldn't start One Tap UI: ${e.localizedMessage}")
+            if (showOneTapUI) {
+                oneTapClient = Identity.getSignInClient(this)
+                signUpRequest = BeginSignInRequest.builder()
+                    .setGoogleIdTokenRequestOptions(
+                        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                            .setSupported(true)
+                            // Your server's client ID, not your Android client ID.
+                            .setServerClientId(getString(R.string.web_client_id))
+                            // Show all accounts on the device.
+                            .setFilterByAuthorizedAccounts(false)
+                            .build()
+                    )
+                    .build()
+
+                oneTapClient.beginSignIn(signUpRequest)
+                    .addOnSuccessListener(this@LoginActivity) { result ->
+                        try {
+                            startIntentSenderForResult(
+                                result.pendingIntent.intentSender, _requestCodeSignIn,
+                                null, 0, 0, 0
+                            )
+                            Log.i("OneTap", "Successful")
+
+                        } catch (e: IntentSender.SendIntentException) {
+                            Log.e(TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
+                            Log.i("OneTap", "Couldn't start One Tap UI: ${e.localizedMessage}")
+                        }
                     }
-                }
-                .addOnFailureListener(this) { e ->
-                    // No Google Accounts found. Just continue presenting the signed-out UI.
-                    Log.d(TAG, e.localizedMessage!!)
-                    Log.i("OneTap", "addOnFailureListener : No Google Accounts found. Just continue presenting the signed-out UI : ${e.localizedMessage}")
-                }
+                    .addOnFailureListener(this) { e ->
+                        // No Google Accounts found. Just continue presenting the signed-out UI.
+                        Log.d(TAG, e.localizedMessage!!)
+                        Log.i(
+                            "OneTap",
+                            "addOnFailureListener : No Google Accounts found. Just continue presenting the signed-out UI : ${e.localizedMessage}"
+                        )
+                    }
+            } else {
+                Toast.makeText(this@LoginActivity, "Try after 30 seconds!", Toast.LENGTH_SHORT).show()
+            }
         }
+
+        Handler().postDelayed({
+            showOneTapUI = true
+            Log.i("OneTap", "One Tap re-enabled.")
+        }, 30000)
 
         //Not Registered Click here
         binding.tvGoToRegistration.setOnClickListener {
@@ -291,10 +298,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-//    private fun signIn(){
-//        val signIntent : Intent = googleSignInClient.signInIntent
-//        startActivityForResult(signIntent,_requestCodeSignIn)
-//    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -304,16 +307,63 @@ class LoginActivity : AppCompatActivity() {
                 try {
                     val credential = oneTapClient.getSignInCredentialFromIntent(data)
                     val idToken = credential.googleIdToken
+                    val username = credential.id
+                    val password = credential.password
+                    val displayName = credential.displayName
+                    val givenName = credential.givenName
+                    val familyName = credential.familyName
+                    val imageUri = credential.profilePictureUri
                     when {
                         idToken != null -> {
                             // Got an ID token from Google. Use it to authenticate
                             // with your backend.
                             Log.d(TAG, "Got ID token.")
-                        }
+                            Log.i("OneTap", "Got ID token. $idToken")
+                            Log.i("OneTap", "Got user email. $username")
+                            Log.i("OneTap", "Got user display name. $displayName")
+                            Log.i("OneTap", "Got user given name. $givenName")
+                            Log.i("OneTap", "Got user family name. $familyName")
+                            Log.i("OneTap", "Got user image uri. $imageUri")
+                            SharedPreferencesUtil.saveData(this@LoginActivity, GoogleSignInKey, username)
+                            googleLogInViewModel.fetchGoogleLogInData("social", "google", idToken,"", givenName!!, familyName!!,username,imageUri.toString())
+                            lifecycleScope.launch {
+                                googleLogInViewModel.googleLogInData.collect{
+                                    when (it) {
+                                        is ResultType.Success -> {
+                                            val result = it.data
+                                            for(i in result){
+                                                i.result
+                                                Toast.makeText(this@LoginActivity, i.result, Toast.LENGTH_LONG)
+                                                    .show()
+                                            }
 
+                                        }
+
+                                        is ResultType.Error -> {
+                                            Toast.makeText(
+                                                this@LoginActivity,
+                                                "Something is wrong, please try again!",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+
+                                        else -> {
+
+                                        }
+                                    }
+                                }
+                            }
+                            //finish()
+                        }
+                        password != null -> {
+                            // Got a saved username and password. Use them to authenticate
+                            // with your backend.
+                            Log.d(TAG, "Got password.")
+                            Log.i("OneTap", "Got password. $password")
+                        }
                         else -> {
                             // Shouldn't happen.
-                            Log.d(TAG, "No ID token!")
+                            Log.i("OneTap", "No ID token or password!")
                         }
                     }
                 } catch (e: ApiException) {
@@ -321,22 +371,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun handleSignInResult(result: GoogleSignInResult) {
-        if (result.isSuccess) {
-            val account = result.signInAccount
-            val displayName = account?.displayName
-            val email = account?.email
-            // You can now use the user's information as needed
-        } else {
-            // Handle sign-in failure
-        }
-    }
-
-    private fun navigateToHomeFragment(){
-        finish()
-
     }
 
 }

@@ -8,6 +8,7 @@ import com.example.rtv_plus_android_app_revamp.data.models.search.SearchResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
 import com.example.rtv_plus_android_app_revamp.data.models.seeAll.SeeAllResponse
+import com.example.rtv_plus_android_app_revamp.data.models.socialmedia_login.google.GoogleLogInResponse
 import com.example.rtv_plus_android_app_revamp.data.models.subscription.SubscriptionResponse
 import retrofit2.Response
 import retrofit2.http.Field
@@ -82,5 +83,18 @@ interface ApiServices {
         @Field("username") username: String,
         @Field("password") password: String,
         @Field("newpass") newpass: String
-    ) : Response<ForgetPasswordResponse>
+    ): Response<ForgetPasswordResponse>
+
+    @FormUrlEncoded
+    @POST("flix_social_login.php")
+    suspend fun getGoogleLogInData(
+        @Field("logintype") logintype: String,
+        @Field("source") source: String,
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("first_name") first_name: String,
+        @Field("last_name") last_namez: String,
+        @Field("email") email: String,
+        @Field("imgurl") imgurl: String
+    ):Response<GoogleLogInResponse>
 }

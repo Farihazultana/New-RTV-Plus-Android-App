@@ -108,8 +108,9 @@ class ParentHomeAdapter(private var myContext: Context,var homeData: List<Data>)
 
                         imageView.setOnClickListener{
                             val spRes = SharedPreferencesUtil.getData(myContext, LoginActivity.LogInKey,"default_value" )
+                            val spResGoogle = SharedPreferencesUtil.getData(myContext, LoginActivity.GoogleSignInKey, "default_value")
                             Log.i("SPref", "onBindViewHolder: $spRes")
-                            if(spRes=="success"){
+                            if(spRes=="success" || LoginActivity.showOneTapUI){
                                 val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                                 intent.putExtra("id", currentItem.contents[position].contentid)
                                 holder.itemView.context.startActivity(intent)
@@ -149,8 +150,9 @@ class ParentHomeAdapter(private var myContext: Context,var homeData: List<Data>)
 
                             holder.thumbnailImage.setOnClickListener{
                                 val spRes = SharedPreferencesUtil.getData(myContext, LoginActivity.LogInKey,"default_value" )
+                                val spResGoogle = SharedPreferencesUtil.getData(myContext, LoginActivity.GoogleSignInKey, "default_value")
                                 Log.i("SPref", "onBindViewHolder: $spRes")
-                                if(spRes=="success"){
+                                if(spRes=="success" || LoginActivity.showOneTapUI){
                                     val intent =
                                         Intent(holder.itemView.context, PlayerActivity::class.java)
                                     intent.putExtra("id", currentItem.contents[randNum].contentid)

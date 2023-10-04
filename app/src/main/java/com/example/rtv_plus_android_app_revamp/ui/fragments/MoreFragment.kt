@@ -11,26 +11,43 @@ import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentMoreBinding
 import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
-
+    companion object{
+        lateinit var oneTapClient: SignInClient
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMoreBinding.inflate(inflater, container, false)
+        binding.tvUserName.text =
+            SharedPreferencesUtil.getData(requireContext(),LoginActivity.GoogleSignInKey,"default_value")
+                .toString()
 
         binding.btnLogout.setOnClickListener {
-            SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.LogInKey)
-            LoginActivity.oneTapClient.signOut().addOnFailureListener{
-                Toast.makeText(context,"Something went wrong", Toast.LENGTH_SHORT).show()
-            }.addOnCompleteListener {
-                Toast.makeText(context,"You are Signed out", Toast.LENGTH_SHORT).show()
+            if (isOneTapClientInitialized()){
+                SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.LogInKey)
+                //SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.GoogleSignInKey)
+
+                val spResGoogle = SharedPreferencesUtil.getData(requireContext(), LoginActivity.GoogleSignInKey, "default_value")
+                if (spResGoogle.toString().isNotEmpty()){
+                    LoginActivity.showOneTapUI=false
+                    oneTapClient.signOut().addOnFailureListener{
+                        Toast.makeText(context,"Something went wrong", Toast.LENGTH_SHORT).show()
+                    }.addOnCompleteListener {
+                        Toast.makeText(context,"You are Signed out", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
+                navigateToHomeFragment()
+            }else {
+                Toast.makeText(requireContext(), "OneTapClient is not initialized", Toast.LENGTH_SHORT).show()
             }
-            Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
-            navigateToHomeFragment()
         }
         return binding.root
     }
@@ -41,5 +58,15 @@ class MoreFragment : Fragment() {
         val bottomNavigationView =
             requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
         bottomNavigationView.selectedItemId = R.id.HomeFragment
+    }
+
+    private fun isOneTapClientInitialized(): Boolean {
+        return try {
+            //LoginActivity.oneTapClient != null
+            oneTapClient=Identity.getSignInClient(requireActivity())
+            return oneTapClient != null
+        } catch (e: UninitializedPropertyAccessException) {
+            false
+        }
     }
 }
