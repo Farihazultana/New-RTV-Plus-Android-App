@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.Content
+import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
 
 
 class FavoriteListAdapter(
@@ -69,6 +71,13 @@ class FavoriteListAdapter(
                 }
             }
             popupMenu.show()
+        }
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+            intent.putExtra("id", curentItem?.contentid)
+            intent.putExtra("type", "single")
+            holder.itemView.context.startActivity(intent)
         }
     }
 

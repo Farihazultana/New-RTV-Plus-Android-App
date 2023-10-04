@@ -14,15 +14,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.AddListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.RemoveListResponse
-import com.example.rtv_plus_android_app_revamp.data.models.search.SearchResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityPlayerBinding
@@ -61,6 +58,9 @@ class PlayerActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility =
             (View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
 
+        binding.title.isSelected = true
+        binding.title.isFocusable = true
+        binding.title.isFocusableInTouchMode = true
 
         player = ExoPlayer.Builder(this).setAudioAttributes(
             androidx.media3.common.AudioAttributes.DEFAULT, true
@@ -130,24 +130,21 @@ class PlayerActivity : AppCompatActivity() {
 
                         var isInList = 0
 
-                        if (isInList == 0)
-                        {
+                        if (isInList == 0) {
                             binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
-                        }
-                        else
-                        {
+                        } else {
                             binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
                         }
 
-                        binding.favouriteIcon.setOnClickListener{
+                        binding.favouriteIcon.setOnClickListener {
 
-                            if (isInList == 1)
-                            {
-                                removeListViewModel.removeFavoriteContent(content.id,"8801825414747" )
-                            }
-                            else
-                            {
-                                addListViewModel.addFavoriteContent(content.id,"8801825414747")
+                            if (isInList == 1) {
+                                removeListViewModel.removeFavoriteContent(
+                                    content.id,
+                                    "8801825414747"
+                                )
+                            } else {
+                                addListViewModel.addFavoriteContent(content.id, "8801825414747")
                             }
 
                         }
@@ -179,6 +176,7 @@ class PlayerActivity : AppCompatActivity() {
                                         binding.progressbar.visibility = View.GONE
                                     }
                                 }
+
                                 is ResultType.Error -> {
                                     Toast.makeText(
                                         this@PlayerActivity,
@@ -188,7 +186,6 @@ class PlayerActivity : AppCompatActivity() {
                                 }
                             }
                         }
-
 
                         addListViewModel.addContentResponse.observe(this) { result ->
                             when (result) {
@@ -217,6 +214,7 @@ class PlayerActivity : AppCompatActivity() {
                                         binding.progressbar.visibility = View.GONE
                                     }
                                 }
+
                                 is ResultType.Error -> {
                                     Toast.makeText(
                                         this@PlayerActivity,
