@@ -20,12 +20,17 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
+import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.AddListResponse
+import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.RemoveListResponse
+import com.example.rtv_plus_android_app_revamp.data.models.search.SearchResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.single.SingleContentResponse
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityPlayerBinding
 import com.example.rtv_plus_android_app_revamp.ui.adapters.PlayListAdapter
 import com.example.rtv_plus_android_app_revamp.ui.adapters.SimilarItemsAdapter
+import com.example.rtv_plus_android_app_revamp.ui.viewmodels.AddFavoriteListViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.PlayListViewModel
+import com.example.rtv_plus_android_app_revamp.ui.viewmodels.RemoveFavoriteListViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SingleContentViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,6 +40,8 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
     private val singleContentViewModel by viewModels<SingleContentViewModel>()
     private val playListViewModel by viewModels<PlayListViewModel>()
+    private val addListViewModel by viewModels<AddFavoriteListViewModel>()
+    private val removeListViewModel by viewModels<RemoveFavoriteListViewModel>()
     private lateinit var similarItemsAdapter: SimilarItemsAdapter
     private lateinit var playListAdapter: PlayListAdapter
     private lateinit var player: ExoPlayer
@@ -121,6 +128,105 @@ class PlayerActivity : AppCompatActivity() {
                             }
                         })
 
+                        var isInList = 0
+
+                        if (isInList == 0)
+                        {
+                            binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
+                        }
+                        else
+                        {
+                            binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
+                        }
+
+                        binding.favouriteIcon.setOnClickListener{
+
+                            if (isInList == 1)
+                            {
+                                removeListViewModel.removeFavoriteContent(content.id,"8801825414747" )
+                            }
+                            else
+                            {
+                                addListViewModel.addFavoriteContent(content.id,"8801825414747")
+                            }
+
+                        }
+
+                        removeListViewModel.removeContentResponse.observe(this) { result ->
+                            when (result) {
+                                is ResultType.Loading -> {
+                                    binding.progressbar.visibility = View.VISIBLE
+                                }
+
+                                is ResultType.Success<*> -> {
+                                    val response = result.data as RemoveListResponse
+                                    if (response.status == "success") {
+                                        binding.progressbar.visibility = View.GONE
+                                        Toast.makeText(
+                                            this@PlayerActivity,
+                                            response.status,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
+                                        isInList = 1
+
+                                    } else {
+                                        Toast.makeText(
+                                            this@PlayerActivity,
+                                            response.status,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        binding.progressbar.visibility = View.GONE
+                                    }
+                                }
+                                is ResultType.Error -> {
+                                    Toast.makeText(
+                                        this@PlayerActivity,
+                                        "Something is wrong. Please try again",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }
+
+
+                        addListViewModel.addContentResponse.observe(this) { result ->
+                            when (result) {
+                                is ResultType.Loading -> {
+                                    binding.progressbar.visibility = View.VISIBLE
+                                }
+
+                                is ResultType.Success<*> -> {
+                                    val response = result.data as AddListResponse
+                                    if (response.status == "success") {
+                                        binding.progressbar.visibility = View.GONE
+                                        Toast.makeText(
+                                            this@PlayerActivity,
+                                            response.status,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
+                                        isInList = 1
+
+                                    } else {
+                                        Toast.makeText(
+                                            this@PlayerActivity,
+                                            response.status,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        binding.progressbar.visibility = View.GONE
+                                    }
+                                }
+                                is ResultType.Error -> {
+                                    Toast.makeText(
+                                        this@PlayerActivity,
+                                        "Something is wrong. Please try again",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }
+
                         binding.shareIcon.setOnClickListener {
                             val shareIntent = Intent(Intent.ACTION_SEND)
                             shareIntent.type = "text/plain"
@@ -155,6 +261,7 @@ class PlayerActivity : AppCompatActivity() {
             binding.type.visibility = View.GONE
             binding.length.visibility = View.GONE
             binding.imageView.visibility = View.GONE
+            binding.favouriteIcon.visibility = View.GONE
 
             playListViewModel.fetchPlayListContent("8801825414747", receivedValue.toString(), "hd")
 

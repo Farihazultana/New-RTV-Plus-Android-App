@@ -1,6 +1,8 @@
 package com.example.rtv_plus_android_app_revamp.data.services
 
+import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.AddListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.FavoriteResponse
+import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.RemoveListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
 import com.example.rtv_plus_android_app_revamp.data.models.search.SearchResponse
 import com.example.rtv_plus_android_app_revamp.data.models.single_content.playlist.PlayListResponse
@@ -63,4 +65,18 @@ interface ApiServices {
         @Field("username") username: String,
         @Field("page") page: String
     ): Response<FavoriteResponse>
+
+    @FormUrlEncoded
+    @POST("flix_setmylist.php")
+    suspend fun addFavoriteContent(
+        @Field("myval") myval: String,
+        @Field("username") username: String
+    ): Response<AddListResponse>
+
+    @FormUrlEncoded
+    @POST("flix_unsetmylist.php")
+    suspend fun removeFavoriteContent(
+        @Field("myval") myval: String,
+        @Field("username") username: String
+    ): Response<RemoveListResponse>
 }

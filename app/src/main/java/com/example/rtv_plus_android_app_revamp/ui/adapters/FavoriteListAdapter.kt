@@ -1,18 +1,26 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.Content
 
-class FavoriteListAdapter(var content: List<Content?>?) :
+
+class FavoriteListAdapter(
+    var content: List<Content?>? = null,
+    private val editItemClickListener: OnRemoveItemClickListener
+) :
     RecyclerView.Adapter<FavoriteListAdapter.FavoriteListViewHolder>() {
+    interface OnRemoveItemClickListener {
+        fun onRemoveItemClicked(contentId: String)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteListViewHolder {
         val itemView =
             LayoutInflater.from(parent.context)
@@ -25,18 +33,18 @@ class FavoriteListAdapter(var content: List<Content?>?) :
     }
 
     override fun onBindViewHolder(holder: FavoriteListViewHolder, position: Int) {
-        val item = content?.get(position)
-        if (item != null) {
+        val curentItem = content?.get(position)
+        if (curentItem != null) {
             Glide.with(holder.itemView.context)
-                .load(item.image_location)
+                .load(curentItem.image_location)
                 .placeholder(R.drawable.no_img)
                 .into(holder.contentImage)
         }
-        if (item?.isfree?.toInt() == 0) {
+        if (curentItem?.isfree?.toInt() == 0) {
             holder.premiumText.visibility = View.VISIBLE
         }
-        if (item != null) {
-            holder.contentTitle.text = item.name
+        if (curentItem != null) {
+            holder.contentTitle.text = curentItem.name
         }
         val drawableStart = R.drawable.baseline_access_time_24
         holder.contentDuration.setCompoundDrawablesWithIntrinsicBounds(
@@ -45,8 +53,23 @@ class FavoriteListAdapter(var content: List<Content?>?) :
             0,
             0
         )
-        holder.contentDuration.text = item?.length2
-        Log.i("TagN", "onBindViewHolder: $item")
+        holder.contentDuration.text = curentItem?.length2
+
+        holder.optionMenu.setOnClickListener { v ->
+            val popupMenu = PopupMenu(v.context, v)
+            popupMenu.inflate(R.menu.remove_menu)
+            popupMenu.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_edit -> {
+                        curentItem?.contentid?.let { editItemClickListener.onRemoveItemClicked(it) }
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+            popupMenu.show()
+        }
     }
 
     inner class FavoriteListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -54,5 +77,6 @@ class FavoriteListAdapter(var content: List<Content?>?) :
         var premiumText: TextView = itemView.findViewById(R.id.premiumTextView)
         var contentTitle: TextView = itemView.findViewById(R.id.title_textView)
         var contentDuration: TextView = itemView.findViewById(R.id.descriptionTextView)
+        var optionMenu: ImageView = itemView.findViewById(R.id.optionMenu)
     }
 }
