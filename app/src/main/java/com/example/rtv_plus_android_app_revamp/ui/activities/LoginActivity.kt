@@ -56,7 +56,6 @@ class LoginActivity : AppCompatActivity() {
         const val GoogleSignInKey = "Google"
 
 
-
         var showOneTapUI = true
     }
 
@@ -86,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
         }
         )
 
-        //LogIn
+        //LogIn with phone
         binding.btnLogIn.setOnClickListener {
             val enteredPhone = binding.etPhoneText.text.toString()
             val enteredPassword = binding.etPasswordText.text.toString()
@@ -282,7 +281,8 @@ class LoginActivity : AppCompatActivity() {
                         )
                     }
             } else {
-                Toast.makeText(this@LoginActivity, "Try after 30 seconds!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@LoginActivity, "Try after 30 seconds!", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -324,16 +324,33 @@ class LoginActivity : AppCompatActivity() {
                             Log.i("OneTap", "Got user given name. $givenName")
                             Log.i("OneTap", "Got user family name. $familyName")
                             Log.i("OneTap", "Got user image uri. $imageUri")
-                            SharedPreferencesUtil.saveData(this@LoginActivity, GoogleSignInKey, username)
-                            googleLogInViewModel.fetchGoogleLogInData("social", "google", idToken,"", givenName!!, familyName!!,username,imageUri.toString())
+                            SharedPreferencesUtil.saveData(
+                                this@LoginActivity,
+                                GoogleSignInKey,
+                                username
+                            )
+                            googleLogInViewModel.fetchGoogleLogInData(
+                                "social",
+                                "google",
+                                idToken,
+                                "",
+                                givenName!!,
+                                familyName!!,
+                                username,
+                                imageUri.toString()
+                            )
                             lifecycleScope.launch {
-                                googleLogInViewModel.googleLogInData.collect{
+                                googleLogInViewModel.googleLogInData.collect {
                                     when (it) {
                                         is ResultType.Success -> {
                                             val result = it.data
-                                            for(i in result){
+                                            for (i in result) {
                                                 i.result
-                                                Toast.makeText(this@LoginActivity, i.result, Toast.LENGTH_LONG)
+                                                Toast.makeText(
+                                                    this@LoginActivity,
+                                                    i.result,
+                                                    Toast.LENGTH_LONG
+                                                )
                                                     .show()
                                             }
 
@@ -353,14 +370,17 @@ class LoginActivity : AppCompatActivity() {
                                     }
                                 }
                             }
-                            //finish()
+                            Handler().postDelayed({ finish() }, 2000)
+
                         }
+
                         password != null -> {
                             // Got a saved username and password. Use them to authenticate
                             // with your backend.
                             Log.d(TAG, "Got password.")
                             Log.i("OneTap", "Got password. $password")
                         }
+
                         else -> {
                             // Shouldn't happen.
                             Log.i("OneTap", "No ID token or password!")
