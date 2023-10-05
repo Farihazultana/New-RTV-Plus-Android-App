@@ -3,6 +3,7 @@ package com.example.rtv_plus_android_app_revamp.ui.activities
 import android.os.Bundle
 import android.text.Html
 import android.text.method.LinkMovementMethod
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -12,6 +13,7 @@ import com.example.rtv_plus_android_app_revamp.databinding.ActivityInfoBinding
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.InfoViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 
 @AndroidEntryPoint
 class InfoActivity : AppCompatActivity() {
@@ -26,14 +28,16 @@ class InfoActivity : AppCompatActivity() {
         val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
 
+        val intent = intent
+        val appInfo = intent.getStringExtra("appinfo")
+
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
-            title = "Info"
+            if (appInfo != null) {
+                title = appInfo.capitalize(Locale.ROOT)
+            }
         }
-
-        val intent = intent
-        val appInfo = intent.getStringExtra("appinfo")
 
         infoViewModel.fetchInfo("8801825414747", appInfo.toString())
 
@@ -73,7 +77,15 @@ class InfoActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
