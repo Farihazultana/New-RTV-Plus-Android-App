@@ -385,25 +385,4 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-
-//    fun setFullscreen(fullscreen: Boolean) {
-//        val playerView = binding.playerView
-//        val button: ImageView = findViewById(R.id.fullscreen)
-//        if (fullscreen) {
-//
-//            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-//            button.visibility = View.GONE
-//            playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-//            playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-//
-//
-//        } else {
-//            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-//            button.visibility = View.VISIBLE
-//            playerView.layoutParams.height =
-//                resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._180sdp)
-//            playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-//        }
-//    }
-
 }

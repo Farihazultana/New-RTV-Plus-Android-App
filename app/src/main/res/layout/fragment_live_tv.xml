@@ -1,14 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.LiveTvFragment">
+    tools:context=".ui.activities.PlayerActivity">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/playerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Live Tv" />
+        android:layout_height="@dimen/_180sdp"
+        android:fitsSystemWindows="false"
+        android:keepScreenOn="true"
+        app:controller_layout_id="@layout/controller_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:resize_mode="fill"
+        app:show_buffering="when_playing"
+        app:show_vr_button="true" />
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/rtvLogo"
+        android:layout_width="@dimen/_75sdp"
+        android:layout_height="@dimen/_75sdp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/rtv_bangladesh"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/playerView" />
+
+    <TextView
+        android:id="@+id/rtvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="RTV"
+        android:textSize="@dimen/_16ssp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/rtvLogo"
+        app:layout_constraintTop_toTopOf="@+id/rtvLogo" />
+
+    <TextView
+        android:id="@+id/liveTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:drawableStart="@drawable/baseline_radio_button_checked_24"
+        android:drawablePadding="@dimen/_4sdp"
+        android:text="Live"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/rtvLogo"
+        app:layout_constraintStart_toEndOf="@+id/rtvLogo"
+        app:layout_constraintTop_toBottomOf="@+id/rtvTitle"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <TextView
+        android:id="@+id/fullScreenBtnTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/sliderIndicatorColor"
+        android:text="Tap for Fullscreeen"
+        android:textColor="@color/description_text_color"
+        android:textSize="@dimen/_12ssp"
+        android:padding="@dimen/_4sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rtvLogo"
+        app:layout_constraintVertical_bias="0.392" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

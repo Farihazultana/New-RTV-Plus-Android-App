@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments.subscription
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -39,6 +40,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         binding = FragmentSubscriptionBinding.inflate(inflater, container, false)
         bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
 
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
         toolBarIconSubscribe.setOnClickListener {
