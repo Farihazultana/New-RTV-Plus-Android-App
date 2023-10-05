@@ -72,6 +72,11 @@ class MoreFragment : Fragment() {
             intent.putExtra("appinfo", "privacy")
             startActivity(intent)
         }
+        binding.license.setOnClickListener{
+            val intent = Intent(requireContext(), InfoActivity::class.java)
+            intent.putExtra("appinfo", "license")
+            startActivity(intent)
+        }
 
         binding.logInAs.text =
             SharedPreferencesUtil.getData(requireContext(),LoginActivity.GoogleSignInKey,"default_value")
