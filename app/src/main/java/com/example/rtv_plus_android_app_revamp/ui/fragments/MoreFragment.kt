@@ -20,6 +20,8 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.Navigation.findNavController
 import com.example.rtv_plus_android_app_revamp.ui.activities.FavoriteListActivity
+import com.example.rtv_plus_android_app_revamp.ui.activities.InfoActivity
+import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
 
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
@@ -56,6 +58,12 @@ class MoreFragment : Fragment() {
 
         binding.favourite.setOnClickListener {
             val intent = Intent(requireContext(), FavoriteListActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.help.setOnClickListener{
+            val intent = Intent(requireContext(), InfoActivity::class.java)
+            intent.putExtra("appinfo", "help")
             startActivity(intent)
         }
 
