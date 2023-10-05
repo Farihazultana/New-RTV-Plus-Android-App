@@ -101,7 +101,7 @@ class PlayerActivity : AppCompatActivity() {
                         binding.nastedScrollView.visibility = View.VISIBLE
 
                         Glide.with(binding.imageView.context).load(content.image_location)
-                            .placeholder(R.drawable.ic_launcher_background).into(binding.imageView)
+                            .placeholder(R.drawable.no_img).into(binding.imageView)
 
                         binding.suggestionTitle.text = content.similar[0].similarcatname
                         binding.title.text = content.name

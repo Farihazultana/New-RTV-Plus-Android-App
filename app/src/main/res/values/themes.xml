@@ -4,6 +4,7 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:statusBarColor">@color/green</item>
+        <item name="android:windowAnimationStyle">@style/animation</item>
     </style>
 
     <style name="Theme.RTVPlusAndroidAppRevamp" parent="Base.Theme.RTVPlusAndroidAppRevamp" />
@@ -17,6 +18,17 @@
 
         <item name="boxStrokeColor">@color/green</item>
 
+    </style>
+
+    <style name="ToolbarTitleTextAppearanceDialog">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+
+    <style name="animation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
 </resources>

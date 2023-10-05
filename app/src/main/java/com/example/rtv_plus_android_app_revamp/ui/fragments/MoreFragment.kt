@@ -2,26 +2,35 @@ package com.example.rtv_plus_android_app_revamp.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation.findNavController
+import androidx.navigation.Navigation
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentMoreBinding
-import com.example.rtv_plus_android_app_revamp.ui.activities.FavoriteListActivity
+import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
+import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.navigation.Navigation.findNavController
+import com.example.rtv_plus_android_app_revamp.ui.activities.FavoriteListActivity
 
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
+    companion object{
+        lateinit var oneTapClient: SignInClient
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMoreBinding.inflate(inflater, container, false)
+
         val toolbar = binding.toolbar
 
         val callback = object : OnBackPressedCallback(true) {
@@ -47,17 +56,49 @@ class MoreFragment : Fragment() {
             startActivity(intent)
         }
 
+        binding.logInAs.text =
+            SharedPreferencesUtil.getData(requireContext(),LoginActivity.GoogleSignInKey,"default_value")
+                .toString()
+
+        binding.logout.setOnClickListener {
+            if (isOneTapClientInitialized()){
+                SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.LogInKey)
+                SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.GoogleSignInKey)
+                binding.logInAs.text = null
+
+                val spResGoogle = SharedPreferencesUtil.getData(requireContext(), LoginActivity.GoogleSignInKey, "default_value")
+                if (spResGoogle.toString().isNotEmpty()){
+                    LoginActivity.showOneTapUI=false
+                    oneTapClient.signOut().addOnFailureListener{
+                        Toast.makeText(context,"Something went wrong", Toast.LENGTH_SHORT).show()
+                    }.addOnCompleteListener {
+                        Toast.makeText(context,"You are Signed out", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
+                navigateToHomeFragment()
+            }else {
+                Toast.makeText(requireContext(), "OneTapClient is not initialized", Toast.LENGTH_SHORT).show()
+            }
+        }
         return binding.root
     }
 
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            android.R.id.home -> {
-//                requireActivity().onBackPressed()
-//                return true
-//            }
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
-}
+    private fun navigateToHomeFragment() {
+        val navController = Navigation.findNavController(binding.root)
+        navController.navigate(R.id.HomeFragment)
+        val bottomNavigationView =
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+        bottomNavigationView.selectedItemId = R.id.HomeFragment
+    }
 
+    private fun isOneTapClientInitialized(): Boolean {
+        return try {
+            //LoginActivity.oneTapClient != null
+            oneTapClient=Identity.getSignInClient(requireActivity())
+            return oneTapClient != null
+        } catch (e: UninitializedPropertyAccessException) {
+            false
+        }
+    }
+}

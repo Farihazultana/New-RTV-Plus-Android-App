@@ -1,6 +1,8 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
+import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Content
+import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
+import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 
 class ChildHomeAdapter(
+    private var myContext: Context,
     private var contentData: List<Content>,
     private var contentViewType: String
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -68,10 +73,26 @@ class ChildHomeAdapter(
                     holder.descriptionText.text = "Episodes-${currentItem.epcount}"
 
                     holder.itemView.setOnClickListener {
-                        val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                        intent.putExtra("id", currentItem.contentid)
-                        intent.putExtra("type", "playlist")
-                        holder.itemView.context.startActivity(intent)
+                        val spRes = SharedPreferencesUtil.getData(
+                            myContext,
+                            LoginActivity.LogInKey,
+                            "default_value"
+                        )
+                        val spResGoogle = SharedPreferencesUtil.getData(
+                            myContext,
+                            LoginActivity.GoogleSignInKey,
+                            "default_value"
+                        )
+                        Log.i("SPref", "onBindViewHolder: $spRes")
+                        if (spRes == "success" || LoginActivity.showOneTapUI) {
+                            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                            intent.putExtra("id", currentItem.contentid)
+                            intent.putExtra("type", "playlist")
+                            holder.itemView.context.startActivity(intent)
+                        } else {
+                            val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                            holder.itemView.context.startActivity(intent)
+                        }
                     }
 
                 } else {
@@ -85,10 +106,27 @@ class ChildHomeAdapter(
                     holder.descriptionText.text = currentItem.length2
 
                     holder.itemView.setOnClickListener {
-                        val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                        intent.putExtra("id", currentItem.contentid)
-                        intent.putExtra("type", "single")
-                        holder.itemView.context.startActivity(intent)
+                        val spRes = SharedPreferencesUtil.getData(
+                            myContext,
+                            LoginActivity.LogInKey,
+                            "default_value"
+                        )
+                        val spResGoogle = SharedPreferencesUtil.getData(
+                            myContext,
+                            LoginActivity.GoogleSignInKey,
+                            "default_value"
+                        )
+                        Log.i("SPref", "onBindViewHolder: $spRes")
+                        if (spRes == "success" || LoginActivity.showOneTapUI) {
+                            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                            intent.putExtra("id", currentItem.contentid)
+                            intent.putExtra("type", "single")
+                            holder.itemView.context.startActivity(intent)
+                        } else {
+                            val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                            holder.itemView.context.startActivity(intent)
+                        }
+
                     }
                 }
 

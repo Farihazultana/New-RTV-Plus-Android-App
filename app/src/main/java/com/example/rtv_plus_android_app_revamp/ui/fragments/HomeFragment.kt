@@ -54,7 +54,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
          homeViewModel.fetchHomeData("8801841464604", "home")
 
-        parentHomeAdapter = ParentHomeAdapter(emptyList())
+        parentHomeAdapter = ParentHomeAdapter(requireContext(),emptyList())
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
