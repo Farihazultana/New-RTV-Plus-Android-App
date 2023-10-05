@@ -35,7 +35,6 @@ class MoreFragment : Fragment() {
         binding = FragmentMoreBinding.inflate(inflater, container, false)
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-
         val toolbar = binding.toolbar
 
         val callback = object : OnBackPressedCallback(true) {
