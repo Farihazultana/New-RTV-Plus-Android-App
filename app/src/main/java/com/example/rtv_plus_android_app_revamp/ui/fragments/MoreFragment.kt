@@ -1,11 +1,14 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentMoreBinding
@@ -14,6 +17,8 @@ import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.navigation.Navigation.findNavController
+import com.example.rtv_plus_android_app_revamp.ui.activities.FavoriteListActivity
 
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
@@ -25,14 +30,41 @@ class MoreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMoreBinding.inflate(inflater, container, false)
-        binding.tvUserName.text =
+
+        val toolbar = binding.toolbar
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val navController = findNavController(binding.root)
+                navController.navigate(R.id.HomeFragment)
+                val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+                bottomNavigationView.selectedItemId = R.id.HomeFragment
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+
+        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            title = "More"
+        }
+
+        binding.favourite.setOnClickListener {
+            val intent = Intent(requireContext(), FavoriteListActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.logInAs.text =
             SharedPreferencesUtil.getData(requireContext(),LoginActivity.GoogleSignInKey,"default_value")
                 .toString()
 
-        binding.btnLogout.setOnClickListener {
+        binding.logout.setOnClickListener {
             if (isOneTapClientInitialized()){
                 SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.LogInKey)
-                //SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.GoogleSignInKey)
+                SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.GoogleSignInKey)
+                binding.logInAs.text = null
 
                 val spResGoogle = SharedPreferencesUtil.getData(requireContext(), LoginActivity.GoogleSignInKey, "default_value")
                 if (spResGoogle.toString().isNotEmpty()){

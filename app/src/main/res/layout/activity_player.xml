@@ -28,8 +28,10 @@
         android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playerView">
+        app:layout_constraintTop_toBottomOf="@id/playerView"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -41,24 +43,33 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
                 android:src="@drawable/baseline_insert_comment_24"
-                app:layout_constraintEnd_toStartOf="@+id/shareIcon"
+                app:layout_constraintEnd_toStartOf="@+id/favouriteIcon"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/shareIcon"
+                android:id="@+id/favouriteIcon"
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
-                android:layout_marginStart="24dp"
-                android:src="@drawable/baseline_share_44"
+                android:src="@drawable/baseline_favorite_border_24"
                 app:layout_constraintBottom_toBottomOf="@+id/commentIcon"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/shareIcon"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/commentIcon"
                 app:layout_constraintTop_toTopOf="@+id/commentIcon" />
+
+            <ImageView
+                android:id="@+id/shareIcon"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:src="@drawable/baseline_share_44"
+                app:layout_constraintBottom_toBottomOf="@+id/favouriteIcon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/favouriteIcon"
+                app:layout_constraintTop_toTopOf="@+id/favouriteIcon" />
 
             <ImageView
                 android:id="@+id/imageView"
@@ -74,9 +85,18 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/shareIcon"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:textSize="@dimen/_16ssp"
+                android:layout_marginEnd="8dp"
+                android:layout_toEndOf="@+id/imageView"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textSize="@dimen/_14ssp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toBottomOf="@+id/shareIcon" />

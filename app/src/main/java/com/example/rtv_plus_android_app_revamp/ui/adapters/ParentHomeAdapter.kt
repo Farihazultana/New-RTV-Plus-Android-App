@@ -34,7 +34,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class ParentHomeAdapter(private var myContext: Context,var homeData: List<Data>) :
+class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var job: Job? = null
 
@@ -75,7 +75,11 @@ class ParentHomeAdapter(private var myContext: Context,var homeData: List<Data>)
             is ContentViewHolder -> {
                 if (!currentItem.contents.isNullOrEmpty()) {
                     holder.childListAdapter =
-                        ChildHomeAdapter(myContext,currentItem.contents, currentItem.contentviewtype)
+                        ChildHomeAdapter(
+                            myContext,
+                            currentItem.contents,
+                            currentItem.contentviewtype
+                        )
                     holder.recyclerView.layoutManager = LinearLayoutManager(
                         holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false
                     )
@@ -104,18 +108,28 @@ class ParentHomeAdapter(private var myContext: Context,var homeData: List<Data>)
                     setCarouselViewListener { view, position ->
                         val imageView = view.findViewById<ImageView>(R.id.myimage)
                         Glide.with(imageView).load(currentItem.contents[position].image_location)
-                            .placeholder(R.drawable.ic_launcher_background).into(imageView)
+                            .placeholder(R.drawable.no_img).into(imageView)
 
-                        imageView.setOnClickListener{
-                            val spRes = SharedPreferencesUtil.getData(myContext, LoginActivity.LogInKey,"default_value" )
-                            val spResGoogle = SharedPreferencesUtil.getData(myContext, LoginActivity.GoogleSignInKey, "default_value")
+                        imageView.setOnClickListener {
+                            val spRes = SharedPreferencesUtil.getData(
+                                myContext,
+                                LoginActivity.LogInKey,
+                                "default_value"
+                            )
+                            val spResGoogle = SharedPreferencesUtil.getData(
+                                myContext,
+                                LoginActivity.GoogleSignInKey,
+                                "default_value"
+                            )
                             Log.i("SPref", "onBindViewHolder: $spRes")
-                            if(spRes=="success" || LoginActivity.showOneTapUI){
-                                val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                            if (spRes == "success" || LoginActivity.showOneTapUI) {
+                                val intent =
+                                    Intent(holder.itemView.context, PlayerActivity::class.java)
                                 intent.putExtra("id", currentItem.contents[position].contentid)
                                 holder.itemView.context.startActivity(intent)
-                            }else{
-                                val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                            } else {
+                                val intent =
+                                    Intent(holder.itemView.context, LoginActivity::class.java)
                                 holder.itemView.context.startActivity(intent)
                             }
                         }
@@ -145,20 +159,29 @@ class ParentHomeAdapter(private var myContext: Context,var homeData: List<Data>)
                         val delayDuration = 5000
                         val interval = 100
                         while (isActive) {
-                           var randNum = Random.nextInt(1, currentItem.contents.size)
+                            var randNum = Random.nextInt(1, currentItem.contents.size)
                             val imageUrl = currentItem.contents[randNum].image_location
 
-                            holder.thumbnailImage.setOnClickListener{
-                                val spRes = SharedPreferencesUtil.getData(myContext, LoginActivity.LogInKey,"default_value" )
-                                val spResGoogle = SharedPreferencesUtil.getData(myContext, LoginActivity.GoogleSignInKey, "default_value")
+                            holder.thumbnailImage.setOnClickListener {
+                                val spRes = SharedPreferencesUtil.getData(
+                                    myContext,
+                                    LoginActivity.LogInKey,
+                                    "default_value"
+                                )
+                                val spResGoogle = SharedPreferencesUtil.getData(
+                                    myContext,
+                                    LoginActivity.GoogleSignInKey,
+                                    "default_value"
+                                )
                                 Log.i("SPref", "onBindViewHolder: $spRes")
-                                if(spRes=="success" || LoginActivity.showOneTapUI){
+                                if (spRes == "success" || LoginActivity.showOneTapUI) {
                                     val intent =
                                         Intent(holder.itemView.context, PlayerActivity::class.java)
                                     intent.putExtra("id", currentItem.contents[randNum].contentid)
                                     holder.itemView.context.startActivity(intent)
-                                }else{
-                                    val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                                } else {
+                                    val intent =
+                                        Intent(holder.itemView.context, LoginActivity::class.java)
                                     holder.itemView.context.startActivity(intent)
                                 }
                             }
@@ -172,7 +195,7 @@ class ParentHomeAdapter(private var myContext: Context,var homeData: List<Data>)
                                 }
                             }
                             Glide.with(holder.thumbnailImage.context).load(imageUrl)
-                                .placeholder(R.drawable.ic_launcher_background)
+                                .placeholder(R.drawable.no_img)
                                 .transition(customCrossFadeOptions).into(holder.thumbnailImage)
 
                             holder.handler.post {
@@ -220,7 +243,7 @@ class ParentHomeAdapter(private var myContext: Context,var homeData: List<Data>)
     inner class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val thumbnailImage: ImageView = itemView.findViewById(R.id.thumbnailImage)
         val progressBar: ProgressBar = itemView.findViewById(R.id.seekBarId)
-        val contentTitle : TextView = itemView.findViewById(R.id.contentTitle)
+        val contentTitle: TextView = itemView.findViewById(R.id.contentTitle)
         val handler: Handler = Handler(Looper.getMainLooper())
         var progress = 0
     }

@@ -132,7 +132,7 @@ class ChildHomeAdapter(
 
                 Glide.with(holder.imageView.context)
                     .load(currentItem.image_location)
-                    .placeholder(R.drawable.ic_launcher_background)
+                    .placeholder(R.drawable.no_img)
                     .into(holder.imageView)
 
 

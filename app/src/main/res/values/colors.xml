@@ -9,4 +9,6 @@
     <color name="gray">#9E9A9A</color>
     <color name="colorPrimaryDark">#59419B</color>
     <color name="card_background_color">#F7EDEEEF</color>
+    <color name="green_lite">#f5fffa</color>
+    <color name="description_text_color">#696969</color>
 </resources>

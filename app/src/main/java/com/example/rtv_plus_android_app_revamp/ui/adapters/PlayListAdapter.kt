@@ -34,6 +34,7 @@ class PlayListAdapter(var episodeList: List<Episodelist>) :
 
         Glide.with(holder.itemView.context)
             .load(currentItem.image)
+            .placeholder(R.drawable.no_img)
             .into(holder.imageView)
 
         val isSelectedAndPlaying = position == selectedItemPosition
