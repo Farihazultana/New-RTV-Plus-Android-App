@@ -1,10 +1,13 @@
 package com.example.rtv_plus_android_app_revamp.ui.activities
 
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityLocalPaymentBinding
@@ -26,6 +29,8 @@ class LocalPaymentActivity : AppCompatActivity() {
         setContentView(view)
 
         val localPaymentView : WebView = binding.wvLocalPayment
+        localPaymentView.settings.javaScriptEnabled = true
+        localPaymentView.webViewClient = MyWebViewClient()
         //localPaymentView.loadUrl("https://github.com/")
 
         val getPhoneNumSP = SharedPreferencesUtil.getData(
@@ -57,5 +62,25 @@ class LocalPaymentActivity : AppCompatActivity() {
             }
         }
 
+    }
+}
+
+class MyWebViewClient : WebViewClient() {
+    override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+        if (shouldOpenInApp(url)) {
+            if (url != null) {
+                view?.loadUrl(url)
+            }
+            return true
+        }
+
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        view?.context?.startActivity(intent)
+
+        return true
+    }
+
+    private fun shouldOpenInApp(url: String?): Boolean {
+        return true
     }
 }
