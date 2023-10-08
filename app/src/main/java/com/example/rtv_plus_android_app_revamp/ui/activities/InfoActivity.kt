@@ -24,7 +24,6 @@ class InfoActivity : AppCompatActivity() {
         binding = ActivityInfoBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(binding.root)
-
         val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
 
@@ -46,7 +45,6 @@ class InfoActivity : AppCompatActivity() {
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
-
                 is ResultType.Success<*> -> {
                     val content = result.data as InfoResponse
                     if (content.details.isNotEmpty()) {
@@ -54,9 +52,6 @@ class InfoActivity : AppCompatActivity() {
                         binding.infoDataTv.text = content.details
                         binding.infoDataTv.text = Html.fromHtml(content.details)
                         binding.infoDataTv.movementMethod = LinkMovementMethod.getInstance()
-
-
-
                         binding.progressbar.visibility = View.GONE
                     } else {
                         binding.progressbar.visibility = View.GONE

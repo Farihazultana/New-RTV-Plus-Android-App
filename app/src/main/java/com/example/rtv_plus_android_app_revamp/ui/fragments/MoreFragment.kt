@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.Navigation.findNavController
 import com.example.rtv_plus_android_app_revamp.ui.activities.FavoriteListActivity
+import com.example.rtv_plus_android_app_revamp.ui.activities.FeedBackActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.InfoActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
 import com.example.rtv_plus_android_app_revamp.utils.AppUtils.PACKAGE_NAME
@@ -84,6 +85,11 @@ class MoreFragment : Fragment() {
             intent.putExtra("appinfo", "about")
             startActivity(intent)
         }
+        binding.feedBack.setOnClickListener{
+            val intent = Intent(requireContext(), FeedBackActivity::class.java)
+            startActivity(intent)
+        }
+
 
         binding.rate.setOnClickListener {
             val marketUri = Uri.parse("market://details?id=$PACKAGE_NAME")
@@ -97,8 +103,6 @@ class MoreFragment : Fragment() {
                 startActivity(webIntent)
             }
         }
-
-
 
         binding.logInAs.text =
             SharedPreferencesUtil.getData(requireContext(),LoginActivity.GoogleSignInKey,"default_value")
