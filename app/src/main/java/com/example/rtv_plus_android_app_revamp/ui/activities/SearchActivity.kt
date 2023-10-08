@@ -114,7 +114,7 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
-        searchListAdapter = SearchListAdapter(emptyList())
+        searchListAdapter = SearchListAdapter(this@SearchActivity,emptyList())
         binding.searchItemRecyclerView.layoutManager = GridLayoutManager(this, 2)
         binding.searchItemRecyclerView.adapter = searchListAdapter
 

@@ -37,7 +37,7 @@ class SeeAllActivity : AppCompatActivity() {
 
         seeAllViewModel.fetchSeeAllData("1", catCode.toString(), "0", "1")
 
-        seeAllAdapter = SeeAllAdapter(emptyList())
+        seeAllAdapter = SeeAllAdapter(this,emptyList())
         binding.rvSeeAll.layoutManager = GridLayoutManager(this, 2)
         binding.rvSeeAll.adapter = seeAllAdapter
 

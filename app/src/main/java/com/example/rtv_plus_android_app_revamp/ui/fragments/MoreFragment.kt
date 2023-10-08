@@ -1,37 +1,43 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentMoreBinding
+import com.example.rtv_plus_android_app_revamp.ui.activities.FavoriteListActivity
+import com.example.rtv_plus_android_app_revamp.ui.activities.FeedBackActivity
+import com.example.rtv_plus_android_app_revamp.ui.activities.InfoActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.GoogleSignInKey
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.LogInKey
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.PACKAGE_NAME
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.PhoneInputKey
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.navigation.Navigation.findNavController
-import com.example.rtv_plus_android_app_revamp.ui.activities.FavoriteListActivity
-import com.example.rtv_plus_android_app_revamp.ui.activities.FeedBackActivity
-import com.example.rtv_plus_android_app_revamp.ui.activities.InfoActivity
-import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
-import com.example.rtv_plus_android_app_revamp.utils.AppUtils.PACKAGE_NAME
 
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
-    companion object{
+
+    companion object {
         lateinit var oneTapClient: SignInClient
     }
+
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,7 +51,8 @@ class MoreFragment : Fragment() {
             override fun handleOnBackPressed() {
                 val navController = findNavController(binding.root)
                 navController.navigate(R.id.HomeFragment)
-                val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+                val bottomNavigationView =
+                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
                 bottomNavigationView.selectedItemId = R.id.HomeFragment
             }
         }
@@ -64,32 +71,31 @@ class MoreFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.help.setOnClickListener{
+        binding.help.setOnClickListener {
             val intent = Intent(requireContext(), InfoActivity::class.java)
             intent.putExtra("appinfo", "help")
             startActivity(intent)
         }
 
-        binding.privacyPolicy.setOnClickListener{
+        binding.privacyPolicy.setOnClickListener {
             val intent = Intent(requireContext(), InfoActivity::class.java)
             intent.putExtra("appinfo", "privacy")
             startActivity(intent)
         }
-        binding.license.setOnClickListener{
+        binding.license.setOnClickListener {
             val intent = Intent(requireContext(), InfoActivity::class.java)
             intent.putExtra("appinfo", "license")
             startActivity(intent)
         }
-        binding.about.setOnClickListener{
+        binding.about.setOnClickListener {
             val intent = Intent(requireContext(), InfoActivity::class.java)
             intent.putExtra("appinfo", "about")
             startActivity(intent)
         }
-        binding.feedBack.setOnClickListener{
+        binding.feedBack.setOnClickListener {
             val intent = Intent(requireContext(), FeedBackActivity::class.java)
             startActivity(intent)
         }
-
 
         binding.rate.setOnClickListener {
             val marketUri = Uri.parse("market://details?id=$PACKAGE_NAME")
@@ -98,36 +104,67 @@ class MoreFragment : Fragment() {
                 startActivity(marketIntent)
             } catch (e: ActivityNotFoundException) {
                 // If Play Store app is not available, open the app link in a browser
-                val webUri = Uri.parse("https://play.google.com/store/apps/details?id=$PACKAGE_NAME")
+                val webUri =
+                    Uri.parse("https://play.google.com/store/apps/details?id=$PACKAGE_NAME")
                 val webIntent = Intent(Intent.ACTION_VIEW, webUri)
                 startActivity(webIntent)
             }
         }
 
-        binding.logInAs.text =
-            SharedPreferencesUtil.getData(requireContext(),LoginActivity.GoogleSignInKey,"default_value")
-                .toString()
+        val googleLoginInfo = SharedPreferencesUtil.getData(
+            requireContext(),
+            GoogleSignInKey,
+            ""
+        ).toString()
+
+        val getPhoneNumSP = SharedPreferencesUtil.getData(
+            requireContext(),
+            PhoneInputKey,
+            ""
+        )
+        if (googleLoginInfo.isNotEmpty()) {
+            binding.logInAs.text = "Logged in as: ${googleLoginInfo.toString()}"
+            binding.notLoginText.visibility = View.GONE
+            binding.logInBtn.visibility = View.GONE
+            binding.logout.visibility = View.VISIBLE
+            binding.logInAs.visibility = View.VISIBLE
+        } else if (getPhoneNumSP.toString().isNotEmpty()) {
+            binding.logInAs.text = "Logged in as: ${getPhoneNumSP.toString()}"
+            binding.notLoginText.visibility = View.GONE
+            binding.logInBtn.visibility = View.GONE
+            binding.logout.visibility = View.VISIBLE
+        } else {
+            binding.notLoginText.visibility = View.VISIBLE
+            binding.logInBtn.visibility = View.VISIBLE
+            binding.logout.visibility = View.GONE
+            binding.logInAs.visibility = View.GONE
+        }
+
+        binding.logInBtn.setOnClickListener {
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(intent)
+        }
 
         binding.logout.setOnClickListener {
-            if (isOneTapClientInitialized()){
-                SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.LogInKey)
-                SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.GoogleSignInKey)
-                binding.logInAs.text = null
+            SharedPreferencesUtil.removeKey(requireContext(), LogInKey)
+            SharedPreferencesUtil.removeKey(requireContext(), GoogleSignInKey)
+            binding.logInAs.text = null
 
-                val spResGoogle = SharedPreferencesUtil.getData(requireContext(), LoginActivity.GoogleSignInKey, "default_value")
-                if (spResGoogle.toString().isNotEmpty()){
-                    LoginActivity.showOneTapUI=false
-                    oneTapClient.signOut().addOnFailureListener{
-                        Toast.makeText(context,"Something went wrong", Toast.LENGTH_SHORT).show()
-                    }.addOnCompleteListener {
-                        Toast.makeText(context,"You are Signed out", Toast.LENGTH_SHORT).show()
-                    }
+            val spResGoogle = SharedPreferencesUtil.getData(
+                requireContext(),
+                GoogleSignInKey,
+                ""
+            )
+            if (spResGoogle.toString().isNotEmpty()) {
+                oneTapClient.signOut().addOnFailureListener {
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                }.addOnCompleteListener {
+                    Toast.makeText(context, "You are Signed out", Toast.LENGTH_SHORT).show()
                 }
-                Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
-                navigateToHomeFragment()
-            }else {
-                Toast.makeText(requireContext(), "OneTapClient is not initialized", Toast.LENGTH_SHORT).show()
             }
+            SharedPreferencesUtil.clear(requireContext())
+            Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
+            navigateToHomeFragment()
         }
         return binding.root
     }
@@ -143,7 +180,7 @@ class MoreFragment : Fragment() {
     private fun isOneTapClientInitialized(): Boolean {
         return try {
             //LoginActivity.oneTapClient != null
-            oneTapClient=Identity.getSignInClient(requireActivity())
+            oneTapClient = Identity.getSignInClient(requireActivity())
             return oneTapClient != null
         } catch (e: UninitializedPropertyAccessException) {
             false

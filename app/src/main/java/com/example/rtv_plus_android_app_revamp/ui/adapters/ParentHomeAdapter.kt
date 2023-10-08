@@ -22,6 +22,8 @@ import com.example.rtv_plus_android_app_revamp.data.models.home.Data
 import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.SeeAllActivity
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.GoogleSignInKey
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.LogInKey
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import com.jama.carouselview.CarouselView
 import com.jama.carouselview.enums.IndicatorAnimationType
@@ -113,13 +115,13 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
                         imageView.setOnClickListener {
                             val spRes = SharedPreferencesUtil.getData(
                                 myContext,
-                                LoginActivity.LogInKey,
-                                "default_value"
+                                LogInKey,
+                                ""
                             )
                             val spResGoogle = SharedPreferencesUtil.getData(
                                 myContext,
-                                LoginActivity.GoogleSignInKey,
-                                "default_value"
+                                GoogleSignInKey,
+                                ""
                             )
                             Log.i("SPref", "onBindViewHolder: $spRes")
                             if (spRes == "success" || LoginActivity.showOneTapUI) {
@@ -165,13 +167,13 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
                             holder.thumbnailImage.setOnClickListener {
                                 val spRes = SharedPreferencesUtil.getData(
                                     myContext,
-                                    LoginActivity.LogInKey,
-                                    "default_value"
+                                    LogInKey,
+                                    ""
                                 )
                                 val spResGoogle = SharedPreferencesUtil.getData(
                                     myContext,
-                                    LoginActivity.GoogleSignInKey,
-                                    "default_value"
+                                    GoogleSignInKey,
+                                    ""
                                 )
                                 Log.i("SPref", "onBindViewHolder: $spRes")
                                 if (spRes == "success" || LoginActivity.showOneTapUI) {

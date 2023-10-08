@@ -33,7 +33,9 @@ import com.example.rtv_plus_android_app_revamp.ui.viewmodels.AddFavoriteListView
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.PlayListViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.RemoveFavoriteListViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SingleContentViewModel
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
+import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -54,6 +56,22 @@ class PlayerActivity : AppCompatActivity() {
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        val spRes = SharedPreferencesUtil.getData(
+            this,
+            AppUtils.LogInKey,
+            ""
+        )
+        val spResGoogle = SharedPreferencesUtil.getData(
+            this,
+            AppUtils.GoogleSignInKey,
+            ""
+        )
+        if (spRes.toString().isEmpty() && spResGoogle.toString().isEmpty())
+        {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
 
         val receivedValue = intent.getStringExtra("id")
         val contentType = intent.getStringExtra("type")
@@ -150,9 +168,7 @@ class PlayerActivity : AppCompatActivity() {
                             } else {
                                 addListViewModel.addFavoriteContent(content.id, "8801825414747")
                             }
-
                         }
-
 
                         binding.commentIcon.setOnClickListener {
                             // Inflate the custom layout for the AlertDialog
@@ -160,7 +176,7 @@ class PlayerActivity : AppCompatActivity() {
                             val customDialogView = inflater.inflate(R.layout.comment_custom_alert_dialog, null)
 
                             // Find views in the custom layout
-                            val editText = customDialogView.findViewById<EditText>(R.id.editText)
+                            val editText = customDialogView.findViewById<EditText>(R.id.contentEditText)
                             val confirmButton = customDialogView.findViewById<Button>(R.id.submitComment)
 
                             // Create the AlertDialog
@@ -381,6 +397,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
+        finish()
         player.stop()
     }
 

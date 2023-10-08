@@ -33,9 +33,9 @@
                 android:id="@+id/logInAs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="Logged in As: 01703334975"
+                android:textStyle="bold"
                 android:textSize="@dimen/_13sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -43,15 +43,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/notLoginText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:text="User not logged in!"
                 android:textSize="@dimen/_13sdp"
-                app:layout_constraintTop_toBottomOf="@+id/logInAs"
-                tools:layout_editor_absoluteX="16dp" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/logInAs" />
 
             <Button
                 android:id="@+id/logInBtn"
@@ -64,7 +65,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                app:layout_constraintTop_toBottomOf="@+id/notLoginText" />
 
             <TextView
                 android:id="@+id/favourite"

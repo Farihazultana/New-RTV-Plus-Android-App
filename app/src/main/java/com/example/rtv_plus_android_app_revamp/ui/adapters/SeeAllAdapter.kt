@@ -1,5 +1,7 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.seeAll.Content
+import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
+import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils
+import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 
-class SeeAllAdapter(var seeAllData: List<Content?>?) :
+class SeeAllAdapter(private var myContext: Context, var seeAllData: List<Content?>?) :
     RecyclerView.Adapter<SeeAllAdapter.SeeAllViewHolder>() {
 
     inner class SeeAllViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -68,7 +74,31 @@ class SeeAllAdapter(var seeAllData: List<Content?>?) :
             )
             holder.contentDuration.text = item?.length2
             Log.i("TagN", "onBindViewHolder: $item")
+
+            holder.itemView.setOnClickListener {
+                val spRes = SharedPreferencesUtil.getData(
+                    myContext,
+                    AppUtils.LogInKey,
+                    ""
+                )
+                val spResGoogle = SharedPreferencesUtil.getData(
+                    myContext,
+                    AppUtils.GoogleSignInKey,
+                    ""
+                )
+                if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
+                    val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                    intent.putExtra("id", item?.contentid)
+                    intent.putExtra("type", "single")
+                    holder.itemView.context.startActivity(intent)
+                } else {
+                    val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                    holder.itemView.context.startActivity(intent)
+                }
+            }
         }
+
+
     }
 
     interface itemClickListener {

@@ -22,11 +22,6 @@ class RegistrationActivity : AppCompatActivity() {
     private val registrationViewModel by viewModels<RegistrationViewModel>()
     private var phoneText: String? = null
 
-    companion object {
-        const val RegistrationKey = "Registration_Result"
-        const val PhoneInputKey = "PhoneKey"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

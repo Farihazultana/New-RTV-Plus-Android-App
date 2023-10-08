@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.adapters
 
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,9 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.search.Content
+import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils
+import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 
-class SearchListAdapter(var content: List<Content?>?) :
+class SearchListAdapter(private var myContext: Context, var content: List<Content?>?) :
     RecyclerView.Adapter<SearchListAdapter.SearchListViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchListViewHolder {
         val itemView =
@@ -47,11 +51,35 @@ class SearchListAdapter(var content: List<Content?>?) :
         holder.contentDuration.text = item?.length2
         Log.i("TagN", "onBindViewHolder: $item")
 
+//        holder.itemView.setOnClickListener {
+//            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+//            intent.putExtra("id", item?.contentid)
+//            intent.putExtra("type", "single")
+//            holder.itemView.context.startActivity(intent)
+//        }
         holder.itemView.setOnClickListener {
-            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-            intent.putExtra("id", item?.contentid)
-            intent.putExtra("type", "single")
-            holder.itemView.context.startActivity(intent)
+            val spRes = SharedPreferencesUtil.getData(
+                myContext,
+                AppUtils.LogInKey,
+                ""
+            )
+            val spResGoogle = SharedPreferencesUtil.getData(
+                myContext,
+                AppUtils.GoogleSignInKey,
+                ""
+            )
+            Log.i("SPref", "onBindViewHolder: $spRes")
+
+            if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
+                val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                intent.putExtra("id", item?.contentid)
+                intent.putExtra("type", "single")
+                holder.itemView.context.startActivity(intent)
+            } else {
+                val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                holder.itemView.context.startActivity(intent)
+            }
+
         }
     }
     inner class SearchListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

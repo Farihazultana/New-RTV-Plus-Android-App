@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,18 +14,39 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.Navigation.findNavController
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentLiveTvBinding
+import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.MainActivity
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils
+import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class LiveTvFragment : Fragment() {
     private lateinit var binding: FragmentLiveTvBinding
     private lateinit var player: ExoPlayer
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val spRes = SharedPreferencesUtil.getData(
+            requireContext(),
+            AppUtils.LogInKey,
+            ""
+        )
+        val spResGoogle = SharedPreferencesUtil.getData(
+            requireContext(),
+            AppUtils.GoogleSignInKey,
+            ""
+        )
+        if (spRes.toString().isEmpty() && spResGoogle.toString().isEmpty()) {
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLiveTvBinding.inflate(inflater, container, false)
-
         val view = binding.root
 
         val callback = object : OnBackPressedCallback(true) {

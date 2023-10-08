@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
 
+
         var selectedItemId: Int = -1
 
         binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->

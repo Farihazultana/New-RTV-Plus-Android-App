@@ -14,6 +14,8 @@ import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.home.Content
 import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.GoogleSignInKey
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.LogInKey
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 
 class ChildHomeAdapter(
@@ -75,16 +77,15 @@ class ChildHomeAdapter(
                     holder.itemView.setOnClickListener {
                         val spRes = SharedPreferencesUtil.getData(
                             myContext,
-                            LoginActivity.LogInKey,
-                            "default_value"
+                            LogInKey,
+                            ""
                         )
                         val spResGoogle = SharedPreferencesUtil.getData(
                             myContext,
-                            LoginActivity.GoogleSignInKey,
-                            "default_value"
+                            GoogleSignInKey,
+                            ""
                         )
-                        Log.i("SPref", "onBindViewHolder: $spRes")
-                        if (spRes == "success" || LoginActivity.showOneTapUI) {
+                        if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
                             val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                             intent.putExtra("id", currentItem.contentid)
                             intent.putExtra("type", "playlist")
@@ -108,16 +109,17 @@ class ChildHomeAdapter(
                     holder.itemView.setOnClickListener {
                         val spRes = SharedPreferencesUtil.getData(
                             myContext,
-                            LoginActivity.LogInKey,
-                            "default_value"
+                            LogInKey,
+                            ""
                         )
                         val spResGoogle = SharedPreferencesUtil.getData(
                             myContext,
-                            LoginActivity.GoogleSignInKey,
-                            "default_value"
+                            GoogleSignInKey,
+                            ""
                         )
                         Log.i("SPref", "onBindViewHolder: $spRes")
-                        if (spRes == "success" || LoginActivity.showOneTapUI) {
+
+                        if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
                             val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                             intent.putExtra("id", currentItem.contentid)
                             intent.putExtra("type", "single")

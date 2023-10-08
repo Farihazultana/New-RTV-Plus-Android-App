@@ -18,9 +18,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityLoginBinding
+import com.example.rtv_plus_android_app_revamp.ui.fragments.HomeFragment
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.ForgetPasswordViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.GoogleLogInViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.LogInViewModel
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.GoogleSignInKey
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.LogInKey
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.PhoneInputKey
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -35,27 +39,19 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityLoginBinding
     private val logInViewModel by viewModels<LogInViewModel>()
     private val forgetPasswordViewModel by viewModels<ForgetPasswordViewModel>()
     private val googleLogInViewModel by viewModels<GoogleLogInViewModel>()
     private var phoneText: String? = null
     private lateinit var dialog: Dialog
-
     private lateinit var googleSignInOptions: GoogleSignInOptions
     private lateinit var googleSignInClient: GoogleSignInClient
     private val _requestCodeSignIn = 1000
     lateinit var oneTapClient: SignInClient
     lateinit var signUpRequest: BeginSignInRequest
 
-
     companion object {
-        const val LogInKey = "LogIn_Result"
-        const val PhoneInputKey = "PhoneKey"
-        const val GoogleSignInKey = "Google"
-
-
         var showOneTapUI = true
     }
 
@@ -138,7 +134,8 @@ class LoginActivity : AppCompatActivity() {
                                     PhoneInputKey,
                                     phoneText!!
                                 ).toString()
-                                finish()
+                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                startActivity(intent)
 //                                val getPhoneNumSP = SharedPreferencesUtil.getData(
 //                                    this@LoginActivity,
 //                                    PhoneInputKey,
@@ -350,8 +347,8 @@ class LoginActivity : AppCompatActivity() {
                                                     this@LoginActivity,
                                                     i.result,
                                                     Toast.LENGTH_LONG
-                                                )
-                                                    .show()
+                                                ).show()
+
                                             }
 
                                         }
