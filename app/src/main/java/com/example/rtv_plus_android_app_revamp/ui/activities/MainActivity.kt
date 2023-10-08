@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -18,9 +19,6 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //locked orientation to portrait
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -51,5 +49,13 @@ class MainActivity : AppCompatActivity() {
                 R.drawable.selected_nav_item_color
             )
         )
+    }
+
+    fun showBottomNavigationBar() {
+        binding.bottomNavigationBarId.visibility = View.VISIBLE
+    }
+
+    fun hideBottomNavigationBar() {
+        binding.bottomNavigationBarId.visibility = View.GONE
     }
 }

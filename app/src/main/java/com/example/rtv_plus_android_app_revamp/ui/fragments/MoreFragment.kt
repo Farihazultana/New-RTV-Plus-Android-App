@@ -1,6 +1,7 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,6 +20,8 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.Navigation.findNavController
 import com.example.rtv_plus_android_app_revamp.ui.activities.FavoriteListActivity
+import com.example.rtv_plus_android_app_revamp.ui.activities.InfoActivity
+import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
 
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
@@ -30,6 +33,7 @@ class MoreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMoreBinding.inflate(inflater, container, false)
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         val toolbar = binding.toolbar
 
@@ -53,6 +57,28 @@ class MoreFragment : Fragment() {
 
         binding.favourite.setOnClickListener {
             val intent = Intent(requireContext(), FavoriteListActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.help.setOnClickListener{
+            val intent = Intent(requireContext(), InfoActivity::class.java)
+            intent.putExtra("appinfo", "help")
+            startActivity(intent)
+        }
+
+        binding.privacyPolicy.setOnClickListener{
+            val intent = Intent(requireContext(), InfoActivity::class.java)
+            intent.putExtra("appinfo", "privacy")
+            startActivity(intent)
+        }
+        binding.license.setOnClickListener{
+            val intent = Intent(requireContext(), InfoActivity::class.java)
+            intent.putExtra("appinfo", "license")
+            startActivity(intent)
+        }
+        binding.about.setOnClickListener{
+            val intent = Intent(requireContext(), InfoActivity::class.java)
+            intent.putExtra("appinfo", "about")
             startActivity(intent)
         }
 

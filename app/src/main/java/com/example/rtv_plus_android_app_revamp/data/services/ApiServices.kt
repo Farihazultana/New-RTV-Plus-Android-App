@@ -5,6 +5,7 @@ import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.Favorit
 import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.RemoveListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.forgetPassword.ForgetPasswordResponse
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
+import com.example.rtv_plus_android_app_revamp.data.models.info.InfoResponse
 import com.example.rtv_plus_android_app_revamp.data.models.logIn.LogInResponse
 import com.example.rtv_plus_android_app_revamp.data.models.registration.RegistrationResponse
 import com.example.rtv_plus_android_app_revamp.data.models.search.SearchResponse
@@ -121,4 +122,10 @@ interface ApiServices {
         @Field("email") email: String,
         @Field("imgurl") imgurl: String
     ):Response<GoogleLogInResponse>
+    @FormUrlEncoded
+    @POST("flix_appinfo.php")
+    suspend fun getInfoData(
+        @Field("msisdn") msisdn: String,
+        @Field("appinfo") appinfo: String,
+    ): Response<InfoResponse>
 }
