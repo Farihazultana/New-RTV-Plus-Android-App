@@ -64,6 +64,26 @@ class SeeAllAdapter(private var myContext: Context, var seeAllData: List<Content
             )
             holder.contentDuration.text = "Episodes-${item.epcount}"
             Log.i("TagM", "onBindViewHolder: $item")
+            holder.itemView.setOnClickListener {
+                val spRes = SharedPreferencesUtil.getData(
+                    myContext,
+                    AppUtils.LogInKey,
+                    ""
+                )
+                val spResGoogle = SharedPreferencesUtil.getData(
+                    myContext,
+                    AppUtils.GoogleSignInKey,
+                    ""
+                )
+                if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
+                    val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                    intent.putExtra("id", item?.contentid)
+                    holder.itemView.context.startActivity(intent)
+                } else {
+                    val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                    holder.itemView.context.startActivity(intent)
+                }
+            }
         } else {
             val drawableStart = R.drawable.baseline_access_time_24
             holder.contentDuration.setCompoundDrawablesWithIntrinsicBounds(

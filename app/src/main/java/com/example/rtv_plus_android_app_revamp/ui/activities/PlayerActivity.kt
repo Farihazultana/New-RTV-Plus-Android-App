@@ -362,6 +362,32 @@ class PlayerActivity : AppCompatActivity() {
                                 startActivity(Intent.createChooser(shareIntent, "Share via"))
                             }
 
+                            binding.commentIcon.setOnClickListener {
+                                // Inflate the custom layout for the AlertDialog
+                                val inflater = LayoutInflater.from(this)
+                                val customDialogView = inflater.inflate(R.layout.comment_custom_alert_dialog, null)
+
+                                // Find views in the custom layout
+                                val editText = customDialogView.findViewById<EditText>(R.id.contentEditText)
+                                val confirmButton = customDialogView.findViewById<Button>(R.id.submitComment)
+
+                                // Create the AlertDialog
+                                val alertDialogBuilder = AlertDialog.Builder(this)
+                                alertDialogBuilder.setView(customDialogView)
+                                val alertDialog = alertDialogBuilder.create()
+
+                                // Set a click listener for the Confirm button
+                                confirmButton.setOnClickListener {
+                                    // Handle the input from the EditText here
+                                    val userInput = editText.text.toString()
+                                    // Do something with the user input
+
+                                    // Dismiss the AlertDialog after handling the input
+                                    alertDialog.dismiss()
+                                }
+                                alertDialog.show()
+                            }
+
                             playListAdapter.episodeList = content.episodelist
                             binding.progressBar.visibility = View.GONE
                             similarItemsAdapter.notifyDataSetChanged()

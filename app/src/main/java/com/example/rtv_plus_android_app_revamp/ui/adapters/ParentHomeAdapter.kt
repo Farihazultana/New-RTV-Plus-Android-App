@@ -124,10 +124,13 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
                                 ""
                             )
                             Log.i("SPref", "onBindViewHolder: $spRes")
-                            if (spRes == "success" || LoginActivity.showOneTapUI) {
+                            if (spRes.toString().isNotEmpty() || spResGoogle.toString()
+                                    .isNotEmpty()
+                            ) {
                                 val intent =
                                     Intent(holder.itemView.context, PlayerActivity::class.java)
                                 intent.putExtra("id", currentItem.contents[position].contentid)
+                                intent.putExtra("type", "single")
                                 holder.itemView.context.startActivity(intent)
                             } else {
                                 val intent =
@@ -176,7 +179,9 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
                                     ""
                                 )
                                 Log.i("SPref", "onBindViewHolder: $spRes")
-                                if (spRes == "success" || LoginActivity.showOneTapUI) {
+                                if (spRes.toString().isNotEmpty() || spResGoogle.toString()
+                                        .isNotEmpty()
+                                ) {
                                     val intent =
                                         Intent(holder.itemView.context, PlayerActivity::class.java)
                                     intent.putExtra("id", currentItem.contents[randNum].contentid)
@@ -223,7 +228,7 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
         val currentItem = homeData[position]
         return if (currentItem.contentviewtype == "4") {
             TYPE_BANNER
-        } else if (currentItem.contentviewtype == "9") {
+        } else if (currentItem.contentviewtype == "11") {
             TYPE_THUMBNAIL
         } else {
             TYPE_CONTENT

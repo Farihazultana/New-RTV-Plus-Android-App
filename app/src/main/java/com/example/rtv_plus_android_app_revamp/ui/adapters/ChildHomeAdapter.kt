@@ -88,7 +88,6 @@ class ChildHomeAdapter(
                         if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
                             val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                             intent.putExtra("id", currentItem.contentid)
-                            intent.putExtra("type", "playlist")
                             holder.itemView.context.startActivity(intent)
                         } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
