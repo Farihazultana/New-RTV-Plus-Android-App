@@ -96,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.i("TagP", "Phone Input from EditText: $phoneText")
 
                     if (enteredPassword.isNotEmpty()) {
-                        logInViewModel.fetchLogInData(phoneText!!, "123457", "yes", "1")
+                        logInViewModel.fetchLogInData(phoneText!!, enteredPassword, "no", "1")
                     } else {
                         Toast.makeText(
                             this@LoginActivity,

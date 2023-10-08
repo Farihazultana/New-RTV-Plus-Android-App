@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscribeBottomBinding
@@ -47,19 +48,23 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             isLocalSelected = true
             isRedeemSelected = false
             updateUI()
+            bottomBinding.btnConfirmPayment.setOnClickListener {
+                isLocalSelected = false
+                val intent = Intent(requireContext(), LocalPaymentActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         bottomBinding.cvRedeemCoupon.setOnClickListener {
             isLocalSelected = false
             isRedeemSelected = true
             updateUI()
+            bottomBinding.btnConfirmPayment.setOnClickListener {
+                Toast.makeText(requireContext(), "Coming soon!", Toast.LENGTH_SHORT).show()
+            }
         }
 
         //updateUI()
-        bottomBinding.appCompatButton.setOnClickListener {
-            val intent = Intent(requireContext(), LocalPaymentActivity::class.java)
-            startActivity(intent)
-        }
 
         return view
     }

@@ -3,6 +3,7 @@ package com.example.rtv_plus_android_app_revamp.data.services
 import com.example.rtv_plus_android_app_revamp.data.models.forgetPassword.ForgetPasswordResponse
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
 import com.example.rtv_plus_android_app_revamp.data.models.local_payment.LocalPaymentResponse
+import com.example.rtv_plus_android_app_revamp.data.models.local_payment.SaveLocalPaymentResponse
 import com.example.rtv_plus_android_app_revamp.data.models.logIn.LogInResponse
 import com.example.rtv_plus_android_app_revamp.data.models.registration.RegistrationResponse
 import com.example.rtv_plus_android_app_revamp.data.models.search.SearchResponse
@@ -105,4 +106,12 @@ interface ApiServices {
         @Field("msisdn") msisdn: String,
         @Field("d") d: String,
     ): Response<LocalPaymentResponse>
+
+    @FormUrlEncoded
+    @POST("flix_subscription_status_check_portpos.php")
+    suspend fun getSavedLocalPaymentData(
+        @Field("msisdn") msisdn: String,
+        @Field("paymentId") paymentId : String,
+        @Field("orderid") orderid: String
+    ): Response<SaveLocalPaymentResponse>
 }
