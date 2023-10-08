@@ -94,6 +94,9 @@ dependencies {
     // lottie animation
     implementation ("com.airbnb.android:lottie:5.2.0")
 
+    //webView
+    implementation("androidx.webkit:webkit:1.8.0")
+
     //Google Sign In
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
 

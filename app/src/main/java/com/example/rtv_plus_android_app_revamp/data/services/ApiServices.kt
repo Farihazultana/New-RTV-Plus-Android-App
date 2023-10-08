@@ -2,6 +2,7 @@ package com.example.rtv_plus_android_app_revamp.data.services
 
 import com.example.rtv_plus_android_app_revamp.data.models.forgetPassword.ForgetPasswordResponse
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
+import com.example.rtv_plus_android_app_revamp.data.models.local_payment.LocalPaymentResponse
 import com.example.rtv_plus_android_app_revamp.data.models.logIn.LogInResponse
 import com.example.rtv_plus_android_app_revamp.data.models.registration.RegistrationResponse
 import com.example.rtv_plus_android_app_revamp.data.models.search.SearchResponse
@@ -97,4 +98,11 @@ interface ApiServices {
         @Field("email") email: String,
         @Field("imgurl") imgurl: String
     ):Response<GoogleLogInResponse>
+
+    @FormUrlEncoded
+    @POST("flix_sub_instant_sdp_portpos.php")
+    suspend fun getLocalPaymentData(
+        @Field("msisdn") msisdn: String,
+        @Field("d") d: String,
+    ): Response<LocalPaymentResponse>
 }

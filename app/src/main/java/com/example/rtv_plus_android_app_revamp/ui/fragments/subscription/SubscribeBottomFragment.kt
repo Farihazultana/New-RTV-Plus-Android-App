@@ -1,6 +1,7 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments.subscription
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscribeBottomBinding
+import com.example.rtv_plus_android_app_revamp.ui.activities.LocalPaymentActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class SubscribeBottomFragment : BottomSheetDialogFragment() {
@@ -53,7 +55,11 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             updateUI()
         }
 
-        updateUI()
+        //updateUI()
+        bottomBinding.appCompatButton.setOnClickListener {
+            val intent = Intent(requireContext(), LocalPaymentActivity::class.java)
+            startActivity(intent)
+        }
 
         return view
     }
