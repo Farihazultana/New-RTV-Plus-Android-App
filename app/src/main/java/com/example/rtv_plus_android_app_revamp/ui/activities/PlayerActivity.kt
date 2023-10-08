@@ -5,12 +5,16 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -148,6 +152,34 @@ class PlayerActivity : AppCompatActivity() {
                             }
 
                         }
+
+
+                        binding.commentIcon.setOnClickListener {
+                            // Inflate the custom layout for the AlertDialog
+                            val inflater = LayoutInflater.from(this)
+                            val customDialogView = inflater.inflate(R.layout.comment_custom_alert_dialog, null)
+
+                            // Find views in the custom layout
+                            val editText = customDialogView.findViewById<EditText>(R.id.editText)
+                            val confirmButton = customDialogView.findViewById<Button>(R.id.submitComment)
+
+                            // Create the AlertDialog
+                            val alertDialogBuilder = AlertDialog.Builder(this)
+                            alertDialogBuilder.setView(customDialogView)
+                            val alertDialog = alertDialogBuilder.create()
+
+                            // Set a click listener for the Confirm button
+                            confirmButton.setOnClickListener {
+                                // Handle the input from the EditText here
+                                val userInput = editText.text.toString()
+                                // Do something with the user input
+
+                                // Dismiss the AlertDialog after handling the input
+                                alertDialog.dismiss()
+                            }
+                            alertDialog.show()
+                        }
+
 
                         removeListViewModel.removeContentResponse.observe(this) { result ->
                             when (result) {

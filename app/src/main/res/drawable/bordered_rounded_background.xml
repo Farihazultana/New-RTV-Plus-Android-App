@@ -1,0 +1,14 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Transparent background -->
+    <item android:drawable="@android:color/transparent" />
+    <!-- Border around the button -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <stroke
+                android:color="@color/green"
+            android:width="2dp" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+</layer-list>
