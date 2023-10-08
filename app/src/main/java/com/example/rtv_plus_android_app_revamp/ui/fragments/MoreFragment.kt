@@ -32,7 +32,8 @@ class MoreFragment : Fragment() {
         binding.btnLogout.setOnClickListener {
             if (isOneTapClientInitialized()){
                 SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.LogInKey)
-                //SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.GoogleSignInKey)
+                SharedPreferencesUtil.removeKey(requireContext(), LoginActivity.GoogleSignInKey)
+                binding.tvUserName.text = null
 
                 val spResGoogle = SharedPreferencesUtil.getData(requireContext(), LoginActivity.GoogleSignInKey, "default_value")
                 if (spResGoogle.toString().isNotEmpty()){
