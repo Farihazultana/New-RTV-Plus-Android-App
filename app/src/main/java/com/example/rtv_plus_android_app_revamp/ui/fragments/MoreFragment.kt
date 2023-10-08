@@ -1,7 +1,9 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,6 +24,7 @@ import androidx.navigation.Navigation.findNavController
 import com.example.rtv_plus_android_app_revamp.ui.activities.FavoriteListActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.InfoActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.PlayerActivity
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.PACKAGE_NAME
 
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
@@ -81,6 +84,21 @@ class MoreFragment : Fragment() {
             intent.putExtra("appinfo", "about")
             startActivity(intent)
         }
+
+        binding.rate.setOnClickListener {
+            val marketUri = Uri.parse("market://details?id=$PACKAGE_NAME")
+            val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
+            try {
+                startActivity(marketIntent)
+            } catch (e: ActivityNotFoundException) {
+                // If Play Store app is not available, open the app link in a browser
+                val webUri = Uri.parse("https://play.google.com/store/apps/details?id=$PACKAGE_NAME")
+                val webIntent = Intent(Intent.ACTION_VIEW, webUri)
+                startActivity(webIntent)
+            }
+        }
+
+
 
         binding.logInAs.text =
             SharedPreferencesUtil.getData(requireContext(),LoginActivity.GoogleSignInKey,"default_value")
