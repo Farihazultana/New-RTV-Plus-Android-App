@@ -118,7 +118,6 @@ class SeeAllAdapter(private var myContext: Context, var seeAllData: List<Content
             }
         }
 
-
     }
 
     interface itemClickListener {

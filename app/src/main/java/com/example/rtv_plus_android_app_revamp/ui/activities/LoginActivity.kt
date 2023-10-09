@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityLoginBinding
-import com.example.rtv_plus_android_app_revamp.ui.fragments.HomeFragment
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.ForgetPasswordViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.GoogleLogInViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.LogInViewModel
@@ -35,7 +34,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -72,7 +70,6 @@ class LoginActivity : AppCompatActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val charCount = p0?.length ?: 0
                 binding.tvInputCounter.text = "$charCount/11"
-
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -270,6 +267,7 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
                     .addOnFailureListener(this) { e ->
+                        Log.e("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx", e.toString())
                         // No Google Accounts found. Just continue presenting the signed-out UI.
                         Log.d(TAG, e.localizedMessage!!)
                         Log.i(
@@ -350,7 +348,6 @@ class LoginActivity : AppCompatActivity() {
                                                 ).show()
 
                                             }
-
                                         }
 
                                         is ResultType.Error -> {
@@ -388,6 +385,11 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 
 }
