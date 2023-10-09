@@ -3,6 +3,7 @@ package com.example.rtv_plus_android_app_revamp.ui.fragments.subscription
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,9 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
         val packageText = arguments?.getString("packageText", "") ?: ""
         bottomBinding.tvPackage.text = packageText
 
+        val sub_packLocalPayment = arguments?.getString("sub_pack", "") ?: ""
+        Log.i("Payment", "selected package: $sub_packLocalPayment")
+
         val rbLocal = bottomBinding.rbLocal
         val rbRedeem = bottomBinding.rbRedeem
 
@@ -51,6 +55,7 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             bottomBinding.btnConfirmPayment.setOnClickListener {
                 isLocalSelected = false
                 val intent = Intent(requireContext(), LocalPaymentActivity::class.java)
+                intent.putExtra("sub_pack", sub_packLocalPayment)
                 startActivity(intent)
             }
         }
@@ -64,7 +69,6 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             }
         }
 
-        //updateUI()
 
         return view
     }

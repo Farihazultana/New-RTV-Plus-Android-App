@@ -136,6 +136,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         //binding.btnContinuePayment.isEnabled = selectedPositions != -1
         //showBottomSheet(item?.sub_text)
         args.putString("packageText", item?.sub_text)
+        args.putString("sub_pack", item?.sub_pack)
         if (selectedPositions != -1) {
             binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.green))
         } else {

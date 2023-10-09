@@ -46,7 +46,7 @@ class LocalPaymentActivity : AppCompatActivity() {
             LocalPaymentWebViewClient(
                 this,
                 saveLocalPaymentViewModel
-            ) // Pass the activity and ViewModel
+            )
 
         getPhoneNumSP = SharedPreferencesUtil.getData(
             this,
@@ -55,7 +55,18 @@ class LocalPaymentActivity : AppCompatActivity() {
         ).toString()
         Log.i("Payment", "Showing Saved Phone Input from SP : $getPhoneNumSP")
 
-        localPaymentViewModel.fetchLocalPaymentData(getPhoneNumSP, "start90")
+        val sub_pack = intent.getStringExtra("sub_pack")
+        Log.i("Payment", "selected pack from Subscription Screen: $sub_pack")
+
+        if (sub_pack != null){
+            if (getPhoneNumSP != null){
+                localPaymentViewModel.fetchLocalPaymentData(getPhoneNumSP, sub_pack)
+            }
+            else{
+                Toast.makeText(this, "Please Login First!", Toast.LENGTH_LONG).show()
+            }
+        }
+
 
         lifecycleScope.launch {
             localPaymentViewModel.localPaymentData.collect {
