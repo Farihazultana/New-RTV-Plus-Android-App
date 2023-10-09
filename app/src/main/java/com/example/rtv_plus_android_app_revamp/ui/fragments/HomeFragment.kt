@@ -63,20 +63,19 @@ class HomeFragment : Fragment() {
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
+        var backPressedTime: Long = 0
+
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (doubleBackPressedOnce) {
+                if (backPressedTime + 3000 > System.currentTimeMillis()) {
                     requireActivity().finish()
                 } else {
-                    doubleBackPressedOnce = true
-                    Toast.makeText(requireContext(), "Press back again to exit", Toast.LENGTH_SHORT)
-                        .show()
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        doubleBackPressedOnce = false
-                    }, 2000)
+                    Toast.makeText(requireContext(), "Press back again to leave the app.", Toast.LENGTH_LONG).show()
                 }
+                backPressedTime = System.currentTimeMillis()
             }
         }
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         viewLifecycleOwner.lifecycleScope.launch {
