@@ -1,4 +1,4 @@
-package com.example.rtv_plus_android_app_revamp
+package com.rtvplus
 
 import org.junit.Test
 

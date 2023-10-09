@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.rtv_plus_android_app_revamp"
+    namespace = "com.rtvplus"
     compileSdk = 34
 
     buildFeatures {
@@ -16,11 +16,11 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.rtv_plus_android_app_revamp"
+        applicationId = "com.rtvplus"
         minSdk = 24
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 12
+        versionName = "1.2.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
