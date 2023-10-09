@@ -146,26 +146,57 @@ class MoreFragment : Fragment() {
         }
 
         binding.logout.setOnClickListener {
-            SharedPreferencesUtil.removeKey(requireContext(), LogInKey)
-            SharedPreferencesUtil.removeKey(requireContext(), GoogleSignInKey)
-            binding.logInAs.text = null
+            if (isOneTapClientInitialized()) {
+                SharedPreferencesUtil.removeKey(requireContext(), LogInKey)
+                SharedPreferencesUtil.removeKey(requireContext(), GoogleSignInKey)
+                SharedPreferencesUtil.clear(requireContext())
 
-            val spResGoogle = SharedPreferencesUtil.getData(
-                requireContext(),
-                GoogleSignInKey,
-                ""
-            )
-            if (spResGoogle.toString().isNotEmpty()) {
-                oneTapClient.signOut().addOnFailureListener {
-                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-                }.addOnCompleteListener {
-                    Toast.makeText(context, "You are Signed out", Toast.LENGTH_SHORT).show()
+                val spResGoogle = SharedPreferencesUtil.getData(
+                    requireContext(),
+                    GoogleSignInKey,
+                    ""
+                )
+                if (spResGoogle.toString().isNotEmpty()) {
+                    LoginActivity.showOneTapUI = false
+                    oneTapClient.signOut().addOnFailureListener {
+                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                    }.addOnCompleteListener {
+                        Toast.makeText(context, "You are Signed out", Toast.LENGTH_SHORT).show()
+                    }
                 }
+                Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
+                navigateToHomeFragment()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "OneTapClient is not initialized",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            SharedPreferencesUtil.clear(requireContext())
-            Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
-            navigateToHomeFragment()
+
         }
+
+//        binding.logout.setOnClickListener {
+//            SharedPreferencesUtil.removeKey(requireContext(), LogInKey)
+//            SharedPreferencesUtil.removeKey(requireContext(), GoogleSignInKey)
+//            binding.logInAs.text = null
+//
+//            val spResGoogle = SharedPreferencesUtil.getData(
+//                requireContext(),
+//                GoogleSignInKey,
+//                ""
+//            )
+//            if (spResGoogle.toString().isNotEmpty()) {
+//                oneTapClient.signOut().addOnFailureListener {
+//                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+//                }.addOnCompleteListener {
+//                    Toast.makeText(context, "You are Signed out", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            SharedPreferencesUtil.clear(requireContext())
+//            Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
+//            navigateToHomeFragment()
+//        }
         return binding.root
     }
 
