@@ -21,9 +21,12 @@ import com.example.rtv_plus_android_app_revamp.databinding.ActivityLoginBinding
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.ForgetPasswordViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.GoogleLogInViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.LogInViewModel
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils
 import com.example.rtv_plus_android_app_revamp.utils.AppUtils.GoogleSignInKey
 import com.example.rtv_plus_android_app_revamp.utils.AppUtils.LogInKey
 import com.example.rtv_plus_android_app_revamp.utils.AppUtils.PhoneInputKey
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.isOnline
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.showAlertDialog
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -61,12 +64,16 @@ class LoginActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        if(!isOnline(this))
+        {
+            showAlertDialog(this)
+        }
+
         //Text Counter for Phone number 0/11
         binding.etPhoneText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
-
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val charCount = p0?.length ?: 0
                 binding.tvInputCounter.text = "$charCount/11"

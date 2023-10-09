@@ -14,7 +14,9 @@ import com.example.rtv_plus_android_app_revamp.databinding.ActivityFavoriteListB
 import com.example.rtv_plus_android_app_revamp.ui.adapters.FavoriteListAdapter
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.FavoriteListViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.RemoveFavoriteListViewModel
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
+import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,8 +45,17 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         binding.favouriteListRecyclerview.layoutManager = GridLayoutManager(this, 2)
         binding.favouriteListRecyclerview.adapter = favoriteListAdapter
 
-        favoriteListViewModel.fetchFavoriteContent("8801825414747", "1")
+        val userEmail = SharedPreferencesUtil.getData(this, AppUtils.GoogleSignInKey, "").toString()
+        val userPhone = SharedPreferencesUtil.getData(this, AppUtils.PhoneInputKey, "")
 
+        if (userPhone.toString().isNotEmpty())
+        {
+            favoriteListViewModel.fetchFavoriteContent(userPhone.toString(), "1")
+        }
+        else if (userEmail.isNotEmpty())
+        {
+            favoriteListViewModel.fetchFavoriteContent(userEmail.toString(), "1")
+        }
 
         removeListViewModel.removeContentResponse.observe(this) { result ->
             when (result) {

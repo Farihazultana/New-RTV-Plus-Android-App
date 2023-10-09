@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityMainBinding
 import com.example.rtv_plus_android_app_revamp.utils.AppUtils
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.isOnline
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.showAlertDialog
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +28,11 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
+
+        if(!isOnline(this))
+        {
+            showAlertDialog(this)
+        }
         setContentView(view)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment

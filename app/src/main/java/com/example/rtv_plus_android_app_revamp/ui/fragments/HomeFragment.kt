@@ -6,23 +6,21 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentHomeBinding
+import com.example.rtv_plus_android_app_revamp.ui.activities.MainActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.SearchActivity
 import com.example.rtv_plus_android_app_revamp.ui.adapters.ParentHomeAdapter
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.HomeViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -46,18 +44,22 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.tryAgainBtn.setOnClickListener{
-            homeViewModel.fetchHomeData("8801841464604", "home")
+        binding.tryAgainBtn.setOnClickListener {
+            homeViewModel.fetchHomeData("", "home")
+            val intent = Intent(requireContext(), MainActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
         }
 
         return binding.root
     }
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-         homeViewModel.fetchHomeData("8801841464604", "home")
+        homeViewModel.fetchHomeData("", "home")
 
-        parentHomeAdapter = ParentHomeAdapter(requireContext(),emptyList())
+        parentHomeAdapter = ParentHomeAdapter(requireContext(), emptyList())
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
@@ -67,7 +69,8 @@ class HomeFragment : Fragment() {
                     requireActivity().finish()
                 } else {
                     doubleBackPressedOnce = true
-                    Toast.makeText(requireContext(), "Press back again to exit", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Press back again to exit", Toast.LENGTH_SHORT)
+                        .show()
                     Handler(Looper.getMainLooper()).postDelayed({
                         doubleBackPressedOnce = false
                     }, 2000)
@@ -83,6 +86,7 @@ class HomeFragment : Fragment() {
                         binding.progressBar.visibility = View.VISIBLE
                         binding.tryAgainBtn.visibility = View.GONE
                     }
+
                     is ResultType.Success -> {
                         val homeData = result.data
                         parentHomeAdapter.homeData = homeData.data
@@ -93,7 +97,11 @@ class HomeFragment : Fragment() {
                     }
 
                     is ResultType.Error -> {
-                        Toast.makeText(requireContext(), "Something is wrong. Please try again", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Something is wrong. Please try again",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         binding.progressBar.visibility = View.GONE
                         binding.tryAgainBtn.visibility = View.VISIBLE
 
