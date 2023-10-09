@@ -8,9 +8,11 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.rtv_plus_android_app_revamp.data.models.local_payment.SaveLocalPaymentResponse
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityLocalPaymentBinding
 import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity.Companion.PhoneInputKey
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.LocalPaymentViewModel
@@ -41,7 +43,10 @@ class LocalPaymentActivity : AppCompatActivity() {
         val localPaymentView: WebView = binding.wvLocalPayment
         localPaymentView.settings.javaScriptEnabled = true
         localPaymentView.webViewClient =
-            MyWebViewClient(this, saveLocalPaymentViewModel) // Pass the activity and ViewModel
+            LocalPaymentWebViewClient(
+                this,
+                saveLocalPaymentViewModel
+            ) // Pass the activity and ViewModel
 
         getPhoneNumSP = SharedPreferencesUtil.getData(
             this,
@@ -74,7 +79,7 @@ class LocalPaymentActivity : AppCompatActivity() {
         }
     }
 
-    inner class MyWebViewClient(
+    inner class LocalPaymentWebViewClient(
         private val activity: AppCompatActivity,
         private val saveLocalPaymentViewModel: SaveLocalPaymentViewModel
     ) : WebViewClient() {
@@ -102,28 +107,9 @@ class LocalPaymentActivity : AppCompatActivity() {
                             }
                         }
                         if (paymentId != null && orderId != null) {
-                            saveLocalPaymentViewModel.fetchSavedLocalPaymentData(
-                                getPhoneNumSP,
-                                paymentId,
-                                orderId
-                            )
-                            lifecycleScope.launch {
-                                saveLocalPaymentViewModel.saveLocalPaymentData.observe(activity) {
-                                    when (it) {
-                                        is ResultType.Success<*> -> {
-                                            val savedLocalPayment = it.data
-                                            Log.i(
-                                                "Payment",
-                                                "Saved Local payment data: $savedLocalPayment"
-                                            )
-                                        }
-
-                                        else -> {}
-                                    }
-                                }
-                            }
+                            handleSavedLocalPaymentData(paymentId, orderId)
                         }
-                        //finish()
+                        finish()
                     }
                 }
                 return true
@@ -137,6 +123,48 @@ class LocalPaymentActivity : AppCompatActivity() {
 
         private fun shouldOpenInApp(url: String?): Boolean {
             return true
+        }
+
+        private fun handleSavedLocalPaymentData(paymentId: String, orderId: String) {
+            saveLocalPaymentViewModel.fetchSavedLocalPaymentData(
+                getPhoneNumSP,
+                paymentId,
+                orderId
+            )
+            lifecycleScope.launch {
+                saveLocalPaymentViewModel.saveLocalPaymentData.observe(activity) {
+                    when (it) {
+                        is ResultType.Success<SaveLocalPaymentResponse> -> {
+                            val savedLocalPayment = it.data.response
+                            Toast.makeText(
+                                this@LocalPaymentActivity,
+                                savedLocalPayment,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.i(
+                                "Payment",
+                                "Saved Local payment data: $savedLocalPayment"
+                            )
+                        }
+
+                        is ResultType.Error -> {
+                            Toast.makeText(
+                                this@LocalPaymentActivity,
+                                "Something wend wrong, please try again!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        else -> {
+                            Toast.makeText(
+                                this@LocalPaymentActivity,
+                                "Something wend wrong, please try again!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
         }
     }
 }
