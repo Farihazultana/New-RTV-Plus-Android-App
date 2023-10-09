@@ -1,5 +1,6 @@
 package com.example.rtv_plus_android_app_revamp.data.services
 
+import com.example.rtv_plus_android_app_revamp.data.models.coupon_payment.RedeemCouponPaymentResponse
 import com.example.rtv_plus_android_app_revamp.data.models.forgetPassword.ForgetPasswordResponse
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
 import com.example.rtv_plus_android_app_revamp.data.models.local_payment.LocalPaymentResponse
@@ -114,4 +115,11 @@ interface ApiServices {
         @Field("paymentId") paymentId : String,
         @Field("orderid") orderid: String
     ): Response<SaveLocalPaymentResponse>
+
+    @FormUrlEncoded
+    @POST("flix_sub_instant_coupon.php")
+    suspend fun getRedeemCouponPaymentData(
+        @Field("msisdn") msisdn: String,
+        @Field("couponcode") couponcode: String
+    ): Response<RedeemCouponPaymentResponse>
 }

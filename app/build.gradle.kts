@@ -97,6 +97,9 @@ dependencies {
     //webView
     implementation("androidx.webkit:webkit:1.8.0")
 
+    //pinView
+    implementation ("io.github.chaosleung:pinview:1.4.4")
+
     //Google Sign In
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
 

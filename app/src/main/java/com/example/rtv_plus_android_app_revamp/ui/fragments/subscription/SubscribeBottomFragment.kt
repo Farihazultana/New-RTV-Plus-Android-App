@@ -65,7 +65,11 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             isRedeemSelected = true
             updateUI()
             bottomBinding.btnConfirmPayment.setOnClickListener {
-                Toast.makeText(requireContext(), "Coming soon!", Toast.LENGTH_SHORT).show()
+                val redeemCouponBottomFragment = RedeemCouponBottomFragment()
+
+                redeemCouponBottomFragment.show(
+                    childFragmentManager, redeemCouponBottomFragment.tag
+                )
             }
         }
 
