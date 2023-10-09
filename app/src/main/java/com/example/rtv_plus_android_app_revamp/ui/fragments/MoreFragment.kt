@@ -66,9 +66,28 @@ class MoreFragment : Fragment() {
             title = "More"
         }
 
+
+        val googleLoginInfo = SharedPreferencesUtil.getData(
+            requireContext(),
+            GoogleSignInKey,
+            ""
+        ).toString()
+
+        val getPhoneNumSP = SharedPreferencesUtil.getData(
+            requireContext(),
+            PhoneInputKey,
+            ""
+        )
+
         binding.favourite.setOnClickListener {
-            val intent = Intent(requireContext(), FavoriteListActivity::class.java)
-            startActivity(intent)
+            if (googleLoginInfo.isNotEmpty() || getPhoneNumSP.toString().isNotEmpty()) {
+                val intent = Intent(requireContext(), FavoriteListActivity::class.java)
+                startActivity(intent)
+            } else {
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(intent)
+            }
+
         }
 
         binding.help.setOnClickListener {
@@ -111,17 +130,6 @@ class MoreFragment : Fragment() {
             }
         }
 
-        val googleLoginInfo = SharedPreferencesUtil.getData(
-            requireContext(),
-            GoogleSignInKey,
-            ""
-        ).toString()
-
-        val getPhoneNumSP = SharedPreferencesUtil.getData(
-            requireContext(),
-            PhoneInputKey,
-            ""
-        )
         if (googleLoginInfo.isNotEmpty()) {
             binding.logInAs.text = "Logged in as: ${googleLoginInfo.toString()}"
             binding.notLoginText.visibility = View.GONE

@@ -34,9 +34,11 @@ import com.example.rtv_plus_android_app_revamp.ui.viewmodels.PlayListViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.RemoveFavoriteListViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SingleContentViewModel
 import com.example.rtv_plus_android_app_revamp.utils.AppUtils
+import com.example.rtv_plus_android_app_revamp.utils.AppUtils.PhoneInputKey
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.log
 
 @AndroidEntryPoint
 class PlayerActivity : AppCompatActivity() {
@@ -57,21 +59,16 @@ class PlayerActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        val spRes = SharedPreferencesUtil.getData(
+        val userPhone = SharedPreferencesUtil.getData(
             this,
-            AppUtils.LogInKey,
+            PhoneInputKey,
             ""
         )
-        val spResGoogle = SharedPreferencesUtil.getData(
+        val userEmail = SharedPreferencesUtil.getData(
             this,
             AppUtils.GoogleSignInKey,
             ""
         )
-        if (spRes.toString().isEmpty() && spResGoogle.toString().isEmpty())
-        {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        }
 
         val receivedValue = intent.getStringExtra("id")
         val contentType = intent.getStringExtra("type")
@@ -105,9 +102,16 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         if (receivedValue != null && contentType == "single") {
-            singleContentViewModel.fetchSingleContent(
-                "8801919276405", receivedValue.toString(), "web"
-            )
+
+            if (userPhone.toString().isNotEmpty()) {
+                singleContentViewModel.fetchSingleContent(
+                    userPhone.toString(), receivedValue.toString(), "app"
+                )
+            } else if (userEmail.toString().isNotEmpty()) {
+                singleContentViewModel.fetchSingleContent(
+                    userEmail.toString(), receivedValue.toString(), "app"
+                )
+            }
 
             singleContentViewModel.content.observe(this) { result ->
                 when (result) {
@@ -161,23 +165,50 @@ class PlayerActivity : AppCompatActivity() {
                         binding.favouriteIcon.setOnClickListener {
 
                             if (isInList == 1) {
-                                removeListViewModel.removeFavoriteContent(
-                                    content.id,
-                                    "8801825414747"
-                                )
+
+                                if (userPhone.toString().isNotEmpty()) {
+                                    removeListViewModel.removeFavoriteContent(
+                                        content.id,
+                                        userPhone.toString()
+                                    )
+                                } else if (userEmail.toString().isNotEmpty()) {
+                                    removeListViewModel.removeFavoriteContent(
+                                        content.id,
+                                        userEmail.toString()
+                                    )
+                                }
+
                             } else {
-                                addListViewModel.addFavoriteContent(content.id, "8801825414747")
+
+                                Log.e("ggggggggggfdssswsaaaasas", userPhone.toString())
+                                Log.e("ggggggggggfdssswsaaaasas", userEmail.toString())
+
+                                if (userPhone.toString().isNotEmpty()) {
+                                    addListViewModel.addFavoriteContent(
+                                        content.id,
+                                        userPhone.toString()
+                                    )
+                                } else if (userEmail.toString().isNotEmpty()) {
+                                    addListViewModel.addFavoriteContent(
+                                        content.id,
+                                        userEmail.toString()
+                                    )
+                                }
+
                             }
                         }
 
                         binding.commentIcon.setOnClickListener {
                             // Inflate the custom layout for the AlertDialog
                             val inflater = LayoutInflater.from(this)
-                            val customDialogView = inflater.inflate(R.layout.comment_custom_alert_dialog, null)
+                            val customDialogView =
+                                inflater.inflate(R.layout.comment_custom_alert_dialog, null)
 
                             // Find views in the custom layout
-                            val editText = customDialogView.findViewById<EditText>(R.id.contentEditText)
-                            val confirmButton = customDialogView.findViewById<Button>(R.id.submitComment)
+                            val editText =
+                                customDialogView.findViewById<EditText>(R.id.contentEditText)
+                            val confirmButton =
+                                customDialogView.findViewById<Button>(R.id.submitComment)
 
                             // Create the AlertDialog
                             val alertDialogBuilder = AlertDialog.Builder(this)
@@ -309,7 +340,19 @@ class PlayerActivity : AppCompatActivity() {
             binding.imageView.visibility = View.GONE
             binding.favouriteIcon.visibility = View.GONE
 
-            playListViewModel.fetchPlayListContent("8801825414747", receivedValue.toString(), "hd")
+            if (userPhone.toString().isNotEmpty()) {
+                playListViewModel.fetchPlayListContent(
+                    userPhone.toString(),
+                    receivedValue.toString(),
+                    "hd"
+                )
+            } else if (userEmail.toString().isNotEmpty()) {
+                playListViewModel.fetchPlayListContent(
+                    userEmail.toString(),
+                    receivedValue.toString(),
+                    "hd"
+                )
+            }
 
             playListViewModel.content.observe(this) { result ->
                 when (result) {
@@ -365,11 +408,14 @@ class PlayerActivity : AppCompatActivity() {
                             binding.commentIcon.setOnClickListener {
                                 // Inflate the custom layout for the AlertDialog
                                 val inflater = LayoutInflater.from(this)
-                                val customDialogView = inflater.inflate(R.layout.comment_custom_alert_dialog, null)
+                                val customDialogView =
+                                    inflater.inflate(R.layout.comment_custom_alert_dialog, null)
 
                                 // Find views in the custom layout
-                                val editText = customDialogView.findViewById<EditText>(R.id.contentEditText)
-                                val confirmButton = customDialogView.findViewById<Button>(R.id.submitComment)
+                                val editText =
+                                    customDialogView.findViewById<EditText>(R.id.contentEditText)
+                                val confirmButton =
+                                    customDialogView.findViewById<Button>(R.id.submitComment)
 
                                 // Create the AlertDialog
                                 val alertDialogBuilder = AlertDialog.Builder(this)
