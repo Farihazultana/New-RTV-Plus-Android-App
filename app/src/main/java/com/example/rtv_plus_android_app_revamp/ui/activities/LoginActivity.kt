@@ -43,8 +43,6 @@ class LoginActivity : AppCompatActivity() {
     private var phoneText: String? = null
     private lateinit var dialog: Dialog
 
-    private lateinit var googleSignInOptions: GoogleSignInOptions
-    private lateinit var googleSignInClient: GoogleSignInClient
     private val _requestCodeSignIn = 1000
     lateinit var oneTapClient: SignInClient
     lateinit var signUpRequest: BeginSignInRequest
@@ -52,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
 
     companion object {
         const val LogInKey = "LogIn_Result"
-        const val PhoneInputKey = "PhoneKey"
+        const val UsernameInputKey = "PhoneKey"
         const val GoogleSignInKey = "Google"
 
 
@@ -135,7 +133,7 @@ class LoginActivity : AppCompatActivity() {
                                 Log.i("TAGP", "LogIn: $result")
                                 SharedPreferencesUtil.saveData(
                                     this@LoginActivity,
-                                    PhoneInputKey,
+                                    UsernameInputKey,
                                     phoneText!!
                                 ).toString()
                                 finish()
@@ -244,6 +242,7 @@ class LoginActivity : AppCompatActivity() {
         //Google Sign In
 
         binding.btnGoogleSignIn.setOnClickListener {
+            showOneTapUI = true
             if (showOneTapUI) {
                 oneTapClient = Identity.getSignInClient(this)
                 signUpRequest = BeginSignInRequest.builder()
@@ -281,15 +280,15 @@ class LoginActivity : AppCompatActivity() {
                         )
                     }
             } else {
-                Toast.makeText(this@LoginActivity, "Try after 30 seconds!", Toast.LENGTH_SHORT)
+                Toast.makeText(this@LoginActivity, "Something went wrong! Please try again later..", Toast.LENGTH_SHORT)
                     .show()
             }
         }
 
-        Handler().postDelayed({
+        /*Handler().postDelayed({
             showOneTapUI = true
             Log.i("OneTap", "One Tap re-enabled.")
-        }, 30000)
+        }, 30000)*/
 
         //Not Registered Click here
         binding.tvGoToRegistration.setOnClickListener {
@@ -326,7 +325,7 @@ class LoginActivity : AppCompatActivity() {
                             Log.i("OneTap", "Got user image uri. $imageUri")
                             SharedPreferencesUtil.saveData(
                                 this@LoginActivity,
-                                GoogleSignInKey,
+                                UsernameInputKey,
                                 username
                             )
                             googleLogInViewModel.fetchGoogleLogInData(

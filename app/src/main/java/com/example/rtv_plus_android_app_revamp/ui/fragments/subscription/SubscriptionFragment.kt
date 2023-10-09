@@ -15,9 +15,11 @@ import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.data.models.subscription.SubschemesItem
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscribeBottomBinding
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentSubscriptionBinding
+import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
 import com.example.rtv_plus_android_app_revamp.ui.adapters.SubscriptionAdapter
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SubscriptionViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
+import com.example.rtv_plus_android_app_revamp.utils.SharedPreferencesUtil
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -66,7 +68,18 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        subscriptionViewModel.fetchSubscriptionData("8801825414747")
+        val getPhoneNumSP = SharedPreferencesUtil.getData(
+            requireContext(),
+            LoginActivity.UsernameInputKey,
+            ""
+        ).toString()
+        if (getPhoneNumSP.isNotEmpty()){
+            subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
+        }
+        else{
+            Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
+        }
+
 
         subscriptionAdapter = SubscriptionAdapter(emptyList(), this)
         binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)

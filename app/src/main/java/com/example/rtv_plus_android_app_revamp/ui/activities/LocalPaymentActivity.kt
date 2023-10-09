@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.rtv_plus_android_app_revamp.data.models.local_payment.SaveLocalPaymentResponse
 import com.example.rtv_plus_android_app_revamp.databinding.ActivityLocalPaymentBinding
-import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity.Companion.PhoneInputKey
+import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity.Companion.UsernameInputKey
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.LocalPaymentViewModel
 import com.example.rtv_plus_android_app_revamp.ui.viewmodels.SaveLocalPaymentViewModel
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
@@ -50,7 +50,7 @@ class LocalPaymentActivity : AppCompatActivity() {
 
         getPhoneNumSP = SharedPreferencesUtil.getData(
             this,
-            PhoneInputKey,
+            UsernameInputKey,
             "defaultValue"
         ).toString()
         Log.i("Payment", "Showing Saved Phone Input from SP : $getPhoneNumSP")
@@ -59,7 +59,7 @@ class LocalPaymentActivity : AppCompatActivity() {
         Log.i("Payment", "selected pack from Subscription Screen: $sub_pack")
 
         if (sub_pack != null){
-            if (getPhoneNumSP != null){
+            if (getPhoneNumSP.isNotEmpty()){
                 localPaymentViewModel.fetchLocalPaymentData(getPhoneNumSP, sub_pack)
             }
             else{
