@@ -100,6 +100,12 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                         binding.subscribeProgressBar.visibility = View.GONE
                         binding.textView.visibility = View.VISIBLE
                         binding.btnContinuePayment.visibility = View.VISIBLE
+                        for(item in subscriptionData.subschemes){
+                            if(item.userpack != "nopack"){
+                                binding.btnContinuePayment.visibility = View.GONE
+                                binding.textView.text = item.packtext
+                            }
+                        }
                         subscriptionAdapter.notifyDataSetChanged()
                     }
 
@@ -145,15 +151,17 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     }
 
     override fun onCardClickListener(position: Int, item: SubschemesItem?) {
-        this.selectedPositions = position
-        //binding.btnContinuePayment.isEnabled = selectedPositions != -1
-        //showBottomSheet(item?.sub_text)
-        args.putString("packageText", item?.sub_text)
-        args.putString("sub_pack", item?.sub_pack)
-        if (selectedPositions != -1) {
-            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.green))
-        } else {
-            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
+        if(item?.userpack == "nopack"){
+            this.selectedPositions = position
+            //binding.btnContinuePayment.isEnabled = selectedPositions != -1
+            //showBottomSheet(item?.sub_text)
+            args.putString("packageText", item?.sub_text)
+            args.putString("sub_pack", item?.sub_pack)
+            if (selectedPositions != -1) {
+                binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.green))
+            } else {
+                binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
+            }
         }
     }
 

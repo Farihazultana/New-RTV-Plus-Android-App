@@ -120,7 +120,10 @@ class LocalPaymentActivity : AppCompatActivity() {
                         if (paymentId != null && orderId != null) {
                             handleSavedLocalPaymentData(paymentId, orderId)
                         }
-                        finish()
+                        //finish()
+                        val intent = Intent(activity, MainActivity::class.java)
+                        intent.putExtra("destinationFragment", "subscriptionFragment")
+                        activity.startActivity(intent)
                     }
                 }
                 return true
