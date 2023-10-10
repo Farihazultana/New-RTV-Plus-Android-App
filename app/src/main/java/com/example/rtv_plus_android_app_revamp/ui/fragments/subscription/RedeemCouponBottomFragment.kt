@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.rtv_plus_android_app_revamp.R
 import com.example.rtv_plus_android_app_revamp.databinding.FragmentRedeemCouponBottomBinding
 import com.example.rtv_plus_android_app_revamp.ui.activities.LocalPaymentActivity
 import com.example.rtv_plus_android_app_revamp.ui.activities.LoginActivity
@@ -56,6 +58,7 @@ class RedeemCouponBottomFragment : BottomSheetDialogFragment() {
                             for (item in result){
                                 item.error
                                 Toast.makeText(requireContext(), item.error, Toast.LENGTH_LONG).show()
+                                findNavController().navigate(R.id.SubscriptionFragment)
                             }
                         }
 
