@@ -1,0 +1,30 @@
+package com.example.rtv_plus_android_app_revamp.ui.viewmodels
+
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.rtv_plus_android_app_revamp.data.models.local_payment.LocalPaymentResponse
+import com.example.rtv_plus_android_app_revamp.data.repository.LocalPaymentRepository
+import com.example.rtv_plus_android_app_revamp.utils.ResultType
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class LocalPaymentViewModel @Inject constructor(private val repository: LocalPaymentRepository):ViewModel() {
+    private val _localPaymentData = MutableStateFlow<ResultType<LocalPaymentResponse>>(ResultType.Loading)
+    val localPaymentData : StateFlow<ResultType<LocalPaymentResponse>> = _localPaymentData
+
+    fun fetchLocalPaymentData(msisdn: String, d: String){
+        viewModelScope.launch {
+            try {
+                val result = repository.getLocalPaymentData(msisdn,d)
+                _localPaymentData.value = result
+            }catch (e:Exception){
+                _localPaymentData.value = ResultType.Error(e)
+            }
+        }
+    }
+}

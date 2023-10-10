@@ -1,11 +1,14 @@
 package com.example.rtv_plus_android_app_revamp.data.services
 
+import com.example.rtv_plus_android_app_revamp.data.models.coupon_payment.RedeemCouponPaymentResponse
 import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.AddListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.FavoriteResponse
 import com.example.rtv_plus_android_app_revamp.data.models.favorite_list.RemoveListResponse
 import com.example.rtv_plus_android_app_revamp.data.models.forgetPassword.ForgetPasswordResponse
 import com.example.rtv_plus_android_app_revamp.data.models.home.HomeResponse
 import com.example.rtv_plus_android_app_revamp.data.models.info.InfoResponse
+import com.example.rtv_plus_android_app_revamp.data.models.local_payment.LocalPaymentResponse
+import com.example.rtv_plus_android_app_revamp.data.models.local_payment.SaveLocalPaymentResponse
 import com.example.rtv_plus_android_app_revamp.data.models.logIn.LogInResponse
 import com.example.rtv_plus_android_app_revamp.data.models.registration.RegistrationResponse
 import com.example.rtv_plus_android_app_revamp.data.models.search.SearchResponse
@@ -50,27 +53,6 @@ interface ApiServices {
         @Field("fromsrc") fromsrc: String,
         @Field("s") s: String
     ): Response<SearchResponse>
-
-    @FormUrlEncoded
-    @POST("flix_mylist.php")
-    suspend fun getFavoriteContent(
-        @Field("username") username: String,
-        @Field("page") page: String
-    ): Response<FavoriteResponse>
-
-    @FormUrlEncoded
-    @POST("flix_setmylist.php")
-    suspend fun addFavoriteContent(
-        @Field("myval") myval: String,
-        @Field("username") username: String
-    ): Response<AddListResponse>
-
-    @FormUrlEncoded
-    @POST("flix_unsetmylist.php")
-    suspend fun removeFavoriteContent(
-        @Field("myval") myval: String,
-        @Field("username") username: String
-    ): Response<RemoveListResponse>
 
     @FormUrlEncoded
     @POST("flix_subschemes.php")
@@ -122,6 +104,50 @@ interface ApiServices {
         @Field("email") email: String,
         @Field("imgurl") imgurl: String
     ):Response<GoogleLogInResponse>
+
+    @FormUrlEncoded
+    @POST("flix_sub_instant_sdp_portpos.php")
+    suspend fun getLocalPaymentData(
+        @Field("msisdn") msisdn: String,
+        @Field("d") d: String,
+    ): Response<LocalPaymentResponse>
+
+    @FormUrlEncoded
+    @POST("flix_subscription_status_check_portpos.php")
+    suspend fun getSavedLocalPaymentData(
+        @Field("msisdn") msisdn: String,
+        @Field("paymentId") paymentId : String,
+        @Field("orderid") orderid: String
+    ): Response<SaveLocalPaymentResponse>
+
+    @FormUrlEncoded
+    @POST("flix_sub_instant_coupon.php")
+    suspend fun getRedeemCouponPaymentData(
+        @Field("msisdn") msisdn: String,
+        @Field("couponcode") couponcode: String
+    ): Response<RedeemCouponPaymentResponse>
+
+    @FormUrlEncoded
+    @POST("flix_mylist.php")
+    suspend fun getFavoriteContent(
+        @Field("username") username: String,
+        @Field("page") page: String
+    ): Response<FavoriteResponse>
+
+    @FormUrlEncoded
+    @POST("flix_setmylist.php")
+    suspend fun addFavoriteContent(
+        @Field("myval") myval: String,
+        @Field("username") username: String
+    ): Response<AddListResponse>
+
+    @FormUrlEncoded
+    @POST("flix_unsetmylist.php")
+    suspend fun removeFavoriteContent(
+        @Field("myval") myval: String,
+        @Field("username") username: String
+    ): Response<RemoveListResponse>
+
     @FormUrlEncoded
     @POST("flix_appinfo.php")
     suspend fun getInfoData(

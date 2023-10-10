@@ -23,6 +23,9 @@
             android:exported="false"/>
 
         <activity
+            android:name=".ui.activities.LocalPaymentActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.LoginActivity"
             android:exported="false"/>
         <activity

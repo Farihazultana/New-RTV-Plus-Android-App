@@ -54,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
         const val LogInKey = "LogIn_Result"
         const val PhoneInputKey = "PhoneKey"
         const val GoogleSignInKey = "Google"
-
+        const val UsernameInputKey = "PhoneKey"
 
         var showOneTapUI = true
     }

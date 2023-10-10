@@ -23,9 +23,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        val navHostFragment =
+        var navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-        val navController = navHostFragment.findNavController()
+        var navController = navHostFragment.findNavController()
+
+        val destinationFragment = intent.getStringExtra("destinationFragment")
+        if (destinationFragment == "subscriptionFragment") {
+            // Navigate to the SubscriptionFragment
+            val navHostFragment = supportFragmentManager.findFragmentById(R.id.SubscriptionFragment) as NavHostFragment
+             val navController = navHostFragment.navController
+            navController.navigate(R.id.SubscriptionFragment)
+        }
 
         var selectedItemId: Int = -1
 
