@@ -7,22 +7,19 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.rtvplus.R
 import com.rtvplus.data.models.seeAll.Content
 import com.rtvplus.databinding.ActivitySeeAllBinding
 import com.rtvplus.ui.adapters.SeeAllAdapter
 import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
-import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SeeAllViewModel
-import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -32,9 +29,16 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
     private lateinit var binding: ActivitySeeAllBinding
     private lateinit var seeAllAdapter: SeeAllAdapter
     private val seeAllViewModel by viewModels<SeeAllViewModel>()
-    private val logInViewModel by viewModels<LogInViewModel>()
-    private var isPremiumUser: Int? = null
-    private lateinit var navController: NavController
+    var layoutManager = GridLayoutManager(this, 2)
+    private var currentPage = 1
+    private var isLoading = false
+    private var isLastpage = false
+    private var isPremiumUser: Int? = 0
+
+    companion object {
+        lateinit var catCode: String
+        lateinit var catName: String
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,76 +51,77 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
             onBackPressed()
         }
 
-        val catCode = intent.getStringExtra("catcode")
-        val catName = intent.getStringExtra("catname")
-
-        seeAllViewModel.fetchSeeAllData("1", catCode.toString(), "0", "1")
-
+        catCode = intent.getStringExtra("catcode").toString()
+        catName = intent.getStringExtra("catname").toString()
 
         seeAllAdapter = SeeAllAdapter(this, emptyList(), this, null)
-        binding.rvSeeAll.layoutManager = GridLayoutManager(this, 2)
+        binding.rvSeeAll.layoutManager = layoutManager
         binding.rvSeeAll.adapter = seeAllAdapter
 
+        if (catCode.isNotEmpty()) {
+            loadMoreData() // Initial data load
 
-        val userEmail = SharedPreferencesUtil.getData(this, AppUtils.GoogleSignInKey, "").toString()
-        val userPhone = SharedPreferencesUtil.getData(this, AppUtils.PhoneInputKey, "").toString()
+            binding.rvSeeAll.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
 
-        if (userEmail.isNotEmpty()) {
-            logInViewModel.fetchLogInData(userEmail, "", "yes", "1")
-        } else if (userPhone.isNotEmpty()) {
-            logInViewModel.fetchLogInData(userPhone, "", "yes", "1")
-        }
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            logInViewModel.logInData.collect {
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data
-
-                        for (item in logInResult) {
-                            val result = item.play
-                            isPremiumUser = result
+                    if (!isLoading && !isLastpage) {
+                        if (visibleItemCount + firstVisibleItemPosition >= totalItemCount
+                            && firstVisibleItemPosition >= 0
+                        ) {
+                            isLoading = true
+                            currentPage++
+                            // End of the list reached, loading more data
+                            loadMoreData()
                         }
-                    }
-
-                    is ResultType.Error -> {
-
-                    }
-
-                    else -> {
-
                     }
                 }
-            }
-
+            })
         }
+    }
 
-        if (catCode != null) {
-            lifecycleScope.launch {
-                seeAllViewModel.seeAllData.collect {
-                    when (it) {
-                        is ResultType.Loading -> {
-                            binding.subscribeProgressBar.visibility = View.VISIBLE
-                        }
+    private fun loadMoreData() {
+        seeAllViewModel.fetchSeeAllData(currentPage.toString(), catCode, "0", "1")
 
-                        is ResultType.Success -> {
-                            val seeAllData = it.data
-                            if (isPremiumUser.toString().isNotEmpty()) {
-                                seeAllAdapter.seeAllData = seeAllData.contents
-                                seeAllAdapter.isPemiumUser = isPremiumUser
-                                binding.tvSeeAllTitle.text = catName
-                                binding.subscribeProgressBar.visibility = View.GONE
-                                seeAllAdapter.notifyDataSetChanged()
+        lifecycleScope.launch {
+            seeAllViewModel.seeAllData.collect {
+                when (it) {
+                    is ResultType.Loading -> {
+                        binding.subscribeProgressBar.visibility = View.VISIBLE
+                    }
+
+                    is ResultType.Success -> {
+                        val seeAllData = it.data
+
+                        if (currentPage == 1) {
+                            seeAllAdapter.seeAllData = seeAllData.contents
+                            binding.tvSeeAllTitle.text = seeAllData.catname
+                        } else {
+                            if (!seeAllAdapter.seeAllData?.containsAll(seeAllData.contents)!!) {
+                                seeAllAdapter.seeAllData =
+                                    seeAllAdapter.seeAllData?.plus(seeAllData.contents)
                             }
                         }
 
-                        is ResultType.Error -> {
-                            Toast.makeText(
-                                this@SeeAllActivity,
-                                "Something is wrong. Please try again",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        binding.subscribeProgressBar.visibility = View.GONE
+                        seeAllAdapter.notifyDataSetChanged()
+                        isLoading = false
+
+                        //checking last page
+                        isLastpage = seeAllData.contents.isEmpty()
+                    }
+
+                    is ResultType.Error -> {
+                        Toast.makeText(
+                            this@SeeAllActivity,
+                            "Something is wrong. Please try again",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        isLoading = false
                     }
                 }
             }
@@ -135,26 +140,19 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
             super.onBackPressed()
         }
     }
+
     override fun onItemClickListener(position: Int, item: Content?) {
 
         if (item != null) {
 
-            val phone = SharedPreferencesUtil.getData(
+            val username = SharedPreferencesUtil.getData(
                 this,
-                AppUtils.LogInKey,
+                UsernameInputKey,
                 ""
             )
-            val email = SharedPreferencesUtil.getData(
-                this,
-                AppUtils.GoogleSignInKey,
-                ""
-            )
-
-
-
             if (item.contenttype == "playlist") {
 
-                if (phone.toString().isNotEmpty() || email.toString().isNotEmpty()) {
+                if (username.toString().isNotEmpty()) {
 
                     if (isPremiumUser.toString() == "0" && item?.isfree == "0") {
 
@@ -170,8 +168,14 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                         fragmentTransaction.addToBackStack(null)
                         fragmentTransaction.commit()
                     } else {
-                        Log.e("fffffffffffffffffffff", "Inside else block: ${item?.isfree.toString()}" )
-                        Log.e("fffffffffffffffffffff","Inside else block: ${isPremiumUser.toString()}")
+                        Log.e(
+                            "fffffffffffffffffffff",
+                            "Inside else block: ${item?.isfree.toString()}"
+                        )
+                        Log.e(
+                            "fffffffffffffffffffff",
+                            "Inside else block: ${isPremiumUser.toString()}"
+                        )
 
                         val intent = Intent(this, PlayerActivity::class.java)
                         intent.putExtra("id", item?.contentid)
@@ -184,7 +188,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
 
             } else {
 
-                if (phone.toString().isNotEmpty() || email.toString().isNotEmpty()) {
+                if (username.toString().isNotEmpty()) {
                     if (isPremiumUser == 0 && item?.isfree == "0") {
 
                         val fragmentTransaction = this.supportFragmentManager.beginTransaction()

@@ -92,13 +92,10 @@ class HomeFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
 
-        val userEmail = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignInKey, "").toString()
-        val userPhone = SharedPreferencesUtil.getData(requireContext(), AppUtils.PhoneInputKey, "").toString()
+        val username = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
 
-        if (userEmail.isNotEmpty()) {
-            logInViewModel.fetchLogInData(userEmail, "", "yes", "1")
-        } else if (userPhone.isNotEmpty()) {
-            logInViewModel.fetchLogInData(userPhone, "", "yes", "1")
+        if (username.isNotEmpty()) {
+            logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

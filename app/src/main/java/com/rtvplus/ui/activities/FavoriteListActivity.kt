@@ -15,6 +15,7 @@ import com.rtvplus.ui.adapters.FavoriteListAdapter
 import com.rtvplus.ui.viewmodels.FavoriteListViewModel
 import com.rtvplus.ui.viewmodels.RemoveFavoriteListViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +26,6 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
     private val favoriteListViewModel by viewModels<FavoriteListViewModel>()
     private val removeListViewModel by viewModels<RemoveFavoriteListViewModel>()
     private lateinit var favoriteListAdapter: FavoriteListAdapter
-
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,13 +45,10 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         binding.favouriteListRecyclerview.layoutManager = GridLayoutManager(this, 2)
         binding.favouriteListRecyclerview.adapter = favoriteListAdapter
 
-        val userEmail = SharedPreferencesUtil.getData(this, AppUtils.GoogleSignInKey, "").toString()
-        val userPhone = SharedPreferencesUtil.getData(this, AppUtils.PhoneInputKey, "")
+        val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
 
-        if (userPhone.toString().isNotEmpty()) {
-            favoriteListViewModel.fetchFavoriteContent(userPhone.toString(), "1")
-        } else if (userEmail.isNotEmpty()) {
-            favoriteListViewModel.fetchFavoriteContent(userEmail.toString(), "1")
+        if (username.toString().isNotEmpty()) {
+            favoriteListViewModel.fetchFavoriteContent(username.toString(), "1")
         }
 
         removeListViewModel.removeContentResponse.observe(this) { result ->
@@ -70,10 +67,8 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        if (userPhone.toString().isNotEmpty()) {
-                            favoriteListViewModel.fetchFavoriteContent(userPhone.toString(), "1")
-                        } else if (userEmail.isNotEmpty()) {
-                            favoriteListViewModel.fetchFavoriteContent(userEmail.toString(), "1")
+                        if (username.toString().isNotEmpty()) {
+                            favoriteListViewModel.fetchFavoriteContent(username.toString(), "1")
                         }
                     } else {
                         Toast.makeText(
@@ -108,7 +103,6 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                         binding.emptyResultTv.visibility = View.GONE
                         favoriteListAdapter.content = content.contents
                         favoriteListAdapter.notifyDataSetChanged()
-                        Toast.makeText(this, "update data", Toast.LENGTH_SHORT).show()
                     } else {
                         favoriteListAdapter.content = emptyList()
                         favoriteListAdapter.notifyDataSetChanged()
@@ -141,13 +135,11 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onRemoveItemClicked(contentId: String) {
-        val userEmail = SharedPreferencesUtil.getData(this, AppUtils.GoogleSignInKey, "").toString()
-        val userPhone = SharedPreferencesUtil.getData(this, AppUtils.PhoneInputKey, "")
+        val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
+     //   val userPhone = SharedPreferencesUtil.getData(this, AppUtils.PhoneInputKey, "")
 
-        if (userPhone.toString().isNotEmpty()) {
-            removeListViewModel.removeFavoriteContent(contentId, userPhone.toString())
-        } else if (userEmail.isNotEmpty()) {
-            removeListViewModel.removeFavoriteContent(contentId, userEmail.toString())
+        if (username.toString().isNotEmpty()) {
+            removeListViewModel.removeFavoriteContent(contentId, username.toString())
         }
 
     }

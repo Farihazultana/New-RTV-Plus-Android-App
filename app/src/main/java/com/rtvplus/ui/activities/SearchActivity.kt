@@ -23,6 +23,7 @@ import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SearchViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,7 +38,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
     private var searchQuery: String? = null
     private var voiceSearchQuery: String? = null
     private val logInViewModel by viewModels<LogInViewModel>()
-    private var isPremiumUser: Int? = null
+    private var isPremiumUser: Int? = 0
     val handler = Handler(Looper.getMainLooper())
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
@@ -130,13 +131,10 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
         binding.searchItemRecyclerView.adapter = searchListAdapter
 
 
-        val userEmail = SharedPreferencesUtil.getData(this, AppUtils.GoogleSignInKey, "").toString()
-        val userPhone = SharedPreferencesUtil.getData(this, AppUtils.PhoneInputKey, "").toString()
+        val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
 
-        if (userEmail.isNotEmpty()) {
-            logInViewModel.fetchLogInData(userEmail, "", "yes", "1")
-        } else if (userPhone.isNotEmpty()) {
-            logInViewModel.fetchLogInData(userPhone, "", "yes", "1")
+        if (username.isNotEmpty()) {
+            logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
 
         lifecycleScope.launch(Dispatchers.IO) {

@@ -29,6 +29,7 @@ import com.rtvplus.utils.SharedPreferencesUtil
 import com.jama.carouselview.CarouselView
 import com.jama.carouselview.enums.IndicatorAnimationType
 import com.jama.carouselview.enums.OffsetType
+import com.rtvplus.utils.AppUtils.UsernameInputKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -116,20 +117,13 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
                             .placeholder(R.drawable.no_img).into(imageView)
 
                         imageView.setOnClickListener {
-                            val spRes = SharedPreferencesUtil.getData(
+
+                            val username = SharedPreferencesUtil.getData(
                                 myContext,
-                                LogInKey,
+                                UsernameInputKey,
                                 ""
                             )
-                            val spResGoogle = SharedPreferencesUtil.getData(
-                                myContext,
-                                GoogleSignInKey,
-                                ""
-                            )
-                            Log.i("SPref", "onBindViewHolder: $spRes")
-                            if (spRes.toString().isNotEmpty() || spResGoogle.toString()
-                                    .isNotEmpty()
-                            ) {
+                            if (username.toString().isNotEmpty()) {
                                 val intent =
                                     Intent(holder.itemView.context, PlayerActivity::class.java)
                                 intent.putExtra("id", currentItem.contents[position].contentid)
@@ -171,20 +165,14 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
                             val imageUrl = currentItem.contents[randNum].image_location
 
                             holder.thumbnailImage.setOnClickListener {
-                                val spRes = SharedPreferencesUtil.getData(
+
+                                val username = SharedPreferencesUtil.getData(
                                     myContext,
-                                    LogInKey,
+                                    UsernameInputKey,
                                     ""
                                 )
-                                val spResGoogle = SharedPreferencesUtil.getData(
-                                    myContext,
-                                    GoogleSignInKey,
-                                    ""
-                                )
-                                Log.i("SPref", "onBindViewHolder: $spRes")
-                                if (spRes.toString().isNotEmpty() || spResGoogle.toString()
-                                        .isNotEmpty()
-                                ) {
+
+                                if (username.toString().isNotEmpty()) {
                                     val intent =
                                         Intent(holder.itemView.context, PlayerActivity::class.java)
                                     intent.putExtra("id", currentItem.contents[randNum].contentid)

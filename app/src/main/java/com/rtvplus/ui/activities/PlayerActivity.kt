@@ -58,14 +58,10 @@ class PlayerActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        val userPhone = SharedPreferencesUtil.getData(
+
+        val username = SharedPreferencesUtil.getData(
             this,
-            PhoneInputKey,
-            ""
-        )
-        val userEmail = SharedPreferencesUtil.getData(
-            this,
-            AppUtils.GoogleSignInKey,
+            AppUtils.UsernameInputKey,
             ""
         )
 
@@ -102,13 +98,9 @@ class PlayerActivity : AppCompatActivity() {
 
         if (receivedValue != null && contentType == "single") {
 
-            if (userPhone.toString().isNotEmpty()) {
+            if (username.toString().isNotEmpty()) {
                 singleContentViewModel.fetchSingleContent(
-                    userPhone.toString(), receivedValue.toString(), "app"
-                )
-            } else if (userEmail.toString().isNotEmpty()) {
-                singleContentViewModel.fetchSingleContent(
-                    userEmail.toString(), receivedValue.toString(), "app"
+                    username.toString(), receivedValue.toString(), "app"
                 )
             }
 
@@ -165,32 +157,19 @@ class PlayerActivity : AppCompatActivity() {
 
                             if (isInList == 1) {
 
-                                if (userPhone.toString().isNotEmpty()) {
+                                if (username.toString().isNotEmpty()) {
                                     removeListViewModel.removeFavoriteContent(
                                         content.id,
-                                        userPhone.toString()
-                                    )
-                                } else if (userEmail.toString().isNotEmpty()) {
-                                    removeListViewModel.removeFavoriteContent(
-                                        content.id,
-                                        userEmail.toString()
+                                        username.toString()
                                     )
                                 }
 
                             } else {
 
-                                Log.e("ggggggggggfdssswsaaaasas", userPhone.toString())
-                                Log.e("ggggggggggfdssswsaaaasas", userEmail.toString())
-
-                                if (userPhone.toString().isNotEmpty()) {
+                                if (username.toString().isNotEmpty()) {
                                     addListViewModel.addFavoriteContent(
                                         content.id,
-                                        userPhone.toString()
-                                    )
-                                } else if (userEmail.toString().isNotEmpty()) {
-                                    addListViewModel.addFavoriteContent(
-                                        content.id,
-                                        userEmail.toString()
+                                        username.toString()
                                     )
                                 }
 
@@ -339,15 +318,9 @@ class PlayerActivity : AppCompatActivity() {
             binding.imageView.visibility = View.GONE
             binding.favouriteIcon.visibility = View.GONE
 
-            if (userPhone.toString().isNotEmpty()) {
+            if (username.toString().isNotEmpty()) {
                 playListViewModel.fetchPlayListContent(
-                    userPhone.toString(),
-                    receivedValue.toString(),
-                    "hd"
-                )
-            } else if (userEmail.toString().isNotEmpty()) {
-                playListViewModel.fetchPlayListContent(
-                    userEmail.toString(),
+                    username.toString(),
                     receivedValue.toString(),
                     "hd"
                 )

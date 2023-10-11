@@ -1,13 +1,17 @@
 package com.rtvplus.ui.fragments.subscription
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentSubscribeBottomBinding
+import com.rtvplus.ui.activities.LocalPaymentActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class SubscribeBottomFragment : BottomSheetDialogFragment() {
@@ -25,6 +29,9 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
 
         val packageText = arguments?.getString("packageText", "") ?: ""
         bottomBinding.tvPackage.text = packageText
+
+        val sub_packLocalPayment = arguments?.getString("sub_pack", "") ?: ""
+        Log.i("Payment", "selected package: $sub_packLocalPayment")
 
         val rbLocal = bottomBinding.rbLocal
         val rbRedeem = bottomBinding.rbRedeem
@@ -45,15 +52,27 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             isLocalSelected = true
             isRedeemSelected = false
             updateUI()
+            bottomBinding.btnConfirmPayment.setOnClickListener {
+                isLocalSelected = false
+                val intent = Intent(requireContext(), LocalPaymentActivity::class.java)
+                intent.putExtra("sub_pack", sub_packLocalPayment)
+                startActivity(intent)
+            }
         }
 
         bottomBinding.cvRedeemCoupon.setOnClickListener {
             isLocalSelected = false
             isRedeemSelected = true
             updateUI()
+            bottomBinding.btnConfirmPayment.setOnClickListener {
+                val redeemCouponBottomFragment = RedeemCouponBottomFragment()
+
+                redeemCouponBottomFragment.show(
+                    childFragmentManager, redeemCouponBottomFragment.tag
+                )
+            }
         }
 
-        updateUI()
 
         return view
     }

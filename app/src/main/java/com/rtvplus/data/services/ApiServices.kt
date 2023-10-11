@@ -1,17 +1,20 @@
 package com.rtvplus.data.services
 
+import com.rtvplus.data.models.coupon_payment.RedeemCouponPaymentResponse
 import com.rtvplus.data.models.favorite_list.AddListResponse
 import com.rtvplus.data.models.favorite_list.FavoriteResponse
 import com.rtvplus.data.models.favorite_list.RemoveListResponse
 import com.rtvplus.data.models.forgetPassword.ForgetPasswordResponse
 import com.rtvplus.data.models.home.HomeResponse
 import com.rtvplus.data.models.info.InfoResponse
+import com.rtvplus.data.models.local_payment.LocalPaymentResponse
+import com.rtvplus.data.models.local_payment.SaveLocalPaymentResponse
 import com.rtvplus.data.models.logIn.LogInResponse
 import com.rtvplus.data.models.registration.RegistrationResponse
 import com.rtvplus.data.models.search.SearchResponse
+import com.rtvplus.data.models.seeAll.SeeAllResponse
 import com.rtvplus.data.models.single_content.playlist.PlayListResponse
 import com.rtvplus.data.models.single_content.single.SingleContentResponse
-import com.rtvplus.data.models.seeAll.SeeAllResponse
 import com.rtvplus.data.models.socialmedia_login.google.GoogleLogInResponse
 import com.rtvplus.data.models.subscription.SubscriptionResponse
 import retrofit2.Response
@@ -121,11 +124,34 @@ interface ApiServices {
         @Field("last_name") last_namez: String,
         @Field("email") email: String,
         @Field("imgurl") imgurl: String
-    ):Response<GoogleLogInResponse>
+    ): Response<GoogleLogInResponse>
+
     @FormUrlEncoded
     @POST("flix_appinfo.php")
     suspend fun getInfoData(
         @Field("msisdn") msisdn: String,
         @Field("appinfo") appinfo: String,
     ): Response<InfoResponse>
+
+    @FormUrlEncoded
+    @POST("flix_subscription_status_check_portpos.php")
+    suspend fun getSavedLocalPaymentData(
+        @Field("msisdn") msisdn: String,
+        @Field("paymentId") paymentId: String,
+        @Field("orderid") orderid: String
+    ): Response<SaveLocalPaymentResponse>
+
+    @FormUrlEncoded
+    @POST("flix_sub_instant_sdp_portpos.php")
+    suspend fun getLocalPaymentData(
+        @Field("msisdn") msisdn: String,
+        @Field("d") d: String,
+    ): Response<LocalPaymentResponse>
+
+    @FormUrlEncoded
+    @POST("flix_sub_instant_coupon.php")
+    suspend fun getRedeemCouponPaymentData(
+        @Field("msisdn") msisdn: String,
+        @Field("couponcode") couponcode: String
+    ): Response<RedeemCouponPaymentResponse>
 }

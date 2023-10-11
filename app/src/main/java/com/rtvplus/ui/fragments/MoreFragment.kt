@@ -24,9 +24,8 @@ import com.rtvplus.ui.activities.FeedBackActivity
 import com.rtvplus.ui.activities.InfoActivity
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.utils.AppUtils.GoogleSignInKey
-import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.AppUtils.PACKAGE_NAME
-import com.rtvplus.utils.AppUtils.PhoneInputKey
+import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.SharedPreferencesUtil
 
 class MoreFragment : Fragment() {
@@ -63,20 +62,14 @@ class MoreFragment : Fragment() {
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        val googleLoginInfo = SharedPreferencesUtil.getData(
+        val username = SharedPreferencesUtil.getData(
             requireContext(),
-            GoogleSignInKey,
+            UsernameInputKey,
             ""
         ).toString()
 
-        val getPhoneNumSP = SharedPreferencesUtil.getData(
-            requireContext(),
-            PhoneInputKey,
-            ""
-        )
-
         binding.favourite.setOnClickListener {
-            if (googleLoginInfo.isNotEmpty() || getPhoneNumSP.toString().isNotEmpty()) {
+            if (username.isNotEmpty()) {
                 val intent = Intent(requireContext(), FavoriteListActivity::class.java)
                 startActivity(intent)
             } else {
@@ -126,17 +119,12 @@ class MoreFragment : Fragment() {
             }
         }
 
-        if (googleLoginInfo.isNotEmpty()) {
-            binding.logInAs.text = "Logged in as: ${googleLoginInfo.toString()}"
+        if (username.isNotEmpty()) {
+            binding.logInAs.text = "Logged in as: ${username.toString()}"
             binding.notLoginText.visibility = View.GONE
             binding.logInBtn.visibility = View.GONE
             binding.logout.visibility = View.VISIBLE
             binding.logInAs.visibility = View.VISIBLE
-        } else if (getPhoneNumSP.toString().isNotEmpty()) {
-            binding.logInAs.text = "Logged in as: ${getPhoneNumSP.toString()}"
-            binding.notLoginText.visibility = View.GONE
-            binding.logInBtn.visibility = View.GONE
-            binding.logout.visibility = View.VISIBLE
         } else {
             binding.notLoginText.visibility = View.VISIBLE
             binding.logInBtn.visibility = View.VISIBLE
@@ -150,15 +138,15 @@ class MoreFragment : Fragment() {
         }
 
         binding.logout.setOnClickListener {
+            SharedPreferencesUtil.clear(requireContext())
             if (isOneTapClientInitialized()) {
-                SharedPreferencesUtil.removeKey(requireContext(), LogInKey)
-                SharedPreferencesUtil.removeKey(requireContext(), GoogleSignInKey)
                 SharedPreferencesUtil.clear(requireContext())
+                binding.logInAs.text = null
 
                 val spResGoogle = SharedPreferencesUtil.getData(
                     requireContext(),
                     GoogleSignInKey,
-                    ""
+                    "default_value"
                 )
                 if (spResGoogle.toString().isNotEmpty()) {
                     LoginActivity.showOneTapUI = false

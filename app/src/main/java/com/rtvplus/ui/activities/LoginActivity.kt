@@ -21,11 +21,6 @@ import com.rtvplus.databinding.ActivityLoginBinding
 import com.rtvplus.ui.viewmodels.ForgetPasswordViewModel
 import com.rtvplus.ui.viewmodels.GoogleLogInViewModel
 import com.rtvplus.ui.viewmodels.LogInViewModel
-import com.rtvplus.utils.AppUtils.GoogleSignInKey
-import com.rtvplus.utils.AppUtils.LogInKey
-import com.rtvplus.utils.AppUtils.PhoneInputKey
-import com.rtvplus.utils.AppUtils.isOnline
-import com.rtvplus.utils.AppUtils.showAlertDialog
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -34,22 +29,26 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.rtvplus.utils.AppUtils.LogInKey
+import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityLoginBinding
     private val logInViewModel by viewModels<LogInViewModel>()
     private val forgetPasswordViewModel by viewModels<ForgetPasswordViewModel>()
     private val googleLogInViewModel by viewModels<GoogleLogInViewModel>()
     private var phoneText: String? = null
     private lateinit var dialog: Dialog
-    private lateinit var googleSignInOptions: GoogleSignInOptions
-    private lateinit var googleSignInClient: GoogleSignInClient
+
     private val _requestCodeSignIn = 1000
     lateinit var oneTapClient: SignInClient
     lateinit var signUpRequest: BeginSignInRequest
+
 
     companion object {
         var showOneTapUI = true
@@ -63,19 +62,16 @@ class LoginActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        if(!isOnline(this))
-        {
-            showAlertDialog(this)
-        }
-
         //Text Counter for Phone number 0/11
         binding.etPhoneText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
+
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val charCount = p0?.length ?: 0
                 binding.tvInputCounter.text = "$charCount/11"
+
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -95,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.i("TagP", "Phone Input from EditText: $phoneText")
 
                     if (enteredPassword.isNotEmpty()) {
-                        logInViewModel.fetchLogInData(phoneText!!, "123457", "yes", "1")
+                        logInViewModel.fetchLogInData(phoneText!!, enteredPassword, "no", "1")
                     } else {
                         Toast.makeText(
                             this@LoginActivity,
@@ -134,11 +130,10 @@ class LoginActivity : AppCompatActivity() {
                                 Log.i("TAGP", "LogIn: $result")
                                 SharedPreferencesUtil.saveData(
                                     this@LoginActivity,
-                                    PhoneInputKey,
+                                    UsernameInputKey,
                                     phoneText!!
                                 ).toString()
-                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                startActivity(intent)
+                                finish()
 //                                val getPhoneNumSP = SharedPreferencesUtil.getData(
 //                                    this@LoginActivity,
 //                                    PhoneInputKey,
@@ -244,6 +239,7 @@ class LoginActivity : AppCompatActivity() {
         //Google Sign In
 
         binding.btnGoogleSignIn.setOnClickListener {
+            showOneTapUI = true
             if (showOneTapUI) {
                 oneTapClient = Identity.getSignInClient(this)
                 signUpRequest = BeginSignInRequest.builder()
@@ -273,7 +269,6 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
                     .addOnFailureListener(this) { e ->
-                        Log.e("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx", e.toString())
                         // No Google Accounts found. Just continue presenting the signed-out UI.
                         Log.d(TAG, e.localizedMessage!!)
                         Log.i(
@@ -282,15 +277,15 @@ class LoginActivity : AppCompatActivity() {
                         )
                     }
             } else {
-                Toast.makeText(this@LoginActivity, "Try after 30 seconds!", Toast.LENGTH_SHORT)
+                Toast.makeText(this@LoginActivity, "Something went wrong! Please try again later..", Toast.LENGTH_SHORT)
                     .show()
             }
         }
 
-        Handler().postDelayed({
+        /*Handler().postDelayed({
             showOneTapUI = true
             Log.i("OneTap", "One Tap re-enabled.")
-        }, 30000)
+        }, 30000)*/
 
         //Not Registered Click here
         binding.tvGoToRegistration.setOnClickListener {
@@ -327,7 +322,7 @@ class LoginActivity : AppCompatActivity() {
                             Log.i("OneTap", "Got user image uri. $imageUri")
                             SharedPreferencesUtil.saveData(
                                 this@LoginActivity,
-                                GoogleSignInKey,
+                                UsernameInputKey,
                                 username
                             )
                             googleLogInViewModel.fetchGoogleLogInData(
@@ -351,9 +346,10 @@ class LoginActivity : AppCompatActivity() {
                                                     this@LoginActivity,
                                                     i.result,
                                                     Toast.LENGTH_LONG
-                                                ).show()
-
+                                                )
+                                                    .show()
                                             }
+
                                         }
 
                                         is ResultType.Error -> {
@@ -391,12 +387,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
     }
 
 }

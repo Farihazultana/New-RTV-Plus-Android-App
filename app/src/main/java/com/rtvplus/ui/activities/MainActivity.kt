@@ -38,17 +38,12 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
 
-        val googleLoginInfo = SharedPreferencesUtil.getData(
+        val username = SharedPreferencesUtil.getData(
             this,
-            AppUtils.GoogleSignInKey,
+            AppUtils.UsernameInputKey,
             ""
         ).toString()
 
-        val phoneLoginInfo = SharedPreferencesUtil.getData(
-            this,
-            AppUtils.PhoneInputKey,
-            ""
-        )
 
         val fragmentTag = intent.getStringExtra("fragmentToShow")
         if (fragmentTag == "YourFragment") {
@@ -65,9 +60,7 @@ class MainActivity : AppCompatActivity() {
                 when (itemId) {
                     R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
                     R.id.LiveTvFragment -> {
-                        if (googleLoginInfo.isNotEmpty() || phoneLoginInfo.toString()
-                                .isNotEmpty()
-                        ) {
+                        if (username.isNotEmpty()) {
                             navController.navigate(R.id.LiveTvFragment)
                         } else {
                             val intent = Intent(this, LoginActivity::class.java)

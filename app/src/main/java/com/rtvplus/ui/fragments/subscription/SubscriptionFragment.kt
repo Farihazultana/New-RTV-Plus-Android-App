@@ -2,24 +2,27 @@ package com.rtvplus.ui.fragments.subscription
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.subscription.SubschemesItem
 import com.rtvplus.databinding.FragmentSubscribeBottomBinding
 import com.rtvplus.databinding.FragmentSubscriptionBinding
+import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.adapters.SubscriptionAdapter
 import com.rtvplus.ui.viewmodels.SubscriptionViewModel
 import com.rtvplus.utils.ResultType
+import com.rtvplus.utils.SharedPreferencesUtil
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -40,15 +43,14 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         binding = FragmentSubscriptionBinding.inflate(inflater, container, false)
         bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
 
+
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         val fragmentManager = requireActivity().supportFragmentManager
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
+
         toolBarIconSubscribe.setOnClickListener {
-
             fragmentManager.popBackStack()
-
-
 //            val navController = findNavController(binding.root)
 //            navController.navigate(R.id.HomeFragment)
 //            val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
@@ -61,30 +63,30 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val receivedData = arguments?.getString("nav_key")
-        if (receivedData == "from_child_fregment") {
-
-            val bottomNavigationView =
-                requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-            bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
-
-        }
-
-
         //go to previous screen
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
 
                 val navController = findNavController(binding.root)
                 navController.navigate(R.id.HomeFragment)
-                val bottomNavigationView =
-                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+                val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
                 bottomNavigationView.selectedItemId = R.id.HomeFragment
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        subscriptionViewModel.fetchSubscriptionData("8801825414747")
+        val getPhoneNumSP = SharedPreferencesUtil.getData(
+            requireContext(),
+            UsernameInputKey,
+            ""
+        ).toString()
+        if (getPhoneNumSP.isNotEmpty()){
+            subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
+        }
+        else{
+            Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
+        }
+
 
         subscriptionAdapter = SubscriptionAdapter(emptyList(), this)
         binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -105,6 +107,12 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                         binding.subscribeProgressBar.visibility = View.GONE
                         binding.textView.visibility = View.VISIBLE
                         binding.btnContinuePayment.visibility = View.VISIBLE
+                        for(item in subscriptionData.subschemes){
+                            if(item.userpack != "nopack"){
+                                binding.btnContinuePayment.visibility = View.GONE
+                                binding.textView.text = item.packtext
+                            }
+                        }
                         subscriptionAdapter.notifyDataSetChanged()
                     }
 
@@ -150,14 +158,17 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     }
 
     override fun onCardClickListener(position: Int, item: SubschemesItem?) {
-        this.selectedPositions = position
-        //binding.btnContinuePayment.isEnabled = selectedPositions != -1
-        //showBottomSheet(item?.sub_text)
-        args.putString("packageText", item?.sub_text)
-        if (selectedPositions != -1) {
-            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.green))
-        } else {
-            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
+        if(item?.userpack == "nopack"){
+            this.selectedPositions = position
+            //binding.btnContinuePayment.isEnabled = selectedPositions != -1
+            //showBottomSheet(item?.sub_text)
+            args.putString("packageText", item?.sub_text)
+            args.putString("sub_pack", item?.sub_pack)
+            if (selectedPositions != -1) {
+                binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.green))
+            } else {
+                binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
+            }
         }
     }
 

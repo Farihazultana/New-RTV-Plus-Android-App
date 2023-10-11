@@ -18,6 +18,7 @@ import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.PlayerActivity
 import com.rtvplus.utils.AppUtils.GoogleSignInKey
 import com.rtvplus.utils.AppUtils.LogInKey
+import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.SharedPreferencesUtil
 
 class ChildHomeAdapter(
@@ -61,7 +62,7 @@ class ChildHomeAdapter(
 //                holder.sliderView.startAutoCycle()
 //            }
             is ContentViewHolder -> {
-                if (currentItem.isfree == "0" && isPemiumUser.toString() == "0") {
+                if (currentItem.isfree == "0") {
                     holder.premiumTextView.visibility = View.VISIBLE
                 } else {
                     holder.premiumTextView.visibility = View.GONE
@@ -77,13 +78,11 @@ class ChildHomeAdapter(
                     holder.descriptionText.text = "Episodes-${currentItem.epcount}"
 
                     holder.itemView.setOnClickListener {
-                        val spRes = SharedPreferencesUtil.getData(
-                            myContext, LogInKey, ""
+
+                        val username = SharedPreferencesUtil.getData(
+                            myContext, UsernameInputKey, ""
                         )
-                        val spResGoogle = SharedPreferencesUtil.getData(
-                            myContext, GoogleSignInKey, ""
-                        )
-                        if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
+                        if (username.toString().isNotEmpty()) {
 
                             if (isPemiumUser.toString() == "0" && currentItem.isfree == "0") {
 
@@ -113,15 +112,11 @@ class ChildHomeAdapter(
                     holder.descriptionText.text = currentItem.length2
 
                     holder.itemView.setOnClickListener {
-                        val spRes = SharedPreferencesUtil.getData(
-                            myContext, LogInKey, ""
-                        )
-                        val spResGoogle = SharedPreferencesUtil.getData(
-                            myContext, GoogleSignInKey, ""
-                        )
-                        Log.i("SPref", "onBindViewHolder: $spRes")
 
-                        if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
+                        val username = SharedPreferencesUtil.getData(
+                            myContext, UsernameInputKey, ""
+                        )
+                        if (username.toString().isNotEmpty()) {
                             if (isPemiumUser.toString() == "0" && currentItem.isfree == "0") {
                                 val bundle = Bundle()
                                 bundle.putString("nav_key", "from_child_fregment")
