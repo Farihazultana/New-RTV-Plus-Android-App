@@ -7,8 +7,11 @@ import android.net.NetworkCapabilities
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.rtvplus.R
+import com.rtvplus.ui.viewmodels.LogInViewModel
+import kotlinx.coroutines.CompletableDeferred
 
 object AppUtils {
     const val BASE_URL = "https://api-v200.rtvplus.tv/"
@@ -52,4 +55,48 @@ object AppUtils {
             alertDialog.dismiss()
         }
     }
+
+
+    suspend fun checkIsPremiumUser(logInViewModel: LogInViewModel, context: Context): Boolean {
+        val userEmail = SharedPreferencesUtil.getData(context, GoogleSignInKey, "").toString()
+        val userPhone = SharedPreferencesUtil.getData(context, PhoneInputKey, "").toString()
+
+        if (userEmail.isNotEmpty()) {
+            logInViewModel.fetchLogInData(userEmail, "", "yes", "1")
+        } else if (userPhone.isNotEmpty()) {
+            logInViewModel.fetchLogInData(userPhone, "", "yes", "1")
+        }
+
+        val resultDeferred = CompletableDeferred<Boolean>()
+
+        logInViewModel.logInData.collect {
+            when (it) {
+                is ResultType.Success -> {
+                    val logInResult = it.data
+
+                    for (item in logInResult) {
+                        val result = item.play
+
+                        if (result == 0) {
+                            resultDeferred.complete(false)
+                        } else {
+                            resultDeferred.complete(true)
+                        }
+                    }
+                }
+
+                is ResultType.Error -> {
+                    resultDeferred.complete(false)
+                }
+
+                else -> {
+                    resultDeferred.complete(false)
+                }
+            }
+        }
+        return resultDeferred.await()
+    }
+
+
+
 }

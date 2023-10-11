@@ -56,14 +56,18 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+//        val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+//        bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
+
         //go to previous screen
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
 
-                val navController = findNavController(binding.root)
-                navController.navigate(R.id.HomeFragment)
-                val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-                bottomNavigationView.selectedItemId = R.id.HomeFragment
+                requireActivity().finish()
+//                val navController = findNavController(binding.root)
+//                navController.navigate(R.id.HomeFragment)
+//                val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+//                bottomNavigationView.selectedItemId = R.id.HomeFragment
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)

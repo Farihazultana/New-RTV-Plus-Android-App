@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rtvplus.R
@@ -21,7 +22,9 @@ import com.rtvplus.utils.SharedPreferencesUtil
 class ChildHomeAdapter(
     private var myContext: Context,
     private var contentData: List<Content>,
-    private var contentViewType: String
+    private var contentViewType: String,
+    private val navController: NavController,
+    var isPemiumUser: Int?
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         private const val TYPE_BANNER = 0
@@ -57,9 +60,10 @@ class ChildHomeAdapter(
 //                holder.sliderView.startAutoCycle()
 //            }
             is ContentViewHolder -> {
-
-                if (currentItem.isfree.toInt() == 0) {
+                if (currentItem.isfree == "0" && isPemiumUser.toString() == "0") {
                     holder.premiumTextView.visibility = View.VISIBLE
+                } else {
+                    holder.premiumTextView.visibility = View.GONE
                 }
 
                 holder.titleTextView.text = currentItem.name
@@ -67,28 +71,29 @@ class ChildHomeAdapter(
                 if (currentItem.contenttype == "playlist") {
                     val drawableStart = R.drawable.baseline_format_list_numbered_24
                     holder.descriptionText.setCompoundDrawablesWithIntrinsicBounds(
-                        drawableStart,
-                        0,
-                        0,
-                        0
+                        drawableStart, 0, 0, 0
                     )
                     holder.descriptionText.text = "Episodes-${currentItem.epcount}"
 
                     holder.itemView.setOnClickListener {
                         val spRes = SharedPreferencesUtil.getData(
-                            myContext,
-                            LogInKey,
-                            ""
+                            myContext, LogInKey, ""
                         )
                         val spResGoogle = SharedPreferencesUtil.getData(
-                            myContext,
-                            GoogleSignInKey,
-                            ""
+                            myContext, GoogleSignInKey, ""
                         )
                         if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
-                            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                            intent.putExtra("id", currentItem.contentid)
-                            holder.itemView.context.startActivity(intent)
+
+                            if (isPemiumUser.toString() == "0" && currentItem.isfree == "0") {
+                                navController.navigate(R.id.SubscriptionFragment)
+
+                            } else {
+                                val intent =
+                                    Intent(holder.itemView.context, PlayerActivity::class.java)
+                                intent.putExtra("id", currentItem.contentid)
+                                holder.itemView.context.startActivity(intent)
+                            }
+
                         } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
                             holder.itemView.context.startActivity(intent)
@@ -98,43 +103,42 @@ class ChildHomeAdapter(
                 } else {
                     val drawableStart = R.drawable.baseline_access_time_24
                     holder.descriptionText.setCompoundDrawablesWithIntrinsicBounds(
-                        drawableStart,
-                        0,
-                        0,
-                        0
+                        drawableStart, 0, 0, 0
                     )
                     holder.descriptionText.text = currentItem.length2
 
                     holder.itemView.setOnClickListener {
                         val spRes = SharedPreferencesUtil.getData(
-                            myContext,
-                            LogInKey,
-                            ""
+                            myContext, LogInKey, ""
                         )
                         val spResGoogle = SharedPreferencesUtil.getData(
-                            myContext,
-                            GoogleSignInKey,
-                            ""
+                            myContext, GoogleSignInKey, ""
                         )
                         Log.i("SPref", "onBindViewHolder: $spRes")
 
                         if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
-                            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                            intent.putExtra("id", currentItem.contentid)
-                            intent.putExtra("type", "single")
-                            holder.itemView.context.startActivity(intent)
+                            if (isPemiumUser.toString() == "0" && currentItem.isfree == "0") {
+                                navController.navigate(R.id.SubscriptionFragment)
+
+                            } else {
+                                val intent =
+                                    Intent(holder.itemView.context, PlayerActivity::class.java)
+                                intent.putExtra("id", currentItem.contentid)
+                                intent.putExtra("type", "single")
+                                holder.itemView.context.startActivity(intent)
+                            }
+
                         } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
                             holder.itemView.context.startActivity(intent)
                         }
 
+
                     }
                 }
 
-                Glide.with(holder.imageView.context)
-                    .load(currentItem.image_location)
-                    .placeholder(R.drawable.no_img)
-                    .into(holder.imageView)
+                Glide.with(holder.imageView.context).load(currentItem.image_location)
+                    .placeholder(R.drawable.no_img).into(holder.imageView)
 
 
             }

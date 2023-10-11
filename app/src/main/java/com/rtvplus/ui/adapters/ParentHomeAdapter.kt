@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -36,7 +37,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>) :
+class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>, private val navController: NavController, var isPemiumUser: Int?) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var job: Job? = null
 
@@ -80,7 +81,9 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
                         ChildHomeAdapter(
                             myContext,
                             currentItem.contents,
-                            currentItem.contentviewtype
+                            currentItem.contentviewtype,
+                            navController,
+                            isPemiumUser
                         )
                     holder.recyclerView.layoutManager = LinearLayoutManager(
                         holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false

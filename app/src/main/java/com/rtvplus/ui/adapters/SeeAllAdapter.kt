@@ -1,7 +1,6 @@
 package com.rtvplus.ui.adapters
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rtvplus.R
 import com.rtvplus.data.models.seeAll.Content
-import com.rtvplus.ui.activities.LoginActivity
-import com.rtvplus.ui.activities.PlayerActivity
-import com.rtvplus.utils.AppUtils
-import com.rtvplus.utils.SharedPreferencesUtil
 
-class SeeAllAdapter(private var myContext: Context, var seeAllData: List<Content?>?) :
+class SeeAllAdapter(
+    private var myContext: Context,
+    var seeAllData: List<Content?>?,
+    private val listener: itemClickListener,
+    var isPemiumUser: Int?
+) :
     RecyclerView.Adapter<SeeAllAdapter.SeeAllViewHolder>() {
 
     inner class SeeAllViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -50,9 +50,10 @@ class SeeAllAdapter(private var myContext: Context, var seeAllData: List<Content
         if (item != null) {
             holder.contentTitle.text = item.name
         }
-//        if (item != null){
-//            holder.contentDuration.text = item.duration
-//        }
+
+        holder.itemView.setOnClickListener {
+            listener.onItemClickListener(position, item)
+        }
 
         if (item?.contenttype == "playlist") {
             val drawableStart = R.drawable.baseline_format_list_numbered_24
@@ -64,26 +65,7 @@ class SeeAllAdapter(private var myContext: Context, var seeAllData: List<Content
             )
             holder.contentDuration.text = "Episodes-${item.epcount}"
             Log.i("TagM", "onBindViewHolder: $item")
-            holder.itemView.setOnClickListener {
-                val spRes = SharedPreferencesUtil.getData(
-                    myContext,
-                    AppUtils.LogInKey,
-                    ""
-                )
-                val spResGoogle = SharedPreferencesUtil.getData(
-                    myContext,
-                    AppUtils.GoogleSignInKey,
-                    ""
-                )
-                if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
-                    val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                    intent.putExtra("id", item?.contentid)
-                    holder.itemView.context.startActivity(intent)
-                } else {
-                    val intent = Intent(holder.itemView.context, LoginActivity::class.java)
-                    holder.itemView.context.startActivity(intent)
-                }
-            }
+
         } else {
             val drawableStart = R.drawable.baseline_access_time_24
             holder.contentDuration.setCompoundDrawablesWithIntrinsicBounds(
@@ -95,29 +77,7 @@ class SeeAllAdapter(private var myContext: Context, var seeAllData: List<Content
             holder.contentDuration.text = item?.length2
             Log.i("TagN", "onBindViewHolder: $item")
 
-            holder.itemView.setOnClickListener {
-                val spRes = SharedPreferencesUtil.getData(
-                    myContext,
-                    AppUtils.LogInKey,
-                    ""
-                )
-                val spResGoogle = SharedPreferencesUtil.getData(
-                    myContext,
-                    AppUtils.GoogleSignInKey,
-                    ""
-                )
-                if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
-                    val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                    intent.putExtra("id", item?.contentid)
-                    intent.putExtra("type", "single")
-                    holder.itemView.context.startActivity(intent)
-                } else {
-                    val intent = Intent(holder.itemView.context, LoginActivity::class.java)
-                    holder.itemView.context.startActivity(intent)
-                }
-            }
         }
-
     }
 
     interface itemClickListener {

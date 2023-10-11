@@ -12,13 +12,25 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.rtvplus.R
 import com.rtvplus.data.models.search.SearchResponse
 import com.rtvplus.databinding.ActivitySearchBinding
 import com.rtvplus.ui.adapters.SearchListAdapter
+import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SearchViewModel
+import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.ResultType
+import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchActivity : AppCompatActivity() {
@@ -27,6 +39,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchListAdapter: SearchListAdapter
     private var searchQuery: String? = null
     private var voiceSearchQuery: String? = null
+    private val logInViewModel by viewModels<LogInViewModel>()
+    private var isPremiumUser: Int? = null
     val handler = Handler(Looper.getMainLooper())
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
@@ -114,9 +128,44 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
-        searchListAdapter = SearchListAdapter(this@SearchActivity,emptyList())
+        searchListAdapter = SearchListAdapter(this@SearchActivity,emptyList(),null)
         binding.searchItemRecyclerView.layoutManager = GridLayoutManager(this, 2)
         binding.searchItemRecyclerView.adapter = searchListAdapter
+
+
+        val userEmail = SharedPreferencesUtil.getData(this, AppUtils.GoogleSignInKey, "").toString()
+        val userPhone = SharedPreferencesUtil.getData(this, AppUtils.PhoneInputKey, "").toString()
+
+        if (userEmail.isNotEmpty()) {
+            logInViewModel.fetchLogInData(userEmail, "", "yes", "1")
+        } else if (userPhone.isNotEmpty()) {
+            logInViewModel.fetchLogInData(userPhone, "", "yes", "1")
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            logInViewModel.logInData.collect {
+                when (it) {
+                    is ResultType.Success -> {
+                        val logInResult = it.data
+
+                        for (item in logInResult) {
+                            val result = item.play
+                            isPremiumUser = result
+                        }
+                    }
+
+                    is ResultType.Error -> {
+
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
+        }
+
 
         searchViewModel.searchData.observe(this) { result ->
             when (result) {
@@ -126,10 +175,15 @@ class SearchActivity : AppCompatActivity() {
                 is ResultType.Success<*> -> {
                     val content = result.data as SearchResponse
                     if (content.contents.isNotEmpty()) {
-                        binding.progressbar.visibility = View.GONE
-                        binding.emptyResultTv.visibility = View.GONE
-                        searchListAdapter.content = content.contents
-                        searchListAdapter.notifyDataSetChanged()
+                        if (isPremiumUser.toString().isNotEmpty())
+                        {
+                            binding.progressbar.visibility = View.GONE
+                            binding.emptyResultTv.visibility = View.GONE
+                            searchListAdapter.content = content.contents
+                            searchListAdapter.isPemiumUser = isPremiumUser
+                            searchListAdapter.notifyDataSetChanged()
+                        }
+
                     } else {
                         binding.emptyResultTv.visibility = View.VISIBLE
                         if (!searchQuery.isNullOrEmpty()) {

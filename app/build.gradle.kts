@@ -1,10 +1,10 @@
-
-
 plugins {
     id("com.android.application")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -137,7 +137,11 @@ dependencies {
     implementation ("androidx.media3:media3-ui:1.1.1")
     implementation ("androidx.media3:media3-exoplayer-hls:1.1.1")
 
-    
+    // firebase analytics
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+
     implementation(project(":carouselview"))
 
     testImplementation("junit:junit:4.13.2")

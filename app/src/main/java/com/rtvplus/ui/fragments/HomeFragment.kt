@@ -12,13 +12,17 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rtvplus.databinding.FragmentHomeBinding
 import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.ui.activities.SearchActivity
 import com.rtvplus.ui.adapters.ParentHomeAdapter
 import com.rtvplus.ui.viewmodels.HomeViewModel
+import com.rtvplus.ui.viewmodels.LogInViewModel
+import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.ResultType
+import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -28,6 +32,8 @@ class HomeFragment : Fragment() {
     private lateinit var parentHomeAdapter: ParentHomeAdapter
     private var doubleBackPressedOnce = false
     private val homeViewModel by viewModels<HomeViewModel>()
+    private val logInViewModel by viewModels<LogInViewModel>()
+    private var isPremiumUser: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,7 +63,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         homeViewModel.fetchHomeData("", "home")
 
-        parentHomeAdapter = ParentHomeAdapter(requireContext(), emptyList())
+        parentHomeAdapter = ParentHomeAdapter(requireContext(), emptyList(), findNavController(),null)
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
@@ -68,13 +74,53 @@ class HomeFragment : Fragment() {
                 if (backPressedTime + 3000 > System.currentTimeMillis()) {
                     requireActivity().finish()
                 } else {
-                    Toast.makeText(requireContext(), "Press back again to leave the app.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Press back again to leave the app.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
                 backPressedTime = System.currentTimeMillis()
             }
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+
+        val userEmail = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignInKey, "").toString()
+        val userPhone = SharedPreferencesUtil.getData(requireContext(), AppUtils.PhoneInputKey, "").toString()
+
+        if (userEmail.isNotEmpty()) {
+            logInViewModel.fetchLogInData(userEmail, "", "yes", "1")
+        } else if (userPhone.isNotEmpty()) {
+            logInViewModel.fetchLogInData(userPhone, "", "yes", "1")
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            logInViewModel.logInData.collect {
+                when (it) {
+                    is ResultType.Success -> {
+                        val logInResult = it.data
+
+                        for (item in logInResult) {
+                            val result = item.play
+                            isPremiumUser = result
+                        }
+                    }
+
+                    is ResultType.Error -> {
+
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
+        }
+
+
 
         viewLifecycleOwner.lifecycleScope.launch {
             homeViewModel.homeData.collect { result ->
@@ -85,12 +131,17 @@ class HomeFragment : Fragment() {
                     }
 
                     is ResultType.Success -> {
-                        val homeData = result.data
-                        parentHomeAdapter.homeData = homeData.data
-                        binding.progressBar.visibility = View.GONE
-                        binding.tryAgainBtn.visibility = View.GONE
-                        binding.parentRecyclerview.visibility = View.VISIBLE
-                        parentHomeAdapter.notifyDataSetChanged()
+                        if (isPremiumUser.toString().isNotEmpty())
+                        {
+                            val homeData = result.data
+                            parentHomeAdapter.homeData = homeData.data
+                            parentHomeAdapter.isPemiumUser = isPremiumUser
+                            binding.progressBar.visibility = View.GONE
+                            binding.tryAgainBtn.visibility = View.GONE
+                            binding.parentRecyclerview.visibility = View.VISIBLE
+                            parentHomeAdapter.notifyDataSetChanged()
+                        }
+
                     }
 
                     is ResultType.Error -> {

@@ -11,10 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentMoreBinding
 import com.rtvplus.ui.activities.FavoriteListActivity
@@ -26,9 +28,6 @@ import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.AppUtils.PACKAGE_NAME
 import com.rtvplus.utils.AppUtils.PhoneInputKey
 import com.rtvplus.utils.SharedPreferencesUtil
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
@@ -45,7 +44,13 @@ class MoreFragment : Fragment() {
         binding = FragmentMoreBinding.inflate(inflater, container, false)
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        val toolbar = binding.toolbar
+        binding.backButton.setOnClickListener {
+            val navController = findNavController(binding.root)
+            navController.navigate(R.id.HomeFragment)
+            val bottomNavigationView =
+                requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+            bottomNavigationView.selectedItemId = R.id.HomeFragment
+        }
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -57,15 +62,6 @@ class MoreFragment : Fragment() {
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-
-        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
-
-        (requireActivity() as AppCompatActivity).supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowHomeEnabled(true)
-            title = "More"
-        }
-
 
         val googleLoginInfo = SharedPreferencesUtil.getData(
             requireContext(),
