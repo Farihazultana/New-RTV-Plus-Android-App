@@ -55,6 +55,27 @@ interface ApiServices {
     ): Response<SearchResponse>
 
     @FormUrlEncoded
+    @POST("flix_mylist.php")
+    suspend fun getFavoriteContent(
+        @Field("username") username: String,
+        @Field("page") page: String
+    ): Response<FavoriteResponse>
+
+    @FormUrlEncoded
+    @POST("flix_setmylist.php")
+    suspend fun addFavoriteContent(
+        @Field("myval") myval: String,
+        @Field("username") username: String
+    ): Response<AddListResponse>
+
+    @FormUrlEncoded
+    @POST("flix_unsetmylist.php")
+    suspend fun removeFavoriteContent(
+        @Field("myval") myval: String,
+        @Field("username") username: String
+    ): Response<RemoveListResponse>
+
+    @FormUrlEncoded
     @POST("flix_subschemes.php")
     suspend fun getSubscriptionData(
         @Field("msisdn") msisdn: String
@@ -106,6 +127,13 @@ interface ApiServices {
     ):Response<GoogleLogInResponse>
 
     @FormUrlEncoded
+    @POST("flix_appinfo.php")
+    suspend fun getInfoData(
+        @Field("msisdn") msisdn: String,
+        @Field("appinfo") appinfo: String,
+    ): Response<InfoResponse>
+
+    @FormUrlEncoded
     @POST("flix_sub_instant_sdp_portpos.php")
     suspend fun getLocalPaymentData(
         @Field("msisdn") msisdn: String,
@@ -126,32 +154,4 @@ interface ApiServices {
         @Field("msisdn") msisdn: String,
         @Field("couponcode") couponcode: String
     ): Response<RedeemCouponPaymentResponse>
-
-    @FormUrlEncoded
-    @POST("flix_mylist.php")
-    suspend fun getFavoriteContent(
-        @Field("username") username: String,
-        @Field("page") page: String
-    ): Response<FavoriteResponse>
-
-    @FormUrlEncoded
-    @POST("flix_setmylist.php")
-    suspend fun addFavoriteContent(
-        @Field("myval") myval: String,
-        @Field("username") username: String
-    ): Response<AddListResponse>
-
-    @FormUrlEncoded
-    @POST("flix_unsetmylist.php")
-    suspend fun removeFavoriteContent(
-        @Field("myval") myval: String,
-        @Field("username") username: String
-    ): Response<RemoveListResponse>
-
-    @FormUrlEncoded
-    @POST("flix_appinfo.php")
-    suspend fun getInfoData(
-        @Field("msisdn") msisdn: String,
-        @Field("appinfo") appinfo: String,
-    ): Response<InfoResponse>
 }

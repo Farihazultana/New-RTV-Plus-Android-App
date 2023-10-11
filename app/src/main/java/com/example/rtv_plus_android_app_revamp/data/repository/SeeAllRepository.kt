@@ -2,7 +2,6 @@ package com.example.rtv_plus_android_app_revamp.data.repository
 
 import android.util.Log
 import com.example.rtv_plus_android_app_revamp.data.models.seeAll.SeeAllResponse
-import com.example.rtv_plus_android_app_revamp.data.models.subscription.SubscriptionResponse
 import com.example.rtv_plus_android_app_revamp.data.services.ApiServices
 import com.example.rtv_plus_android_app_revamp.utils.ResultType
 import javax.inject.Inject
@@ -26,4 +25,5 @@ class SeeAllRepository @Inject constructor(private val apiServices: ApiServices)
             return ResultType.Error(e)
         }
     }
+
 }

@@ -76,13 +76,9 @@ class ChildHomeAdapter(
                         val spRes = SharedPreferencesUtil.getData(
                             myContext,
                             LoginActivity.LogInKey,
-                            "default_value"
+                            ""
                         )
-                        val spResGoogle = SharedPreferencesUtil.getData(
-                            myContext,
-                            LoginActivity.GoogleSignInKey,
-                            "default_value"
-                        )
+
                         Log.i("SPref", "onBindViewHolder: $spRes")
                         if (spRes == "success" || LoginActivity.showOneTapUI) {
                             val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
@@ -109,7 +105,7 @@ class ChildHomeAdapter(
                         val spRes = SharedPreferencesUtil.getData(
                             myContext,
                             LoginActivity.LogInKey,
-                            "default_value"
+                            ""
                         )
                         val spResGoogle = SharedPreferencesUtil.getData(
                             myContext,
@@ -132,7 +128,7 @@ class ChildHomeAdapter(
 
                 Glide.with(holder.imageView.context)
                     .load(currentItem.image_location)
-                    .placeholder(R.drawable.no_img)
+                    .placeholder(R.drawable.ic_launcher_background)
                     .into(holder.imageView)
 
 

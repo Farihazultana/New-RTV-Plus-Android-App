@@ -1,6 +1,5 @@
 package com.example.rtv_plus_android_app_revamp.ui.fragments.subscription
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -36,19 +35,18 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     private var selectedPositions = -1
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         binding = FragmentSubscriptionBinding.inflate(inflater, container, false)
         bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
 
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
         toolBarIconSubscribe.setOnClickListener {
             val navController = findNavController(binding.root)
             navController.navigate(R.id.HomeFragment)
-            val bottomNavigationView =
-                requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+            val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
             bottomNavigationView.selectedItemId = R.id.HomeFragment
         }
 
@@ -64,19 +62,21 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
 
                 val navController = findNavController(binding.root)
                 navController.navigate(R.id.HomeFragment)
-                val bottomNavigationView =
-                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+                val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
                 bottomNavigationView.selectedItemId = R.id.HomeFragment
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         val getPhoneNumSP = SharedPreferencesUtil.getData(
-            requireContext(), LoginActivity.UsernameInputKey, ""
+            requireContext(),
+            LoginActivity.UsernameInputKey,
+            ""
         ).toString()
-        if (getPhoneNumSP.isNotEmpty()) {
+        if (getPhoneNumSP.isNotEmpty()){
             subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
-        } else {
+        }
+        else{
             Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
         }
 
@@ -100,8 +100,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                         binding.subscribeProgressBar.visibility = View.GONE
                         binding.textView.visibility = View.VISIBLE
                         binding.btnContinuePayment.visibility = View.VISIBLE
-                        for (item in subscriptionData.subschemes) {
-                            if (item.userpack != "nopack") {
+                        for(item in subscriptionData.subschemes){
+                            if(item.userpack != "nopack"){
                                 binding.btnContinuePayment.visibility = View.GONE
                                 binding.textView.text = item.packtext
                             }
@@ -126,7 +126,9 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                 showBottomSheet()
             } else {
                 Toast.makeText(
-                    requireActivity(), "PLease select your plan first", Toast.LENGTH_LONG
+                    requireActivity(),
+                    "PLease select your plan first",
+                    Toast.LENGTH_LONG
                 ).show()
             }
 
@@ -149,7 +151,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     }
 
     override fun onCardClickListener(position: Int, item: SubschemesItem?) {
-        if (item?.userpack == "nopack") {
+        if(item?.userpack == "nopack"){
             this.selectedPositions = position
             //binding.btnContinuePayment.isEnabled = selectedPositions != -1
             //showBottomSheet(item?.sub_text)
