@@ -44,9 +44,13 @@ class SeeAllAdapter(
                 .placeholder(R.drawable.no_img)
                 .into(holder.contentImage)
         }
-        if (item?.isfree?.toInt() == 0) {
+        if (item?.isfree == "0") {
             holder.premiumText.visibility = View.VISIBLE
         }
+        else{
+            holder.premiumText.visibility = View.GONE
+        }
+
         if (item != null) {
             holder.contentTitle.text = item.name
         }

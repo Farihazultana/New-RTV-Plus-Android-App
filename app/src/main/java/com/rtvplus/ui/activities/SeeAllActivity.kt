@@ -150,13 +150,17 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                 ""
             )
 
-            Log.e("fffffffffffffffffffff", phone.toString())
-            Log.e("fffffffffffffffffffff", email.toString())
+
 
             if (item.contenttype == "playlist") {
 
                 if (phone.toString().isNotEmpty() || email.toString().isNotEmpty()) {
+
                     if (isPremiumUser.toString() == "0" && item?.isfree == "0") {
+
+                        Log.e("fffffffffffffffffffff", item?.isfree.toString())
+                        Log.e("fffffffffffffffffffff", isPremiumUser.toString())
+
                         val fragmentTransaction = this.supportFragmentManager.beginTransaction()
                         val subscriptionFragment = SubscriptionFragment()
                         fragmentTransaction.replace(
@@ -166,6 +170,9 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                         fragmentTransaction.addToBackStack(null)
                         fragmentTransaction.commit()
                     } else {
+                        Log.e("fffffffffffffffffffff", "Inside else block: ${item?.isfree.toString()}" )
+                        Log.e("fffffffffffffffffffff","Inside else block: ${isPremiumUser.toString()}")
+
                         val intent = Intent(this, PlayerActivity::class.java)
                         intent.putExtra("id", item?.contentid)
                         startActivity(intent)
