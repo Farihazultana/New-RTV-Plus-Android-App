@@ -21,6 +21,7 @@ import com.rtvplus.utils.SharedPreferencesUtil
 class SearchListAdapter(
     private var myContext: Context,
     var content: List<Content?>?,
+    private val listener: itemClickListener,
     var isPemiumUser: Int?
 ) :
     RecyclerView.Adapter<SearchListAdapter.SearchListViewHolder>() {
@@ -29,6 +30,7 @@ class SearchListAdapter(
             LayoutInflater.from(parent.context).inflate(R.layout.row_obj_search_item, parent, false)
         return SearchListViewHolder(itemView)
     }
+
 
     override fun getItemCount(): Int {
         return content?.size ?: -1
@@ -60,44 +62,48 @@ class SearchListAdapter(
         holder.contentDuration.text = item?.length2
         Log.i("TagN", "onBindViewHolder: $item")
 
+        holder.itemView.setOnClickListener {
+            listener.onItemClickListener(position, item)
+        }
+
 //        holder.itemView.setOnClickListener {
 //            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
 //            intent.putExtra("id", item?.contentid)
 //            intent.putExtra("type", "single")
 //            holder.itemView.context.startActivity(intent)
 //        }
-        holder.itemView.setOnClickListener {
-            val spRes = SharedPreferencesUtil.getData(
-                myContext,
-                AppUtils.LogInKey,
-                ""
-            )
-            val spResGoogle = SharedPreferencesUtil.getData(
-                myContext,
-                AppUtils.GoogleSignInKey,
-                ""
-            )
-            Log.i("SPref", "onBindViewHolder: $spRes")
-
-            if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
-
-                if (isPemiumUser == 0 && item?.isfree?.toInt() == 0) {
-
-
-
-                } else {
-                    val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                    intent.putExtra("id", item?.contentid)
-                    intent.putExtra("type", "single")
-                    holder.itemView.context.startActivity(intent)
-                }
-
-            } else {
-                val intent = Intent(holder.itemView.context, LoginActivity::class.java)
-                holder.itemView.context.startActivity(intent)
-            }
-
-        }
+//        holder.itemView.setOnClickListener {
+//            val spRes = SharedPreferencesUtil.getData(
+//                myContext,
+//                AppUtils.LogInKey,
+//                ""
+//            )
+//            val spResGoogle = SharedPreferencesUtil.getData(
+//                myContext,
+//                AppUtils.GoogleSignInKey,
+//                ""
+//            )
+//            Log.i("SPref", "onBindViewHolder: $spRes")
+//
+//            if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
+//
+//                if (isPemiumUser == 0 && item?.isfree?.toInt() == 0) {
+//
+//
+//
+//                } else {
+//                    val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+//                    intent.putExtra("id", item?.contentid)
+//                    intent.putExtra("type", "single")
+//                    holder.itemView.context.startActivity(intent)
+//                }
+//
+//            } else {
+//                val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+//                holder.itemView.context.startActivity(intent)
+//            }
+//
+//        }
     }
 
     inner class SearchListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -105,5 +111,9 @@ class SearchListAdapter(
         var premiumText: TextView = itemView.findViewById(R.id.premiumTextView)
         var contentTitle: TextView = itemView.findViewById(R.id.title_textView)
         var contentDuration: TextView = itemView.findViewById(R.id.descriptionTextView)
+    }
+
+    interface itemClickListener {
+        fun onItemClickListener(position: Int, item: Content?)
     }
 }

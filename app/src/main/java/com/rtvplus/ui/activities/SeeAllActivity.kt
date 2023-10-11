@@ -128,17 +128,13 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
         val backStackEntryCount = fragmentManager.backStackEntryCount
 
         if (backStackEntryCount > 0) {
-            for (i in backStackEntryCount - 1 downTo 0) {
-                val entry = fragmentManager.getBackStackEntryAt(i)
-                if (entry.name == "HomeFragment") {
-                    fragmentManager.popBackStack(entry.id, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                    return
-                }
-            }
+            // Pop the fragment on the first back button click
+            fragmentManager.popBackStack()
+        } else {
+            // If the back stack is empty, navigate back or exit the activity
+            super.onBackPressed()
         }
-        super.onBackPressed()
     }
-
     override fun onItemClickListener(position: Int, item: Content?) {
 
         if (item != null) {

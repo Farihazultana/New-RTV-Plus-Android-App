@@ -12,16 +12,14 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.rtvplus.R
+import com.rtvplus.data.models.search.Content
 import com.rtvplus.data.models.search.SearchResponse
 import com.rtvplus.databinding.ActivitySearchBinding
 import com.rtvplus.ui.adapters.SearchListAdapter
+import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SearchViewModel
 import com.rtvplus.utils.AppUtils
@@ -29,11 +27,10 @@ import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener {
     lateinit var binding: ActivitySearchBinding
     private val searchViewModel by viewModels<SearchViewModel>()
     private lateinit var searchListAdapter: SearchListAdapter
@@ -94,8 +91,8 @@ class SearchActivity : AppCompatActivity() {
 
                 if (!query.isNullOrEmpty()) {
                     searchViewModel.fetchSearchData("app", query.toString())
-                    Toast.makeText(this@SearchActivity, "Search Query: $query", Toast.LENGTH_SHORT)
-                        .show()
+//                    Toast.makeText(this@SearchActivity, "Search Query: $query", Toast.LENGTH_SHORT)
+//                        .show()
                 } else {
                     binding.searchVoiceBtn.visibility = View.VISIBLE
                     binding.cancelButton.visibility = View.GONE
@@ -115,11 +112,11 @@ class SearchActivity : AppCompatActivity() {
                     binding.searchVoiceBtn.visibility = View.GONE
                     binding.cancelButton.visibility = View.VISIBLE
 
-                    Toast.makeText(
-                        this@SearchActivity,
-                        "Current Query: $newText",
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        this@SearchActivity,
+//                        "Current Query: $newText",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                 } else {
                     binding.searchVoiceBtn.visibility = View.VISIBLE
                     binding.cancelButton.visibility = View.GONE
@@ -128,7 +125,7 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
-        searchListAdapter = SearchListAdapter(this@SearchActivity,emptyList(),null)
+        searchListAdapter = SearchListAdapter(this@SearchActivity, emptyList(), this, null)
         binding.searchItemRecyclerView.layoutManager = GridLayoutManager(this, 2)
         binding.searchItemRecyclerView.adapter = searchListAdapter
 
@@ -175,8 +172,7 @@ class SearchActivity : AppCompatActivity() {
                 is ResultType.Success<*> -> {
                     val content = result.data as SearchResponse
                     if (content.contents.isNotEmpty()) {
-                        if (isPremiumUser.toString().isNotEmpty())
-                        {
+                        if (isPremiumUser.toString().isNotEmpty()) {
                             binding.progressbar.visibility = View.GONE
                             binding.emptyResultTv.visibility = View.GONE
                             searchListAdapter.content = content.contents
@@ -229,6 +225,60 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_VOICE_SEARCH = 123
+    }
+
+    override fun onItemClickListener(position: Int, item: Content?) {
+        if (item != null) {
+
+            val phone = SharedPreferencesUtil.getData(
+                this,
+                AppUtils.LogInKey,
+                ""
+            )
+            val email = SharedPreferencesUtil.getData(
+                this,
+                AppUtils.GoogleSignInKey,
+                ""
+            )
+
+            if (phone.toString().isNotEmpty() || email.toString().isNotEmpty()) {
+                if (isPremiumUser == 0 && item?.isfree == "0") {
+
+                    val fragmentTransaction = this.supportFragmentManager.beginTransaction()
+                    val subscriptionFragment = SubscriptionFragment()
+                    fragmentTransaction.replace(
+                        R.id.subscriptionContainerView,
+                        subscriptionFragment
+                    )
+                    fragmentTransaction.addToBackStack(null)
+                    fragmentTransaction.commit()
+
+                } else {
+                    val intent = Intent(this, PlayerActivity::class.java)
+                        .putExtra("id", item?.contentid)
+                        .putExtra("type", "single")
+                    startActivity(intent)
+                }
+            } else {
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+            }
+
+        }
+
+    }
+
+    override fun onBackPressed() {
+        val fragmentManager = supportFragmentManager
+        val backStackEntryCount = fragmentManager.backStackEntryCount
+
+        if (backStackEntryCount > 0) {
+            // Pop the fragment on the first back button click
+            fragmentManager.popBackStack()
+        } else {
+            // If the back stack is empty, navigate back or exit the activity
+            super.onBackPressed()
+        }
     }
 
 }

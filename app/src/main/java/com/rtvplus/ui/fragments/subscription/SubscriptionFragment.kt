@@ -2,16 +2,17 @@ package com.rtvplus.ui.fragments.subscription
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.subscription.SubschemesItem
 import com.rtvplus.databinding.FragmentSubscribeBottomBinding
@@ -19,7 +20,6 @@ import com.rtvplus.databinding.FragmentSubscriptionBinding
 import com.rtvplus.ui.adapters.SubscriptionAdapter
 import com.rtvplus.ui.viewmodels.SubscriptionViewModel
 import com.rtvplus.utils.ResultType
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -42,12 +42,17 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
+        val fragmentManager = requireActivity().supportFragmentManager
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
         toolBarIconSubscribe.setOnClickListener {
-            val navController = findNavController(binding.root)
-            navController.navigate(R.id.HomeFragment)
-            val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-            bottomNavigationView.selectedItemId = R.id.HomeFragment
+
+            fragmentManager.popBackStack()
+
+
+//            val navController = findNavController(binding.root)
+//            navController.navigate(R.id.HomeFragment)
+//            val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+//            bottomNavigationView.selectedItemId = R.id.HomeFragment
         }
 
         return binding.root
@@ -56,18 +61,25 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-//        bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
+        val receivedData = arguments?.getString("nav_key")
+        if (receivedData == "from_child_fregment") {
+
+            val bottomNavigationView =
+                requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+            bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
+
+        }
+
 
         //go to previous screen
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
 
-                requireActivity().finish()
-//                val navController = findNavController(binding.root)
-//                navController.navigate(R.id.HomeFragment)
-//                val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-//                bottomNavigationView.selectedItemId = R.id.HomeFragment
+                val navController = findNavController(binding.root)
+                navController.navigate(R.id.HomeFragment)
+                val bottomNavigationView =
+                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+                bottomNavigationView.selectedItemId = R.id.HomeFragment
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)

@@ -2,6 +2,7 @@ package com.rtvplus.ui.adapters
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -85,7 +86,11 @@ class ChildHomeAdapter(
                         if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
 
                             if (isPemiumUser.toString() == "0" && currentItem.isfree == "0") {
-                                navController.navigate(R.id.SubscriptionFragment)
+
+                                val bundle = Bundle()
+                                bundle.putString("nav_key", "from_child_fregment")
+
+                                navController.navigate(R.id.SubscriptionFragment,bundle)
 
                             } else {
                                 val intent =
@@ -118,7 +123,9 @@ class ChildHomeAdapter(
 
                         if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
                             if (isPemiumUser.toString() == "0" && currentItem.isfree == "0") {
-                                navController.navigate(R.id.SubscriptionFragment)
+                                val bundle = Bundle()
+                                bundle.putString("nav_key", "from_child_fregment")
+                                navController.navigate(R.id.SubscriptionFragment,bundle)
 
                             } else {
                                 val intent =
