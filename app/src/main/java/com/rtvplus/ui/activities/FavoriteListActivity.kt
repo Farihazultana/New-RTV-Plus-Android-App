@@ -1,27 +1,37 @@
 package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.rtvplus.R
+import com.rtvplus.data.models.favorite_list.Content
 import com.rtvplus.data.models.favorite_list.FavoriteResponse
 import com.rtvplus.data.models.favorite_list.RemoveListResponse
 import com.rtvplus.databinding.ActivityFavoriteListBinding
 import com.rtvplus.ui.adapters.FavoriteListAdapter
+import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.ui.viewmodels.FavoriteListViewModel
+import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.RemoveFavoriteListViewModel
+import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveItemClickListener {
+class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveItemClickListener,
+    FavoriteListAdapter.itemClickListener {
     lateinit var binding: ActivityFavoriteListBinding
     private val favoriteListViewModel by viewModels<FavoriteListViewModel>()
     private val removeListViewModel by viewModels<RemoveFavoriteListViewModel>()
@@ -30,6 +40,8 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
     private var currentPage = 1
     private var isLoading = false
     private var isLastpage = false
+    private val logInViewModel by viewModels<LogInViewModel>()
+    private var isPremiumUser: Int? = 0
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +58,32 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             setDisplayShowHomeEnabled(true)
             title = "My Favourites"
         }
-        favoriteListAdapter = FavoriteListAdapter(null, this)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            logInViewModel.logInData.collect {
+                when (it) {
+                    is ResultType.Success -> {
+                        val logInResult = it.data
+
+                        for (item in logInResult) {
+                            val result = item.play
+                            isPremiumUser = result
+                        }
+                    }
+
+                    is ResultType.Error -> {
+                        isPremiumUser = 0
+
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
+        }
+        favoriteListAdapter = FavoriteListAdapter(null, this, this)
         binding.favouriteListRecyclerview.layoutManager = GridLayoutManager(this, 2)
         binding.favouriteListRecyclerview.adapter = favoriteListAdapter
 
@@ -149,6 +186,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         }
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -215,6 +253,44 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             }
         }
 
+    }
+
+    override fun onItemClickListener(position: Int, item: Content?) {
+        val username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "")
+
+        if (username.toString().isNotEmpty()) {
+            if (isPremiumUser == 0 && item?.isfree == "0") {
+                val fragmentTransaction = this.supportFragmentManager.beginTransaction()
+                val subscriptionFragment = SubscriptionFragment()
+                fragmentTransaction.replace(
+                    R.id.subscriptionContainerView,
+                    subscriptionFragment
+                )
+                fragmentTransaction.addToBackStack(null)
+                fragmentTransaction.commit()
+
+            } else {
+                val intent = Intent(this, PlayerActivity::class.java)
+                    .putExtra("id", item?.contentid)
+                    .putExtra("type", "single")
+                startActivity(intent)
+            }
+        } else {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+    }
+    override fun onBackPressed() {
+        val fragmentManager = supportFragmentManager
+        val backStackEntryCount = fragmentManager.backStackEntryCount
+
+        if (backStackEntryCount > 0) {
+            // Pop the fragment on the first back button click
+            fragmentManager.popBackStack()
+        } else {
+            // If the back stack is empty, navigate back or exit the activity
+            super.onBackPressed()
+        }
     }
 
 }

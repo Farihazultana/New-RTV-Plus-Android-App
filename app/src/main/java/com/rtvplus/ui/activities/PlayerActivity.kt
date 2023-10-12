@@ -38,7 +38,6 @@ import com.rtvplus.ui.viewmodels.PlayListViewModel
 import com.rtvplus.ui.viewmodels.RemoveFavoriteListViewModel
 import com.rtvplus.ui.viewmodels.SingleContentViewModel
 import com.rtvplus.utils.AppUtils
-import com.rtvplus.utils.AppUtils.PhoneInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,7 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class PlayerActivity : AppCompatActivity(),SimilarItemsAdapter.itemClickListener {
+class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListener {
     private lateinit var binding: ActivityPlayerBinding
     private val singleContentViewModel by viewModels<SingleContentViewModel>()
     private val playListViewModel by viewModels<PlayListViewModel>()
@@ -118,6 +117,7 @@ class PlayerActivity : AppCompatActivity(),SimilarItemsAdapter.itemClickListener
                     }
 
                     is ResultType.Error -> {
+                        isPremiumUser = 0
 
                     }
 
@@ -457,7 +457,7 @@ class PlayerActivity : AppCompatActivity(),SimilarItemsAdapter.itemClickListener
                 }
             }
         }
-        similarItemsAdapter = SimilarItemsAdapter(emptyList(),this)
+        similarItemsAdapter = SimilarItemsAdapter(emptyList(), this)
         playListAdapter = PlayListAdapter(emptyList())
         binding.similarItemRecyclerView.layoutManager = LinearLayoutManager(this)
     }
