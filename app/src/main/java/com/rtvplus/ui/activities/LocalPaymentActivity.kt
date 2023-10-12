@@ -122,7 +122,6 @@ class LocalPaymentActivity : AppCompatActivity() {
                         }
                         //finish()
                         val intent = Intent(activity, MainActivity::class.java)
-                        intent.putExtra("destinationFragment", "subscriptionFragment")
                         activity.startActivity(intent)
                     }
                 }

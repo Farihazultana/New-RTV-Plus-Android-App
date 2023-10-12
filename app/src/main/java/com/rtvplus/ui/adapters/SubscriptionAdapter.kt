@@ -1,12 +1,15 @@
 package com.rtvplus.ui.adapters
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.rtvplus.R
 import com.rtvplus.data.models.subscription.SubschemesItem
@@ -50,15 +53,27 @@ class SubscriptionAdapter(
             holder.subText.text = item.sub_text
         }
 
+
         holder.checkedCard.visibility =
             if (selectedPositions == position) View.VISIBLE else View.GONE
 
 
+        if(item?.userpack == item?.sub_pack){
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.green))
+            holder.checkedCard.visibility = View.VISIBLE
+        }else{
+            holder.checkedCard.visibility = View.GONE
+        }
 
         holder.itemView.setOnClickListener {
-            selectedPositions = position
-            cardClickListener.onCardClickListener(position, item)
-            notifyDataSetChanged()
+            if (item?.userpack == "nopack"){
+                selectedPositions = position
+                cardClickListener.onCardClickListener(position, item)
+                notifyDataSetChanged()
+            }else{
+                holder.itemView.isClickable = false
+            }
+
         }
     }
 

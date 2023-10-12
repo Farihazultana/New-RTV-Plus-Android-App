@@ -37,13 +37,6 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
 
-        val destinationFragment = intent.getStringExtra("destinationFragment")
-        if (destinationFragment == "subscriptionFragment") {
-            // Navigate to the SubscriptionFragment
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.SubscriptionFragment) as NavHostFragment
-            val navController = navHostFragment.navController
-            navController.navigate(R.id.SubscriptionFragment)
-        }
 
         val username = SharedPreferencesUtil.getData(
             this,

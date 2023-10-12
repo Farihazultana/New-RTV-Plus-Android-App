@@ -1,7 +1,7 @@
 package com.rtvplus.ui.fragments.subscription
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +16,6 @@ import com.rtvplus.R
 import com.rtvplus.data.models.subscription.SubschemesItem
 import com.rtvplus.databinding.FragmentSubscribeBottomBinding
 import com.rtvplus.databinding.FragmentSubscriptionBinding
-import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.adapters.SubscriptionAdapter
 import com.rtvplus.ui.viewmodels.SubscriptionViewModel
 import com.rtvplus.utils.ResultType
@@ -109,6 +108,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                             if(item.userpack != "nopack"){
                                 binding.btnContinuePayment.visibility = View.GONE
                                 binding.textView.text = item.packtext
+                                Log.i("Subscription", "onViewCreated: ${item.packtext} & ${item.userpack}")
                             }
                         }
                         subscriptionAdapter.notifyDataSetChanged()
@@ -160,14 +160,16 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
             this.selectedPositions = position
             //binding.btnContinuePayment.isEnabled = selectedPositions != -1
             //showBottomSheet(item?.sub_text)
-            args.putString("packageText", item?.sub_text)
-            args.putString("sub_pack", item?.sub_pack)
-            args.putString("pack_name", item?.pack_name)
+            args.putString("packageText", item.sub_text)
+            args.putString("sub_pack", item.sub_pack)
+            args.putString("pack_name", item.pack_name)
             if (selectedPositions != -1) {
                 binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.green))
             } else {
                 binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
             }
+        }else{
+            this.selectedPositions = position
         }
     }
 
