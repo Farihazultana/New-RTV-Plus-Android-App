@@ -182,15 +182,38 @@ class LoginActivity : AppCompatActivity() {
             btnSendRequest?.setOnClickListener {
                 val enteredUsername =
                     dialog.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etUsername).text.toString()
+                Log.i("Forget", "onCreate: $enteredUsername")
 
                 if (enteredUsername.isNotEmpty()) {
                     if (enteredUsername.length == 11) {
                         val phoneText = "88$enteredUsername"
                         forgetPasswordViewModel.fetchForgetPasswordData(
                             phoneText,
-                            "123457",
-                            "123456"
+                            "forget",
                         )
+                        lifecycleScope.launch {
+                            forgetPasswordViewModel.forgetPasswordData.collect {
+                                when (it) {
+                                    is ResultType.Success -> {
+                                        val result = it.data
+                                        Toast.makeText(this@LoginActivity, result.message, Toast.LENGTH_LONG)
+                                            .show()
+                                    }
+
+                                    is ResultType.Error -> {
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            "Something is wrong, please try again!",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+
+                                    else -> {
+
+                                    }
+                                }
+                            }
+                        }
                     } else if (enteredUsername.length < 11) {
                         Toast.makeText(
                             this@LoginActivity,
@@ -212,29 +235,7 @@ class LoginActivity : AppCompatActivity() {
                     ).show()
                 }
 
-                lifecycleScope.launch {
-                    forgetPasswordViewModel.forgetPasswordData.collect {
-                        when (it) {
-                            is ResultType.Success -> {
-                                val result = it.data
-                                Toast.makeText(this@LoginActivity, result.status, Toast.LENGTH_LONG)
-                                    .show()
-                            }
 
-                            is ResultType.Error -> {
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "Something is wrong, please try again!",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-
-                            else -> {
-
-                            }
-                        }
-                    }
-                }
             }
         }
 

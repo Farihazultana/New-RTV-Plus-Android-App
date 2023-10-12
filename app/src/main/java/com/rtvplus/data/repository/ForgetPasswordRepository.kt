@@ -9,12 +9,11 @@ import javax.inject.Inject
 
 class ForgetPasswordRepository @Inject constructor(private val apiServices: ApiServices) {
     suspend fun getForgetPasswordData(
-        username: String,
-        password: String,
-        newPass: String
+        msisdn: String,
+        forget: String,
     ): ResultType<ForgetPasswordResponse> {
         try {
-            val response = apiServices.getForgetPasswordData(username, password, newPass)
+            val response = apiServices.getForgetPasswordData(msisdn, forget)
             Log.i("Forget", "successful api call: ${response.code()}")
             if (response.isSuccessful) {
                 val data = response.body()

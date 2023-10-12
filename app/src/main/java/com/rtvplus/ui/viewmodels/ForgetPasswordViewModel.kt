@@ -18,10 +18,10 @@ class ForgetPasswordViewModel @Inject constructor(private val repository: Forget
         ResultType.Loading)
     val forgetPasswordData: StateFlow<ResultType<ForgetPasswordResponse>> = _forgetPasswordData
 
-    fun fetchForgetPasswordData(username: String, password: String, newPass: String){
+    fun fetchForgetPasswordData(msisdn: String, forget: String){
         viewModelScope.launch {
             try {
-                val result = repository.getForgetPasswordData(username, password, newPass)
+                val result = repository.getForgetPasswordData(msisdn, forget)
                 _forgetPasswordData.value = result
             }catch (e: Exception){
                 _forgetPasswordData.value = ResultType.Error(e)
