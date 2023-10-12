@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
+import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.FragmentHomeBinding
 import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.ui.activities.SearchActivity
@@ -27,9 +29,13 @@ import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
+    @Inject
+    lateinit var deviceInfo: DeviceInfo
+
     private lateinit var binding: FragmentHomeBinding
     private lateinit var parentHomeAdapter: ParentHomeAdapter
     private var doubleBackPressedOnce = false
@@ -45,7 +51,8 @@ class HomeFragment : Fragment() {
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+        val bottomNavigationView =
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
         bottomNavigationView.selectedItemId = R.id.HomeFragment
 
         binding.searchIcon.setOnClickListener {
@@ -60,6 +67,16 @@ class HomeFragment : Fragment() {
             requireActivity().finish()
         }
 
+        val deviceId = deviceInfo.deviceId
+        val softwareVersion = deviceInfo.softwareVersion
+        val brand = deviceInfo.brand
+        val model = deviceInfo.model
+        val release = deviceInfo.release
+        val sdkVersion = deviceInfo.sdkVersion
+        val versionCode = deviceInfo.versionCode
+
+        Log.e("iiiiiiiiiiiiiiiiiiiiii", deviceId)
+
         return binding.root
     }
 
@@ -68,7 +85,8 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         homeViewModel.fetchHomeData("", "home")
 
-        parentHomeAdapter = ParentHomeAdapter(requireContext(), emptyList(), findNavController(),null)
+        parentHomeAdapter =
+            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null)
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
@@ -92,7 +110,9 @@ class HomeFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
 
-        val username = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
+        val username =
+            SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
+                .toString()
 
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
@@ -133,8 +153,7 @@ class HomeFragment : Fragment() {
                     }
 
                     is ResultType.Success -> {
-                        if (isPremiumUser.toString().isNotEmpty())
-                        {
+                        if (isPremiumUser.toString().isNotEmpty()) {
                             val homeData = result.data
                             parentHomeAdapter.homeData = homeData.data
                             parentHomeAdapter.isPemiumUser = isPremiumUser
