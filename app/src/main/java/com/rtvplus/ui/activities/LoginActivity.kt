@@ -6,7 +6,6 @@ import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -59,6 +58,7 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
 
         //Text Counter for Phone number 0/11
         binding.etPhoneText.addTextChangedListener(object : TextWatcher {
@@ -131,7 +131,11 @@ class LoginActivity : AppCompatActivity() {
                                     UsernameInputKey,
                                     phoneText!!
                                 ).toString()
-                                finish()
+                                //Handler().postDelayed({ finish() }, 2000)
+
+                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                startActivity(intent)
+
 //                                val getPhoneNumSP = SharedPreferencesUtil.getData(
 //                                    this@LoginActivity,
 //                                    PhoneInputKey,
@@ -275,7 +279,11 @@ class LoginActivity : AppCompatActivity() {
                         )
                     }
             } else {
-                Toast.makeText(this@LoginActivity, "Something went wrong! Please try again later..", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Something went wrong! Please try again later..",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         }
@@ -364,7 +372,10 @@ class LoginActivity : AppCompatActivity() {
                                     }
                                 }
                             }
-                            Handler().postDelayed({ finish() }, 2000)
+                            //finish()
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
+
 
                         }
 
