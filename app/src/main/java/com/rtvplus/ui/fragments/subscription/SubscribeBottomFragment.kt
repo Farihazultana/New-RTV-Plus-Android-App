@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentSubscribeBottomBinding
@@ -19,6 +18,8 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
     lateinit var bottomBinding: FragmentSubscribeBottomBinding
     private var isLocalSelected = false
     private var isRedeemSelected = false
+    private var isRedeemCouponBottomDialogOpened = false
+    private val args = Bundle()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +33,10 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
 
         val sub_packLocalPayment = arguments?.getString("sub_pack", "") ?: ""
         Log.i("Payment", "selected package: $sub_packLocalPayment")
+
+        val selectedPackforRedeemCoupon = arguments?.getString("pack_name", "") ?: ""
+        Log.i("Redeem", "onCreateView: $selectedPackforRedeemCoupon")
+        args.putString("redeem_pack", selectedPackforRedeemCoupon)
 
         val rbLocal = bottomBinding.rbLocal
         val rbRedeem = bottomBinding.rbRedeem
@@ -57,6 +62,7 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
                 val intent = Intent(requireContext(), LocalPaymentActivity::class.java)
                 intent.putExtra("sub_pack", sub_packLocalPayment)
                 startActivity(intent)
+                dismiss()
             }
         }
 
@@ -66,13 +72,17 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             updateUI()
             bottomBinding.btnConfirmPayment.setOnClickListener {
                 val redeemCouponBottomFragment = RedeemCouponBottomFragment()
-
+                redeemCouponBottomFragment.arguments = args
                 redeemCouponBottomFragment.show(
                     childFragmentManager, redeemCouponBottomFragment.tag
                 )
+                isRedeemCouponBottomDialogOpened = true
             }
         }
 
+        /*if (isRedeemCouponBottomDialogOpened){
+            dismiss()
+        }*/
 
         return view
     }
