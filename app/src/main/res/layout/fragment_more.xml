@@ -4,22 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.MoreFragment">
+    android:background="@color/white"
+    tools:context="com.rtvplus.ui.fragments.MoreFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
+        android:background="@drawable/toolbar_background"
         android:minHeight="?attr/actionBarSize"
-        app:elevation="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextAppearance="@style/ToolbarTitleText">
 
         <ImageView
-            android:id="@+id/toolBar_icon_Subscribe"
+            android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -30,33 +29,213 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="More"
-            android:textColor="@color/black"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/tvUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Please Log In First!"
-        android:textSize="@dimen/_16sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_Logout"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:backgroundTint="@color/green"
-        android:text="Logout"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/logInAs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="@dimen/_13sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/notLoginText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="User not logged in!"
+                android:textSize="@dimen/_13sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/logInAs" />
+
+            <Button
+                android:id="@+id/logInBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/green"
+                android:text="Login now"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/notLoginText" />
+
+            <TextView
+                android:id="@+id/favourite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_background"
+                android:drawablePadding="@dimen/_12sdp"
+                android:padding="@dimen/_12sdp"
+                android:text="My Favourites"
+                android:textSize="@dimen/_12sdp"
+                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                app:drawableStartCompat="@drawable/baseline_favorite_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/logInBtn" />
+
+            <TextView
+                android:id="@+id/feedBack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_background"
+                android:drawablePadding="@dimen/_12sdp"
+                android:padding="@dimen/_12sdp"
+                android:text="Feedback"
+                android:textSize="@dimen/_12sdp"
+                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                app:drawableStartCompat="@drawable/baseline_feedback_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/favourite" />
+
+            <TextView
+                android:id="@+id/about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_background"
+                android:drawablePadding="@dimen/_8sdp"
+                android:padding="@dimen/_12sdp"
+                android:text="About"
+                android:textSize="@dimen/_12sdp"
+                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                app:drawableStartCompat="@drawable/baseline_info_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/feedBack" />
+
+            <TextView
+                android:id="@+id/license"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_background"
+                android:drawablePadding="@dimen/_12sdp"
+                android:padding="@dimen/_8sdp"
+                android:text="Lisence"
+                android:textSize="@dimen/_12sdp"
+                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                app:drawableStartCompat="@drawable/baseline_copyright_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/about" />
+
+            <TextView
+                android:id="@+id/help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_background"
+                android:drawablePadding="@dimen/_12sdp"
+                android:padding="@dimen/_8sdp"
+                android:text="Help"
+                android:textSize="@dimen/_12sdp"
+                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                app:drawableStartCompat="@drawable/baseline_help_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/license" />
+
+            <TextView
+                android:id="@+id/rate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_background"
+                android:drawablePadding="@dimen/_12sdp"
+                android:padding="@dimen/_8sdp"
+                android:text="Rate us"
+                android:textSize="@dimen/_12sdp"
+                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                app:drawableStartCompat="@drawable/baseline_star_rate_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/help" />
+
+            <TextView
+                android:id="@+id/privacyPolicy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_background"
+                android:drawablePadding="@dimen/_12sdp"
+                android:padding="@dimen/_8sdp"
+                android:text="Privacy policy"
+                android:textSize="@dimen/_12sdp"
+                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                app:drawableStartCompat="@drawable/baseline_privacy_tip_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rate" />
+
+            <TextView
+                android:id="@+id/logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_background"
+                android:drawablePadding="@dimen/_8sdp"
+                android:padding="@dimen/_12sdp"
+                android:text="Logout"
+                android:textSize="@dimen/_12sdp"
+                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                app:drawableStartCompat="@drawable/baseline_logout_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/privacyPolicy" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

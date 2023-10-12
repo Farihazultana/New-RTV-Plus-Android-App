@@ -1,14 +1,14 @@
-
-
 plugins {
     id("com.android.application")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
-    namespace = "com.example.rtv_plus_android_app_revamp"
+    namespace = "com.rtvplus"
     compileSdk = 34
 
     buildFeatures {
@@ -16,11 +16,11 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.rtv_plus_android_app_revamp"
+        applicationId = "com.rtvplus"
         minSdk = 24
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 12
+        versionName = "1.2.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -143,7 +143,11 @@ dependencies {
     implementation ("androidx.media3:media3-ui:1.1.1")
     implementation ("androidx.media3:media3-exoplayer-hls:1.1.1")
 
-    
+    // firebase analytics
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+
     implementation(project(":carouselview"))
 
     testImplementation("junit:junit:4.13.2")

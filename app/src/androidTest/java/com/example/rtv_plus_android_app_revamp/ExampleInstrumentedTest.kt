@@ -1,4 +1,4 @@
-package com.example.rtv_plus_android_app_revamp
+package com.rtvplus
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.rtv_plus_android_app_revamp", appContext.packageName)
+        assertEquals("com.rtv_plus_android_app_revamp", appContext.packageName)
     }
 }

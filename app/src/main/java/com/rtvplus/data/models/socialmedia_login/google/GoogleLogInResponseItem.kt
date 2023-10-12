@@ -1,0 +1,30 @@
+package com.rtvplus.data.models.socialmedia_login.google
+
+data class GoogleLogInResponseItem(
+    val audioad: Boolean,
+    val concurrent: Int,
+    val concurrenttext: String,
+    val consent: Int,
+    val consenttext: String,
+    val consenturl: String,
+    val currentversion: Int,
+    val currentversionios: String,
+    val email: String,
+    val enforce: Int,
+    val enforcetext: String,
+    val extrainfo: String,
+    val fullname: String,
+    val liveurl: String,
+    val loginsrc: Any,
+    val msisdn: String,
+    val packcode: Any,
+    val packname: Any,
+    val packtext: String,
+    val play: Int,
+    val referral: Int,
+    val referralimage: String,
+    val response: String,
+    val result: String,
+    val showad: Int,
+    val token: String
+)
