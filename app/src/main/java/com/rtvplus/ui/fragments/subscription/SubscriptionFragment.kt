@@ -44,8 +44,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
 
 
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
         val fragmentManager = requireActivity().supportFragmentManager
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
 
