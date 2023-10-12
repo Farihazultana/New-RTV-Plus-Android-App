@@ -7,6 +7,10 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.rtvplus.data.models.device_info.DeviceInfo
+import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.emailRegex
+import com.rtvplus.utils.AppUtils.phoneRegex
+import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -21,10 +25,29 @@ class RtvApplication : Application() {
         super.onCreate()
         firebaseAnalytics = Firebase.analytics
 
-        collectDeviceAndDeviceInfo()
+        collectDeviceAndAppInfo()
     }
 
-    private fun collectDeviceAndDeviceInfo() {
+    private fun collectDeviceAndAppInfo() {
+
+        val username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+        val isEmail = emailRegex.matches(username)
+        val isPhoneNumber = phoneRegex.matches(username)
+
+
+        if (isPhoneNumber) {
+            // The username is a phone number
+            val phoneNumber = username.replace("[^\\d]".toRegex(), "") // Remove non-digit characters
+            if (phoneNumber.length in 3..6) {
+                // Phone number contains a 3 to 6 digit sequence
+                val extractedDigits = phoneNumber
+                // Do something with the extracted digits
+                println("Extracted Digits: $extractedDigits")
+            } else {
+
+            }
+        }
+
         deviceInfo.deviceId = Build.ID
         deviceInfo.softwareVersion = Build.VERSION.RELEASE
         deviceInfo.brand = Build.BRAND

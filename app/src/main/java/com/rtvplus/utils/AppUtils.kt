@@ -24,6 +24,8 @@ object AppUtils {
     const val UsernameInputKey = "PhoneKey"
     const val GoogleSignInKey = "Google"
 
+    val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
+    val phoneRegex = Regex("\\d{10}")
 
     fun isOnline(context: Context): Boolean {
         val connectivityManager =
