@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentSubscribeBottomBinding
 import com.rtvplus.ui.activities.LocalPaymentActivity
@@ -66,17 +67,18 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
         }
 
 
-        /*if (isRedeemCouponBottomDialogOpened){
+        if (isRedeemCouponBottomDialogOpened){
             dismiss()
-        }*/
+            findNavController().popBackStack()
+        }
 
         return view
     }
 
-    override fun onDestroy() {
+    /*override fun onDestroy() {
         super.onDestroy()
-        dismiss()
-    }
+        //dismiss() // avoiding the "Can not perform this action after onSaveInstanceState" error.
+    }*/
 
     /*override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
