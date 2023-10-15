@@ -52,10 +52,6 @@ class HomeFragment : Fragment() {
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        val bottomNavigationView =
-            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-        bottomNavigationView.selectedItemId = R.id.HomeFragment
-
         binding.searchIcon.setOnClickListener {
             val intent = Intent(requireContext(), SearchActivity::class.java)
             startActivity(intent)
