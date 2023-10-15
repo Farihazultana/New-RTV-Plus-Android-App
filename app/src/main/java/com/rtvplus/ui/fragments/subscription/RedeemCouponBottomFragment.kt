@@ -22,10 +22,6 @@ import kotlinx.coroutines.launch
 class RedeemCouponBottomFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentRedeemCouponBottomBinding
     private val redeemCouponViewModel by viewModels<RedeemCouponViewModel>()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

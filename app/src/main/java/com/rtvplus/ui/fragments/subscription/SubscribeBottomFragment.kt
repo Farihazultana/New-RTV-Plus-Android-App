@@ -66,7 +66,6 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             }
         }
 
-
         if (isRedeemCouponBottomDialogOpened){
             dismiss()
             findNavController().popBackStack()
@@ -74,18 +73,6 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
 
         return view
     }
-
-    /*override fun onDestroy() {
-        super.onDestroy()
-        //dismiss() // avoiding the "Can not perform this action after onSaveInstanceState" error.
-    }*/
-
-    /*override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-
-        bottomBinding.rbLocal.isChecked = false
-        bottomBinding.rbRedeem.isChecked = false
-    }*/
 
     private fun updateUI() {
         val localCardView = bottomBinding.cvLocalPayment
