@@ -16,10 +16,16 @@ import kotlinx.coroutines.CompletableDeferred
 object AppUtils {
     const val BASE_URL = "https://api-v200.rtvplus.tv/"
     const val PACKAGE_NAME = "com.rtvplus"
+    const val PhoneInputKey = "phone_input_key_rtv"
+    //const val GoogleSignInKey = "google_key"
+   // const val LogInKey = "login_key_key_rtv"
 
     const val LogInKey = "LogIn_Result"
-    const val UsernameInputKey = "User"
+    const val UsernameInputKey = "PhoneKey"
+    const val GoogleSignInKey = "Google"
 
+    val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
+    val phoneRegex = Regex("^8801[3-9]\\d{8}$")
 
     fun isOnline(context: Context): Boolean {
         val connectivityManager =
@@ -56,5 +62,11 @@ object AppUtils {
             alertDialog.dismiss()
         }
     }
+
+
+
+
+
+
 
 }

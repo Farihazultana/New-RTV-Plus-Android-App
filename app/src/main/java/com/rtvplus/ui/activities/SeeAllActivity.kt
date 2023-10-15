@@ -15,11 +15,13 @@ import com.rtvplus.data.models.seeAll.Content
 import com.rtvplus.databinding.ActivitySeeAllBinding
 import com.rtvplus.ui.adapters.SeeAllAdapter
 import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
+import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SeeAllViewModel
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -34,6 +36,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
     private var isLoading = false
     private var isLastpage = false
     private var isPremiumUser: Int? = 0
+    private val logInViewModel by viewModels<LogInViewModel>()
 
     companion object {
         lateinit var catCode: String
@@ -58,6 +61,38 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
         binding.rvSeeAll.layoutManager = layoutManager
         binding.rvSeeAll.adapter = seeAllAdapter
 
+
+        val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
+
+        if (username.isNotEmpty()) {
+            logInViewModel.fetchLogInData(username, "", "yes", "1")
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            logInViewModel.logInData.collect {
+                when (it) {
+                    is ResultType.Success -> {
+                        val logInResult = it.data
+
+                        for (item in logInResult) {
+                            val result = item.play
+                            isPremiumUser = result
+                        }
+                    }
+
+                    is ResultType.Error -> {
+
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
+        }
+
+
         if (catCode.isNotEmpty()) {
             loadMoreData() // Initial data load
 
@@ -75,7 +110,6 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                         ) {
                             isLoading = true
                             currentPage++
-                            // End of the list reached, loading more data
                             loadMoreData()
                         }
                     }
@@ -96,6 +130,8 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
 
                     is ResultType.Success -> {
                         val seeAllData = it.data
+
+                        seeAllAdapter.isPemiumUser = isPremiumUser
 
                         if (currentPage == 1) {
                             seeAllAdapter.seeAllData = seeAllData.contents

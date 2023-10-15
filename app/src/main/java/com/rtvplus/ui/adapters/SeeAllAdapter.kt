@@ -44,7 +44,8 @@ class SeeAllAdapter(
                 .placeholder(R.drawable.no_img)
                 .into(holder.contentImage)
         }
-        if (item?.isfree == "0") {
+        Log.e("jjjjjjjjjjjjjjjjjjjjjjjjjjjjj",isPemiumUser.toString())
+        if (item?.isfree == "0" && isPemiumUser == 0) {
             holder.premiumText.visibility = View.VISIBLE
         }
         else{

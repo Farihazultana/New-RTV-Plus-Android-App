@@ -1,6 +1,5 @@
 package com.rtvplus.ui.adapters
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rtvplus.R
 import com.rtvplus.data.models.favorite_list.Content
-import com.rtvplus.ui.activities.PlayerActivity
 
 
 class FavoriteListAdapter(
     var content: List<Content?>? = null,
-    private val editItemClickListener: OnRemoveItemClickListener
+    private val editItemClickListener: OnRemoveItemClickListener,
+    private val listener: itemClickListener,
+    var isPemiumUser: Int?
 ) :
     RecyclerView.Adapter<FavoriteListAdapter.FavoriteListViewHolder>() {
     interface OnRemoveItemClickListener {
@@ -42,8 +42,12 @@ class FavoriteListAdapter(
                 .placeholder(R.drawable.no_img)
                 .into(holder.contentImage)
         }
-        if (curentItem?.isfree?.toInt() == 0) {
+        if (curentItem?.isfree?.toInt() == 0 && isPemiumUser==0) {
             holder.premiumText.visibility = View.VISIBLE
+        }
+        else
+        {
+            holder.premiumText.visibility = View.GONE
         }
         if (curentItem != null) {
             holder.contentTitle.text = curentItem.name
@@ -74,10 +78,7 @@ class FavoriteListAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-            intent.putExtra("id", curentItem?.contentid)
-            intent.putExtra("type", "single")
-            holder.itemView.context.startActivity(intent)
+            listener.onItemClickListener(position, curentItem)
         }
     }
 
@@ -87,5 +88,9 @@ class FavoriteListAdapter(
         var contentTitle: TextView = itemView.findViewById(R.id.title_textView)
         var contentDuration: TextView = itemView.findViewById(R.id.descriptionTextView)
         var optionMenu: ImageView = itemView.findViewById(R.id.optionMenu)
+    }
+
+    interface itemClickListener {
+        fun onItemClickListener(position: Int, item: Content?)
     }
 }

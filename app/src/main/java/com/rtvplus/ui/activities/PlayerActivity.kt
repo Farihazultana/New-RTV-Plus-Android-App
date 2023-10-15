@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -25,11 +26,14 @@ import com.rtvplus.R
 import com.rtvplus.data.models.favorite_list.AddListResponse
 import com.rtvplus.data.models.favorite_list.RemoveListResponse
 import com.rtvplus.data.models.single_content.playlist.PlayListResponse
+import com.rtvplus.data.models.single_content.single.Similarcontent
 import com.rtvplus.data.models.single_content.single.SingleContentResponse
 import com.rtvplus.databinding.ActivityPlayerBinding
 import com.rtvplus.ui.adapters.PlayListAdapter
 import com.rtvplus.ui.adapters.SimilarItemsAdapter
+import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.ui.viewmodels.AddFavoriteListViewModel
+import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.PlayListViewModel
 import com.rtvplus.ui.viewmodels.RemoveFavoriteListViewModel
 import com.rtvplus.ui.viewmodels.SingleContentViewModel
@@ -37,9 +41,11 @@ import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListener {
     private lateinit var binding: ActivityPlayerBinding
     private val singleContentViewModel by viewModels<SingleContentViewModel>()
     private val playListViewModel by viewModels<PlayListViewModel>()
@@ -49,6 +55,8 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playListAdapter: PlayListAdapter
     private lateinit var player: ExoPlayer
     var clickedItemIndex = 0
+    private var isPremiumUser: Int? = 0
+    private val logInViewModel by viewModels<LogInViewModel>()
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,6 +101,36 @@ class PlayerActivity : AppCompatActivity() {
         button.setOnClickListener {
             val isFullscreen = isFullscreen()
             setFullscreen(!isFullscreen)
+        }
+
+        if (username.toString().isNotEmpty()) {
+            logInViewModel.fetchLogInData(username.toString(), "", "yes", "1")
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            logInViewModel.logInData.collect {
+                when (it) {
+                    is ResultType.Success -> {
+                        val logInResult = it.data
+
+                        for (item in logInResult) {
+                            val result = item.play
+                            isPremiumUser = result
+                            similarItemsAdapter.isPemiumUser = isPremiumUser
+                        }
+                    }
+
+                    is ResultType.Error -> {
+                        isPremiumUser = 0
+
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
         }
 
         if (receivedValue != null && contentType == "single") {
@@ -293,6 +331,7 @@ class PlayerActivity : AppCompatActivity() {
                             binding.similarItemRecyclerView.adapter = similarItemsAdapter
                             similarItemsAdapter.similarContentList =
                                 content.similar[0].similarcontents
+                            similarItemsAdapter.isPemiumUser = isPremiumUser
                             binding.progressBar.visibility = View.GONE
                             similarItemsAdapter.notifyDataSetChanged()
                         } else {
@@ -423,7 +462,7 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
         }
-        similarItemsAdapter = SimilarItemsAdapter(emptyList())
+        similarItemsAdapter = SimilarItemsAdapter(emptyList(), this, isPremiumUser)
         playListAdapter = PlayListAdapter(emptyList())
         binding.similarItemRecyclerView.layoutManager = LinearLayoutManager(this)
     }
@@ -439,9 +478,18 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
         player.stop()
+
+        val fragmentManager = supportFragmentManager
+        val backStackEntryCount = fragmentManager.backStackEntryCount
+
+        if (backStackEntryCount > 0) {
+            // Pop the fragment on the first back button click
+            fragmentManager.popBackStack()
+        } else {
+            // If the back stack is empty, navigate back or exit the activity
+            super.onBackPressed()
+        }
     }
 
     fun isFullscreen(): Boolean {
@@ -474,6 +522,33 @@ class PlayerActivity : AppCompatActivity() {
             playerView.layoutParams.height =
                 resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._180sdp)
             playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+    }
+
+    override fun onItemClickListener(position: Int, item: Similarcontent?) {
+        val username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "")
+
+        if (username.toString().isNotEmpty()) {
+            if (isPremiumUser == 0 && item?.isfree == "0") {
+
+                val fragmentTransaction = this.supportFragmentManager.beginTransaction()
+                val subscriptionFragment = SubscriptionFragment()
+                fragmentTransaction.replace(
+                    R.id.subscriptionContainerView,
+                    subscriptionFragment
+                )
+                fragmentTransaction.addToBackStack(null)
+                fragmentTransaction.commit()
+
+            } else {
+                val intent = Intent(this, PlayerActivity::class.java)
+                    .putExtra("id", item?.contentid)
+                    .putExtra("type", "single")
+                startActivity(intent)
+            }
+        } else {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
     }
 

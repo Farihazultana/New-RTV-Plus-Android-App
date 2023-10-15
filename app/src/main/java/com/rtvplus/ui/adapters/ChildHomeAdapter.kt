@@ -16,6 +16,8 @@ import com.rtvplus.R
 import com.rtvplus.data.models.home.Content
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.PlayerActivity
+import com.rtvplus.utils.AppUtils.GoogleSignInKey
+import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.SharedPreferencesUtil
 
@@ -60,7 +62,7 @@ class ChildHomeAdapter(
 //                holder.sliderView.startAutoCycle()
 //            }
             is ContentViewHolder -> {
-                if (currentItem.isfree == "0") {
+                if (currentItem.isfree == "0" && isPemiumUser == 0) {
                     holder.premiumTextView.visibility = View.VISIBLE
                 } else {
                     holder.premiumTextView.visibility = View.GONE

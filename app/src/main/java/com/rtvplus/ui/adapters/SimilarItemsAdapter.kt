@@ -13,7 +13,7 @@ import com.rtvplus.R
 import com.rtvplus.data.models.single_content.single.Similarcontent
 import com.rtvplus.ui.activities.PlayerActivity
 
-class SimilarItemsAdapter(var similarContentList: List<Similarcontent>) :
+class SimilarItemsAdapter(var similarContentList: List<Similarcontent>, private val listener: itemClickListener,var isPemiumUser: Int?) :
     RecyclerView.Adapter<SimilarItemsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,11 +38,17 @@ class SimilarItemsAdapter(var similarContentList: List<Similarcontent>) :
             .placeholder(R.drawable.no_img)
             .into(holder.imageView)
 
+        Log.e("bbbbbbbbbbbbbbbbbbbbbbbbb",isPemiumUser.toString())
+
+        if (currentItem?.isfree == "0" && isPemiumUser == 0) {
+            holder.premiumTextView.visibility = View.VISIBLE
+        }
+        else{
+            holder.premiumTextView.visibility = View.GONE
+        }
+
         holder.itemView.setOnClickListener {
-            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-            intent.putExtra("id", currentItem.contentid)
-            intent.putExtra("type", "single")
-            holder.itemView.context.startActivity(intent)
+            listener.onItemClickListener(position, currentItem)
         }
     }
 
@@ -56,6 +62,11 @@ class SimilarItemsAdapter(var similarContentList: List<Similarcontent>) :
         val titleTextView: TextView = itemView.findViewById(R.id.title)
         val length: TextView = itemView.findViewById(R.id.lengthTv)
         val description: TextView = itemView.findViewById(R.id.description)
+        val premiumTextView: TextView = itemView.findViewById(R.id.premiumTextView)
+    }
+
+    interface itemClickListener {
+        fun onItemClickListener(position: Int, item: Similarcontent?)
     }
 
 }
