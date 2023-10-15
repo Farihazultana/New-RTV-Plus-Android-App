@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.rtvplus.R
@@ -28,6 +29,7 @@ class SubscriptionAdapter(
         val packageName: TextView = itemView.findViewById(R.id.tv_packName)
         val subText: TextView = itemView.findViewById(R.id.tv_subText)
         val checkedCard: ImageView = itemView.findViewById(R.id.ig_checked)
+        val packCard : CardView = itemView.findViewById(R.id.cvPack)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
@@ -59,10 +61,8 @@ class SubscriptionAdapter(
 
 
         if(item?.userpack == item?.sub_pack){
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.green))
+            holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.green_lite))
             holder.checkedCard.visibility = View.VISIBLE
-        }else{
-            holder.checkedCard.visibility = View.GONE
         }
 
         holder.itemView.setOnClickListener {
