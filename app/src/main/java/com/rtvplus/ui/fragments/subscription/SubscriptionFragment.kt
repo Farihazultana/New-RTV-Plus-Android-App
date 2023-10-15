@@ -86,7 +86,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         else{
             Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
             val intent = Intent(requireContext(), LoginActivity::class.java)
-            Handler().postDelayed({ startActivity(intent) }, 2000)
+            startActivity(intent)
         }
 
 

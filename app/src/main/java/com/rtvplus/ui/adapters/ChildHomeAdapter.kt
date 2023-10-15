@@ -60,7 +60,7 @@ class ChildHomeAdapter(
 //                holder.sliderView.startAutoCycle()
 //            }
             is ContentViewHolder -> {
-                if (currentItem.isfree == "0") {
+                if (currentItem.isfree == "0" && isPemiumUser == 0) {
                     holder.premiumTextView.visibility = View.VISIBLE
                 } else {
                     holder.premiumTextView.visibility = View.GONE

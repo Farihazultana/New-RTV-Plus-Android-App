@@ -20,6 +20,8 @@ object AppUtils {
     const val LogInKey = "LogIn_Result"
     const val UsernameInputKey = "User"
 
+    val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
+    val phoneRegex = Regex("^8801[3-9]\\d{8}$")
 
     fun isOnline(context: Context): Boolean {
         val connectivityManager =
@@ -56,5 +58,11 @@ object AppUtils {
             alertDialog.dismiss()
         }
     }
+
+
+
+
+
+
 
 }
