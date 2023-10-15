@@ -42,7 +42,7 @@ class HomeFragment : Fragment() {
     private var doubleBackPressedOnce = false
     private val homeViewModel by viewModels<HomeViewModel>()
     private val logInViewModel by viewModels<LogInViewModel>()
-    private var isPremiumUser: Int? = null
+    private var isPremiumUser: Int? = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

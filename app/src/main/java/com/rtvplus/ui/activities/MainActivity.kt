@@ -57,15 +57,6 @@ class MainActivity : AppCompatActivity() {
         ).toString()
 
 
-        val fragmentTag = intent.getStringExtra("fragmentToShow")
-        if (fragmentTag == "YourFragment") {
-            val fragment = SubscriptionFragment()
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView, fragment, fragmentTag)
-                .commit()
-            selectedItemId = R.id.SubscriptionFragment
-        }
-
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
       //  val navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         NavigationUI.setupWithNavController(bottomNavigationView, navController)

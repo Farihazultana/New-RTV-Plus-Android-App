@@ -9,7 +9,7 @@
         android:id="@+id/imageView"
         android:layout_width="@dimen/_130sdp"
         android:layout_height="@dimen/_85sdp"
-        android:layout_marginStart="4dp"
+
         android:scaleType="fitXY"
         android:src="@drawable/thumbnail"
         app:layout_constraintStart_toStartOf="parent"
