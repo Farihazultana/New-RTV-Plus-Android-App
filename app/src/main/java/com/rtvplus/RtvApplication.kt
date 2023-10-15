@@ -15,7 +15,6 @@ import com.rtvplus.utils.AppUtils.emailRegex
 import com.rtvplus.utils.AppUtils.phoneRegex
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.HiltAndroidApp
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -43,21 +42,14 @@ class RtvApplication : Application() {
 
         if (isPhoneNumber) {
             Log.e("iiiiiiiiiiiiiiiiiiiiii", "phone: ${username}")
-//            val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-//            val simSerialNumber = telephonyManager.simSerialNumber
-//            val operatorName = telephonyManager.simOperatorName
-//            val operatorCode = telephonyManager.simOperator
-//            //val simCountryIso = telephonyManager.simCountryIso
-//            deviceInfo.simSerialNumber = simSerialNumber
-//            deviceInfo.operatorName = operatorName
-//            deviceInfo.operator = operatorCode
-
-
-//            val locale = Locale.getDefault()
-//            val countryCode = locale.country
-//            val operatorName = locale.displayCountry
-//
-//            deviceInfo.operatorName = operatorName
+            val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            //  val simSerialNumber = telephonyManager.simSerialNumber
+            val operatorName = telephonyManager.simOperatorName
+            val operatorCode = telephonyManager.simOperator
+            //val simCountryIso = telephonyManager.simCountryIso
+            //  deviceInfo.simSerialNumber = simSerialNumber
+            deviceInfo.operatorName = operatorName
+            deviceInfo.operator = operatorCode
 
         }
         deviceInfo.deviceId = Build.ID
