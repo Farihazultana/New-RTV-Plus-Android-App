@@ -74,8 +74,13 @@ class HomeFragment : Fragment() {
         val release = deviceInfo.release
         val sdkVersion = deviceInfo.sdkVersion
         val versionCode = deviceInfo.versionCode
+        val simSerialNumber = deviceInfo.simSerialNumber
+        val simOperatorName = deviceInfo.operatorName
+        val simOperatorCode = deviceInfo.versionCode
 
-        Log.e("iiiiiiiiiiiiiiiiiiiiii", deviceId)
+        Log.e("iiiiiiiiiiiiiiiiiiiiii", simSerialNumber)
+        Log.e("iiiiiiiiiiiiiiiiiiiiii", simOperatorName)
+        Log.e("iiiiiiiiiiiiiiiiiiiiii", simOperatorCode.toString())
 
         return binding.root
     }

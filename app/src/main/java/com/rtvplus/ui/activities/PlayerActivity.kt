@@ -103,6 +103,9 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
             setFullscreen(!isFullscreen)
         }
 
+        if (username.toString().isNotEmpty()) {
+            logInViewModel.fetchLogInData(username.toString(), "", "yes", "1")
+        }
 
         lifecycleScope.launch(Dispatchers.IO) {
             logInViewModel.logInData.collect {
@@ -113,6 +116,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                         for (item in logInResult) {
                             val result = item.play
                             isPremiumUser = result
+                            similarItemsAdapter.isPemiumUser = isPremiumUser
                         }
                     }
 
@@ -327,6 +331,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                             binding.similarItemRecyclerView.adapter = similarItemsAdapter
                             similarItemsAdapter.similarContentList =
                                 content.similar[0].similarcontents
+                            similarItemsAdapter.isPemiumUser = isPremiumUser
                             binding.progressBar.visibility = View.GONE
                             similarItemsAdapter.notifyDataSetChanged()
                         } else {
@@ -457,7 +462,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 }
             }
         }
-        similarItemsAdapter = SimilarItemsAdapter(emptyList(), this)
+        similarItemsAdapter = SimilarItemsAdapter(emptyList(), this, isPremiumUser)
         playListAdapter = PlayListAdapter(emptyList())
         binding.similarItemRecyclerView.layoutManager = LinearLayoutManager(this)
     }

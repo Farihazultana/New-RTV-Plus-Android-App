@@ -13,7 +13,7 @@ import com.rtvplus.R
 import com.rtvplus.data.models.single_content.single.Similarcontent
 import com.rtvplus.ui.activities.PlayerActivity
 
-class SimilarItemsAdapter(var similarContentList: List<Similarcontent>, private val listener: itemClickListener,) :
+class SimilarItemsAdapter(var similarContentList: List<Similarcontent>, private val listener: itemClickListener,var isPemiumUser: Int?) :
     RecyclerView.Adapter<SimilarItemsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,7 +38,9 @@ class SimilarItemsAdapter(var similarContentList: List<Similarcontent>, private 
             .placeholder(R.drawable.no_img)
             .into(holder.imageView)
 
-        if (currentItem?.isfree == "0") {
+        Log.e("bbbbbbbbbbbbbbbbbbbbbbbbb",isPemiumUser.toString())
+
+        if (currentItem?.isfree == "0" && isPemiumUser == 0) {
             holder.premiumTextView.visibility = View.VISIBLE
         }
         else{

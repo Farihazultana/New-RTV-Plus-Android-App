@@ -15,7 +15,8 @@ import com.rtvplus.data.models.favorite_list.Content
 class FavoriteListAdapter(
     var content: List<Content?>? = null,
     private val editItemClickListener: OnRemoveItemClickListener,
-    private val listener: itemClickListener
+    private val listener: itemClickListener,
+    var isPemiumUser: Int?
 ) :
     RecyclerView.Adapter<FavoriteListAdapter.FavoriteListViewHolder>() {
     interface OnRemoveItemClickListener {
@@ -41,7 +42,7 @@ class FavoriteListAdapter(
                 .placeholder(R.drawable.no_img)
                 .into(holder.contentImage)
         }
-        if (curentItem?.isfree?.toInt() == 0) {
+        if (curentItem?.isfree?.toInt() == 0 && isPemiumUser==0) {
             holder.premiumText.visibility = View.VISIBLE
         }
         else

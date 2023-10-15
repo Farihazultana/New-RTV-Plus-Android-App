@@ -93,8 +93,6 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
         }
 
 
-
-
         if (catCode.isNotEmpty()) {
             loadMoreData() // Initial data load
 
@@ -132,6 +130,8 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
 
                     is ResultType.Success -> {
                         val seeAllData = it.data
+
+                        seeAllAdapter.isPemiumUser = isPremiumUser
 
                         if (currentPage == 1) {
                             seeAllAdapter.seeAllData = seeAllData.contents

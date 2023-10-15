@@ -59,6 +59,14 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             title = "My Favourites"
         }
 
+        val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
+
+
+        if (username.isNotEmpty()) {
+            logInViewModel.fetchLogInData(username, "", "yes", "1")
+        }
+
+
         lifecycleScope.launch(Dispatchers.IO) {
             logInViewModel.logInData.collect {
                 when (it) {
@@ -83,11 +91,11 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             }
 
         }
-        favoriteListAdapter = FavoriteListAdapter(null, this, this)
+        favoriteListAdapter = FavoriteListAdapter(null, this, this, isPremiumUser)
         binding.favouriteListRecyclerview.layoutManager = GridLayoutManager(this, 2)
         binding.favouriteListRecyclerview.adapter = favoriteListAdapter
 
-        val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
+
 
         if (username.toString().isNotEmpty()) {
             loadMoreData()

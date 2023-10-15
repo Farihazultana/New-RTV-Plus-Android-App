@@ -1,8 +1,11 @@
 package com.rtvplus
 
 import android.app.Application
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.telephony.TelephonyManager
+import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -12,6 +15,7 @@ import com.rtvplus.utils.AppUtils.emailRegex
 import com.rtvplus.utils.AppUtils.phoneRegex
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.HiltAndroidApp
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -26,6 +30,7 @@ class RtvApplication : Application() {
         firebaseAnalytics = Firebase.analytics
 
         collectDeviceAndAppInfo()
+
     }
 
     private fun collectDeviceAndAppInfo() {
@@ -34,20 +39,27 @@ class RtvApplication : Application() {
         val isEmail = emailRegex.matches(username)
         val isPhoneNumber = phoneRegex.matches(username)
 
+        Log.e("iiiiiiiiiiiiiiiiiiiiii", "phone: ${username}")
 
         if (isPhoneNumber) {
-            // The username is a phone number
-            val phoneNumber = username.replace("[^\\d]".toRegex(), "") // Remove non-digit characters
-            if (phoneNumber.length in 3..6) {
-                // Phone number contains a 3 to 6 digit sequence
-                val extractedDigits = phoneNumber
-                // Do something with the extracted digits
-                println("Extracted Digits: $extractedDigits")
-            } else {
+            Log.e("iiiiiiiiiiiiiiiiiiiiii", "phone: ${username}")
+//            val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+//            val simSerialNumber = telephonyManager.simSerialNumber
+//            val operatorName = telephonyManager.simOperatorName
+//            val operatorCode = telephonyManager.simOperator
+//            //val simCountryIso = telephonyManager.simCountryIso
+//            deviceInfo.simSerialNumber = simSerialNumber
+//            deviceInfo.operatorName = operatorName
+//            deviceInfo.operator = operatorCode
 
-            }
+
+//            val locale = Locale.getDefault()
+//            val countryCode = locale.country
+//            val operatorName = locale.displayCountry
+//
+//            deviceInfo.operatorName = operatorName
+
         }
-
         deviceInfo.deviceId = Build.ID
         deviceInfo.softwareVersion = Build.VERSION.RELEASE
         deviceInfo.brand = Build.BRAND
