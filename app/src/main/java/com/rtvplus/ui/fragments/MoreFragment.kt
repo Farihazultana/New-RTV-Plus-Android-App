@@ -23,6 +23,7 @@ import com.rtvplus.ui.activities.FavoriteListActivity
 import com.rtvplus.ui.activities.FeedBackActivity
 import com.rtvplus.ui.activities.InfoActivity
 import com.rtvplus.ui.activities.LoginActivity
+import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.utils.AppUtils.GoogleSignInKey
 import com.rtvplus.utils.AppUtils.PACKAGE_NAME
 import com.rtvplus.utils.AppUtils.UsernameInputKey
@@ -50,14 +51,16 @@ class MoreFragment : Fragment() {
                 requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
             bottomNavigationView.selectedItemId = R.id.HomeFragment
         }
+        val fragmentManager = requireActivity().supportFragmentManager
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val navController = findNavController(binding.root)
-                navController.navigate(R.id.HomeFragment)
-                val bottomNavigationView =
-                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-                bottomNavigationView.selectedItemId = R.id.HomeFragment
+                fragmentManager.popBackStack()
+//                val navController = findNavController(binding.root)
+//                navController.navigate(R.id.HomeFragment)
+//                val bottomNavigationView =
+//                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+//                bottomNavigationView.selectedItemId = R.id.HomeFragment
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
@@ -193,11 +196,14 @@ class MoreFragment : Fragment() {
     }
 
     private fun navigateToHomeFragment() {
-        val navController = Navigation.findNavController(binding.root)
-        navController.navigate(R.id.HomeFragment)
-        val bottomNavigationView =
-            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-        bottomNavigationView.selectedItemId = R.id.HomeFragment
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        startActivity(intent)
+
+//        val navController = Navigation.findNavController(binding.root)
+//        navController.navigate(R.id.HomeFragment)
+//        val bottomNavigationView =
+//            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+//        bottomNavigationView.selectedItemId = R.id.HomeFragment
     }
 
     private fun isOneTapClientInitialized(): Boolean {
