@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import com.rtvplus.R
 import com.rtvplus.databinding.ActivityLoginBinding
 import com.rtvplus.ui.viewmodels.ForgetPasswordViewModel
@@ -26,6 +27,7 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
@@ -396,6 +398,12 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+        startActivity(intent)
     }
 
 }
