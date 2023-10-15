@@ -36,6 +36,7 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
         Log.i("Redeem", "onCreateView: $selectedPackforRedeemCoupon")
         args.putString("redeem_pack", selectedPackforRedeemCoupon)
 
+        bottomBinding.rbLocal.isChecked = true
 
         bottomBinding.cvLocalPayment.setOnClickListener {
             bottomBinding.rbLocal.isChecked = true
