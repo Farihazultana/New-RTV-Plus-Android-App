@@ -23,8 +23,6 @@ import com.rtvplus.data.models.home.Data
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.PlayerActivity
 import com.rtvplus.ui.activities.SeeAllActivity
-import com.rtvplus.utils.AppUtils.GoogleSignInKey
-import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.jama.carouselview.CarouselView
 import com.jama.carouselview.enums.IndicatorAnimationType

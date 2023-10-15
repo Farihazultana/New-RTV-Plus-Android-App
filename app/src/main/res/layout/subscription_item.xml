@@ -5,11 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cvPack"
         android:layout_width="@dimen/_135sdp"
         android:layout_height="@dimen/_130sdp"
         app:cardCornerRadius="6dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
