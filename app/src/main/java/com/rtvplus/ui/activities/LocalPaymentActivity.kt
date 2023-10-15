@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.webkit.WebView
@@ -128,11 +129,9 @@ class LocalPaymentActivity : AppCompatActivity() {
                         //finish()
                         val intent = Intent(activity, MainActivity::class.java)
                         activity.startActivity(intent)
-
-
                     }
                     else{
-                        //finish()
+
                     }
                 }
                 return true
@@ -208,6 +207,7 @@ class LocalPaymentActivity : AppCompatActivity() {
             super.onBackPressed() // Finish the activity
         } else {
             localPaymentView.goBack() // Go back in the WebView history if "ACCEPTED" is in the URL
+            finish()
         }
     }
 
