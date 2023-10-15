@@ -373,7 +373,9 @@ class LoginActivity : AppCompatActivity() {
                                     }
                                 }
                             }
-                            finish()
+                            //finish()
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
 
                         }
 
