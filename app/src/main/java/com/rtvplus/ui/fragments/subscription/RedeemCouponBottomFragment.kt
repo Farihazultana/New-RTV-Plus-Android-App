@@ -10,8 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentRedeemCouponBottomBinding
-import com.rtvplus.ui.activities.LocalPaymentActivity
-import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.viewmodels.RedeemCouponViewModel
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -24,10 +22,6 @@ import kotlinx.coroutines.launch
 class RedeemCouponBottomFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentRedeemCouponBottomBinding
     private val redeemCouponViewModel by viewModels<RedeemCouponViewModel>()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,10 +33,13 @@ class RedeemCouponBottomFragment : BottomSheetDialogFragment() {
         val pinView = binding.pinview
         val button = binding.showOtp
 
+        val redeemText = arguments?.getString("redeem_pack", "") ?: ""
+        binding.textView3.text = "Enter $redeemText redeem cuopon"
+
         val getPhoneNumSP = SharedPreferencesUtil.getData(
             requireContext(),
            UsernameInputKey,
-            "defaultValue"
+            ""
         ).toString()
 
         button.setOnClickListener {
@@ -51,15 +48,13 @@ class RedeemCouponBottomFragment : BottomSheetDialogFragment() {
             lifecycleScope.launch {
                 redeemCouponViewModel.redeemCuoponPaymentData.observe(this@RedeemCouponBottomFragment){
                     when(it){
-                        is ResultType.Loading -> {
-
-                        }
                         is ResultType.Success -> {
                             val result = it.data
                             for (item in result){
-                                item.error
-                                Toast.makeText(requireContext(), item.error, Toast.LENGTH_LONG).show()
+                                val msg = item.error
+                                Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
                                 findNavController().navigate(R.id.SubscriptionFragment)
+                                dismiss()
                             }
                         }
 

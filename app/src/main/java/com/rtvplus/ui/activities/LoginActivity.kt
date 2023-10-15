@@ -6,7 +6,6 @@ import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -26,8 +25,6 @@ import com.rtvplus.utils.SharedPreferencesUtil
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
@@ -61,6 +58,7 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
 
         //Text Counter for Phone number 0/11
         binding.etPhoneText.addTextChangedListener(object : TextWatcher {
@@ -133,7 +131,11 @@ class LoginActivity : AppCompatActivity() {
                                     UsernameInputKey,
                                     phoneText!!
                                 ).toString()
-                                finish()
+                                //Handler().postDelayed({ finish() }, 2000)
+
+                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                startActivity(intent)
+
 //                                val getPhoneNumSP = SharedPreferencesUtil.getData(
 //                                    this@LoginActivity,
 //                                    PhoneInputKey,
@@ -180,15 +182,38 @@ class LoginActivity : AppCompatActivity() {
             btnSendRequest?.setOnClickListener {
                 val enteredUsername =
                     dialog.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etUsername).text.toString()
+                Log.i("Forget", "onCreate: $enteredUsername")
 
                 if (enteredUsername.isNotEmpty()) {
                     if (enteredUsername.length == 11) {
                         val phoneText = "88$enteredUsername"
                         forgetPasswordViewModel.fetchForgetPasswordData(
                             phoneText,
-                            "123457",
-                            "123456"
+                            "forget",
                         )
+                        lifecycleScope.launch {
+                            forgetPasswordViewModel.forgetPasswordData.collect {
+                                when (it) {
+                                    is ResultType.Success -> {
+                                        val result = it.data
+                                        Toast.makeText(this@LoginActivity, result.message, Toast.LENGTH_LONG)
+                                            .show()
+                                    }
+
+                                    is ResultType.Error -> {
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            "Something is wrong, please try again!",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+
+                                    else -> {
+
+                                    }
+                                }
+                            }
+                        }
                     } else if (enteredUsername.length < 11) {
                         Toast.makeText(
                             this@LoginActivity,
@@ -210,29 +235,7 @@ class LoginActivity : AppCompatActivity() {
                     ).show()
                 }
 
-                lifecycleScope.launch {
-                    forgetPasswordViewModel.forgetPasswordData.collect {
-                        when (it) {
-                            is ResultType.Success -> {
-                                val result = it.data
-                                Toast.makeText(this@LoginActivity, result.status, Toast.LENGTH_LONG)
-                                    .show()
-                            }
 
-                            is ResultType.Error -> {
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "Something is wrong, please try again!",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-
-                            else -> {
-
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -277,7 +280,11 @@ class LoginActivity : AppCompatActivity() {
                         )
                     }
             } else {
-                Toast.makeText(this@LoginActivity, "Something went wrong! Please try again later..", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Something went wrong! Please try again later..",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         }
@@ -366,7 +373,7 @@ class LoginActivity : AppCompatActivity() {
                                     }
                                 }
                             }
-                            Handler().postDelayed({ finish() }, 2000)
+                            finish()
 
                         }
 

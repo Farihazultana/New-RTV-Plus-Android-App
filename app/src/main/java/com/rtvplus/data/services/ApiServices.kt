@@ -106,11 +106,10 @@ interface ApiServices {
     ): Response<RegistrationResponse>
 
     @FormUrlEncoded
-    @POST("flix_change_password.php")
+    @POST("flix_signup.php")
     suspend fun getForgetPasswordData(
-        @Field("username") username: String,
-        @Field("password") password: String,
-        @Field("newpass") newpass: String
+        @Field("msisdn") username: String,
+        @Field("forget") forget: String
     ): Response<ForgetPasswordResponse>
 
     @FormUrlEncoded

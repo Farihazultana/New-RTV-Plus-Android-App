@@ -1,12 +1,16 @@
 package com.rtvplus.ui.adapters
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.rtvplus.R
 import com.rtvplus.data.models.subscription.SubschemesItem
@@ -25,6 +29,7 @@ class SubscriptionAdapter(
         val packageName: TextView = itemView.findViewById(R.id.tv_packName)
         val subText: TextView = itemView.findViewById(R.id.tv_subText)
         val checkedCard: ImageView = itemView.findViewById(R.id.ig_checked)
+        val packCard : CardView = itemView.findViewById(R.id.cvPack)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
@@ -50,15 +55,25 @@ class SubscriptionAdapter(
             holder.subText.text = item.sub_text
         }
 
+
         holder.checkedCard.visibility =
             if (selectedPositions == position) View.VISIBLE else View.GONE
 
 
+        if(item?.userpack == item?.sub_pack){
+            holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.green_lite))
+            holder.checkedCard.visibility = View.VISIBLE
+        }
 
         holder.itemView.setOnClickListener {
-            selectedPositions = position
-            cardClickListener.onCardClickListener(position, item)
-            notifyDataSetChanged()
+            if (item?.userpack == "nopack"){
+                selectedPositions = position
+                cardClickListener.onCardClickListener(position, item)
+                notifyDataSetChanged()
+            }else{
+                holder.itemView.isClickable = false
+            }
+
         }
     }
 
