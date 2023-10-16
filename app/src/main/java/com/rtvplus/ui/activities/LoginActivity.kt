@@ -15,7 +15,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import com.rtvplus.R
 import com.rtvplus.databinding.ActivityLoginBinding
 import com.rtvplus.ui.viewmodels.ForgetPasswordViewModel
@@ -27,7 +26,7 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.textfield.TextInputEditText
 import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,29 +62,14 @@ class LoginActivity : AppCompatActivity() {
 
 
         //Text Counter for Phone number 0/11
-        binding.etPhoneText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val charCount = p0?.length ?: 0
-                binding.tvInputCounter.text = "$charCount/11"
-
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        }
-        )
+        textCounter()
 
         //LogIn with phone
         binding.btnLogIn.setOnClickListener {
             val enteredPhone = binding.etPhoneText.text.toString()
             val enteredPassword = binding.etPasswordText.text.toString()
 
-            if (enteredPhone.isNotEmpty() || enteredPassword.isNotEmpty()) {
+            /*if (enteredPhone.isNotEmpty() || enteredPassword.isNotEmpty()) {
                 if (enteredPhone.length == 11) {
                     phoneText = "88$enteredPhone"
                     Log.i("TagP", "Phone Input from EditText: $phoneText")
@@ -109,73 +93,110 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(
                     this@LoginActivity,
-                    "Phone number & Password can't be empty! Please input first.",
+                    "Phone number or Password can't be empty! Please input first.",
                     Toast.LENGTH_LONG
                 ).show()
+            }*/
+
+            if(enteredPhone.isNotEmpty() && enteredPhone.length == 11 && enteredPassword.isNotEmpty()){
+                phoneText = "88$enteredPhone"
+                logInViewModel.fetchLogInData(phoneText!!, enteredPassword, "no", "1")
+            }else{
+                if (enteredPhone.isEmpty() || enteredPassword.isEmpty()){
+                    Toast.makeText(this@LoginActivity, "Phone number or Password must not be empty! Please input first.", Toast.LENGTH_LONG).show()
+                }else{
+                    Toast.makeText(this@LoginActivity, "Phone number should be 11 digits", Toast.LENGTH_LONG).show()
+                }
+
             }
 
-
         }
-        lifecycleScope.launch {
-            logInViewModel.logInData.collect {
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data
-                        for (item in logInResult) {
-                            val result = item.result
-                            Log.i("LogIN", "Log In result to be saved: $result")
-                            SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
 
-                            if (result == "success") {
-                                Log.i("TAGP", "LogIn: $result")
-                                SharedPreferencesUtil.saveData(
-                                    this@LoginActivity,
-                                    UsernameInputKey,
-                                    phoneText!!
-                                ).toString()
-                                //Handler().postDelayed({ finish() }, 2000)
+        loginUsingPhoneNumber()
 
-                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                startActivity(intent)
+        forgetPassword()
 
-//                                val getPhoneNumSP = SharedPreferencesUtil.getData(
-//                                    this@LoginActivity,
-//                                    PhoneInputKey,
-//                                    "defaultValue"
-//                                )
-//                                Log.i("PhoneInput", "Saved Phone Input from SP : $getPhoneNumSP")
-                            } else {
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "Username or Password incorrect. Try Again!",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                        }
-                    }
+        //Google Sign In
+        binding.btnGoogleSignIn.setOnClickListener {
+            showOneTapUI = true
+            if (showOneTapUI) {
+                googleLogIn()
+            } else {
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Something went wrong! Please try again later..",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            }
+        }
 
-                    is ResultType.Error -> {
-                        Toast.makeText(
-                            this@LoginActivity,
-                            "Something is wrong, please try again!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+        //Not Registered Click here
+        binding.tvGoToRegistration.setOnClickListener {
+            val intent = Intent(this@LoginActivity, RegistrationActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
-                    else -> {}
+    private fun textCounter() {
+        binding.etPhoneText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val charCount = p0?.length ?: 0
+                binding.tvInputCounter.text = "$charCount/11"
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        }
+        )
+    }
+
+    private fun googleLogIn() {
+        oneTapClient = Identity.getSignInClient(this)
+        signUpRequest = BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    // Your server's client ID, not your Android client ID.
+                    .setServerClientId(getString(R.string.web_client_id))
+                    // Show all accounts on the device.
+                    .setFilterByAuthorizedAccounts(false)
+                    .build()
+            )
+            .build()
+
+        oneTapClient.beginSignIn(signUpRequest)
+            .addOnSuccessListener(this@LoginActivity) { result ->
+                try {
+                    startIntentSenderForResult(
+                        result.pendingIntent.intentSender, _requestCodeSignIn,
+                        null, 0, 0, 0
+                    )
+                    Log.i("OneTap", "Successful")
+
+                } catch (e: IntentSender.SendIntentException) {
+                    Log.e(TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
+                    Log.i("OneTap", "Couldn't start One Tap UI: ${e.localizedMessage}")
                 }
             }
-        }
+            .addOnFailureListener(this) { e ->
+                // No Google Accounts found. Just continue presenting the signed-out UI.
+                Log.d(TAG, e.localizedMessage!!)
+                Log.i(
+                    "OneTap",
+                    "addOnFailureListener : No Google Accounts found. Just continue presenting the signed-out UI : ${e.localizedMessage}"
+                )
+            }
+    }
 
-        // Forget Password
-        dialog = Dialog(this)
-        dialog.setContentView(R.layout.dialog_forget_password)
-        dialog.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        dialog.setCancelable(true)
-        dialog.window!!.attributes!!.windowAnimations = R.style.animation
+    private fun forgetPassword() {
+        openDialog()
 
         val btnSendRequest = dialog.findViewById<Button>(R.id.btnSendRequest)
 
@@ -183,7 +204,7 @@ class LoginActivity : AppCompatActivity() {
             dialog.show()
             btnSendRequest?.setOnClickListener {
                 val enteredUsername =
-                    dialog.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etUsername).text.toString()
+                    dialog.findViewById<TextInputEditText>(R.id.etUsername).text.toString()
                 Log.i("Forget", "onCreate: $enteredUsername")
 
                 if (enteredUsername.isNotEmpty()) {
@@ -198,7 +219,11 @@ class LoginActivity : AppCompatActivity() {
                                 when (it) {
                                     is ResultType.Success -> {
                                         val result = it.data
-                                        Toast.makeText(this@LoginActivity, result.message, Toast.LENGTH_LONG)
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            result.message,
+                                            Toast.LENGTH_LONG
+                                        )
                                             .show()
                                     }
 
@@ -240,66 +265,75 @@ class LoginActivity : AppCompatActivity() {
 
             }
         }
+    }
 
-        //Google Sign In
+    private fun openDialog() {
+        dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_forget_password)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.setCancelable(true)
+        dialog.window!!.attributes!!.windowAnimations = R.style.animation
+    }
 
-        binding.btnGoogleSignIn.setOnClickListener {
-            showOneTapUI = true
-            if (showOneTapUI) {
-                oneTapClient = Identity.getSignInClient(this)
-                signUpRequest = BeginSignInRequest.builder()
-                    .setGoogleIdTokenRequestOptions(
-                        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                            .setSupported(true)
-                            // Your server's client ID, not your Android client ID.
-                            .setServerClientId(getString(R.string.web_client_id))
-                            // Show all accounts on the device.
-                            .setFilterByAuthorizedAccounts(false)
-                            .build()
-                    )
-                    .build()
+    private fun loginUsingPhoneNumber() {
+        lifecycleScope.launch {
+            logInViewModel.logInData.collect {
+                when (it) {
+                    is ResultType.Success -> {
+                        val logInResult = it.data
+                        for (item in logInResult) {
+                            val result = item.result
+                            Log.i("LogIN", "Log In result to be saved: $result")
+                            SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
 
-                oneTapClient.beginSignIn(signUpRequest)
-                    .addOnSuccessListener(this@LoginActivity) { result ->
-                        try {
-                            startIntentSenderForResult(
-                                result.pendingIntent.intentSender, _requestCodeSignIn,
-                                null, 0, 0, 0
-                            )
-                            Log.i("OneTap", "Successful")
+                            if (result == "success") {
+                                Log.i("TAGP", "LogIn: $result")
+                                SharedPreferencesUtil.saveData(
+                                    this@LoginActivity,
+                                    UsernameInputKey,
+                                    phoneText!!
+                                ).toString()
+                                //Handler().postDelayed({ finish() }, 2000)
 
-                        } catch (e: IntentSender.SendIntentException) {
-                            Log.e(TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
-                            Log.i("OneTap", "Couldn't start One Tap UI: ${e.localizedMessage}")
+                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                startActivity(intent)
+
+                                //                                val getPhoneNumSP = SharedPreferencesUtil.getData(
+                                //                                    this@LoginActivity,
+                                //                                    PhoneInputKey,
+                                //                                    "defaultValue"
+                                //                                )
+                                //                                Log.i("PhoneInput", "Saved Phone Input from SP : $getPhoneNumSP")
+                            } else {
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "Username or Password incorrect. Try Again!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                         }
                     }
-                    .addOnFailureListener(this) { e ->
-                        // No Google Accounts found. Just continue presenting the signed-out UI.
-                        Log.d(TAG, e.localizedMessage!!)
-                        Log.i(
-                            "OneTap",
-                            "addOnFailureListener : No Google Accounts found. Just continue presenting the signed-out UI : ${e.localizedMessage}"
-                        )
+
+                    is ResultType.Error -> {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Something is wrong, please try again!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-            } else {
-                Toast.makeText(
-                    this@LoginActivity,
-                    "Something went wrong! Please try again later..",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
+
+                    else -> {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Something is wrong, please try again!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
-        }
-
-        /*Handler().postDelayed({
-            showOneTapUI = true
-            Log.i("OneTap", "One Tap re-enabled.")
-        }, 30000)*/
-
-        //Not Registered Click here
-        binding.tvGoToRegistration.setOnClickListener {
-            val intent = Intent(this@LoginActivity, RegistrationActivity::class.java)
-            startActivity(intent)
         }
     }
 
@@ -370,7 +404,11 @@ class LoginActivity : AppCompatActivity() {
                                         }
 
                                         else -> {
-
+                                            Toast.makeText(
+                                                this@LoginActivity,
+                                                "Something is wrong, please try again!",
+                                                Toast.LENGTH_LONG
+                                            ).show()
                                         }
                                     }
                                 }
@@ -382,8 +420,7 @@ class LoginActivity : AppCompatActivity() {
                         }
 
                         password != null -> {
-                            // Got a saved username and password. Use them to authenticate
-                            // with your backend.
+                            // Got a saved username and password. Use them to authenticate with your backend.
                             Log.d(TAG, "Got password.")
                             Log.i("OneTap", "Got password. $password")
                         }
