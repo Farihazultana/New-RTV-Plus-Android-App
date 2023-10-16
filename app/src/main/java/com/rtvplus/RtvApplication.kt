@@ -38,19 +38,12 @@ class RtvApplication : Application() {
         val isEmail = emailRegex.matches(username)
         val isPhoneNumber = phoneRegex.matches(username)
 
-        Log.e("iiiiiiiiiiiiiiiiiiiiii", "phone: ${username}")
-
         if (isPhoneNumber) {
-            Log.e("iiiiiiiiiiiiiiiiiiiiii", "phone: ${username}")
             val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            //  val simSerialNumber = telephonyManager.simSerialNumber
             val operatorName = telephonyManager.simOperatorName
             val operatorCode = telephonyManager.simOperator
-            //val simCountryIso = telephonyManager.simCountryIso
-            //  deviceInfo.simSerialNumber = simSerialNumber
             deviceInfo.operatorName = operatorName
             deviceInfo.operator = operatorCode
-
         }
         deviceInfo.deviceId = Build.ID
         deviceInfo.softwareVersion = Build.VERSION.RELEASE

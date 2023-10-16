@@ -4,19 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.FragmentHomeBinding
@@ -29,6 +26,7 @@ import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,13 +34,11 @@ import javax.inject.Inject
 class HomeFragment : Fragment() {
     @Inject
     lateinit var deviceInfo: DeviceInfo
-
     private lateinit var binding: FragmentHomeBinding
     private lateinit var parentHomeAdapter: ParentHomeAdapter
-    private var doubleBackPressedOnce = false
     private val homeViewModel by viewModels<HomeViewModel>()
     private val logInViewModel by viewModels<LogInViewModel>()
-    private var isPremiumUser: Int? = 0
+    lateinit var username: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,9 +71,6 @@ class HomeFragment : Fragment() {
         val simOperatorName = deviceInfo.operatorName
         val simOperatorCode = deviceInfo.versionCode
 
-        Log.e("iiiiiiiiiiiiiiiiiiiiii", simSerialNumber)
-        Log.e("iiiiiiiiiiiiiiiiiiiiii", simOperatorName)
-        Log.e("iiiiiiiiiiiiiiiiiiiiii", simOperatorCode.toString())
 
         return binding.root
     }
@@ -108,19 +101,59 @@ class HomeFragment : Fragment() {
                 backPressedTime = System.currentTimeMillis()
             }
         }
-
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
+        username = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
 
-        val username =
-            SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
-                .toString()
 
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
+        checkIfPremiumUser()
 
+        displayHomeData()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun displayHomeData() {
         viewLifecycleOwner.lifecycleScope.launch {
+            homeViewModel.homeData.collect { result ->
+                when (result) {
+                    is ResultType.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.tryAgainBtn.visibility = View.GONE
+                    }
+
+                    is ResultType.Success -> {
+                        if (checkIfPremiumUser().toString().isNotEmpty()) {
+                            val homeData = result.data
+                            parentHomeAdapter.homeData = homeData.data
+                            parentHomeAdapter.isPemiumUser = checkIfPremiumUser()
+                            binding.progressBar.visibility = View.GONE
+                            binding.tryAgainBtn.visibility = View.GONE
+                            binding.parentRecyclerview.visibility = View.VISIBLE
+                            parentHomeAdapter.notifyDataSetChanged()
+                        }
+
+                    }
+
+                    is ResultType.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            R.string.error_response_msg,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        binding.progressBar.visibility = View.GONE
+                        binding.tryAgainBtn.visibility = View.VISIBLE
+
+                    }
+                }
+            }
+        }
+    }
+    private fun checkIfPremiumUser(): Int {
+        var isPremiumUser: Int? = 0
+        lifecycleScope.launch(Dispatchers.IO) {
             logInViewModel.logInData.collect {
                 when (it) {
                     is ResultType.Success -> {
@@ -133,53 +166,17 @@ class HomeFragment : Fragment() {
                     }
 
                     is ResultType.Error -> {
+                        isPremiumUser = 0
 
                     }
 
                     else -> {
-
-                    }
-                }
-            }
-
-        }
-
-
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.homeData.collect { result ->
-                when (result) {
-                    is ResultType.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                        binding.tryAgainBtn.visibility = View.GONE
-                    }
-
-                    is ResultType.Success -> {
-                        if (isPremiumUser.toString().isNotEmpty()) {
-                            val homeData = result.data
-                            parentHomeAdapter.homeData = homeData.data
-                            parentHomeAdapter.isPemiumUser = isPremiumUser
-                            binding.progressBar.visibility = View.GONE
-                            binding.tryAgainBtn.visibility = View.GONE
-                            binding.parentRecyclerview.visibility = View.VISIBLE
-                            parentHomeAdapter.notifyDataSetChanged()
-                        }
-
-                    }
-
-                    is ResultType.Error -> {
-                        Toast.makeText(
-                            requireContext(),
-                            "Something is wrong. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        binding.progressBar.visibility = View.GONE
-                        binding.tryAgainBtn.visibility = View.VISIBLE
-
+                        isPremiumUser = 0
                     }
                 }
             }
         }
+        return isPremiumUser!!
     }
 
 
