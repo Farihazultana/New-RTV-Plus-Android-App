@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.webkit.WebView
@@ -11,6 +12,7 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isNotEmpty
 import androidx.lifecycle.lifecycleScope
 import com.rtvplus.data.models.local_payment.SaveLocalPaymentResponse
 import com.rtvplus.databinding.ActivityLocalPaymentBinding
@@ -28,6 +30,7 @@ class LocalPaymentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLocalPaymentBinding
     private val localPaymentViewModel by viewModels<LocalPaymentViewModel>()
     val saveLocalPaymentViewModel by viewModels<SaveLocalPaymentViewModel>()
+    private lateinit var localPaymentView: WebView
 
     companion object {
         lateinit var getPhoneNumSP: String
@@ -40,7 +43,7 @@ class LocalPaymentActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        val localPaymentView: WebView = binding.wvLocalPayment
+        localPaymentView = binding.wvLocalPayment
         localPaymentView.settings.javaScriptEnabled = true
         localPaymentView.webViewClient =
             LocalPaymentWebViewClient(
@@ -117,12 +120,18 @@ class LocalPaymentActivity : AppCompatActivity() {
                                 Log.i("Payment", "shouldOverrideUrlLoading: $paymentId")
                             }
                         }
-                        if (paymentId != null && orderId != null) {
+                        if (paymentId.isNotEmpty() && orderId.isNotEmpty()) {
                             handleSavedLocalPaymentData(paymentId, orderId)
+                        }
+                        else{
+                            finish()
                         }
                         //finish()
                         val intent = Intent(activity, MainActivity::class.java)
                         activity.startActivity(intent)
+                    }
+                    else{
+
                     }
                 }
                 return true
@@ -180,4 +189,26 @@ class LocalPaymentActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun finish() {
+        binding.wvLocalPayment.removeAllViews()
+        if (localPaymentView.isNotEmpty()) {
+            localPaymentView.clearHistory()
+            localPaymentView.clearCache(true)
+            localPaymentView.clearView()
+            localPaymentView.destroy()
+            //localPaymentView = null
+        }
+        super.finish()
+    }
+
+    override fun onBackPressed() {
+        if (!localPaymentView.url?.contains("ACCEPTED")!!) {
+            super.onBackPressed() // Finish the activity
+        } else {
+            localPaymentView.goBack() // Go back in the WebView history if "ACCEPTED" is in the URL
+            finish()
+        }
+    }
+
 }

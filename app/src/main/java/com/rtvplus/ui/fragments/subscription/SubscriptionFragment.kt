@@ -24,7 +24,6 @@ import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.ui.activities.LoginActivity
-import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -87,7 +86,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         else{
             Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
             val intent = Intent(requireContext(), LoginActivity::class.java)
-            Handler().postDelayed({ startActivity(intent) }, 2000)
+            startActivity(intent)
         }
 
 

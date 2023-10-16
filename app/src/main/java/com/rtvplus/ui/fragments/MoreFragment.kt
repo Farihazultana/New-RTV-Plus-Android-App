@@ -23,7 +23,6 @@ import com.rtvplus.ui.activities.FavoriteListActivity
 import com.rtvplus.ui.activities.FeedBackActivity
 import com.rtvplus.ui.activities.InfoActivity
 import com.rtvplus.ui.activities.LoginActivity
-import com.rtvplus.utils.AppUtils.GoogleSignInKey
 import com.rtvplus.utils.AppUtils.PACKAGE_NAME
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -145,7 +144,7 @@ class MoreFragment : Fragment() {
 
                 val spResGoogle = SharedPreferencesUtil.getData(
                     requireContext(),
-                    GoogleSignInKey,
+                    UsernameInputKey,
                     "default_value"
                 )
                 if (spResGoogle.toString().isNotEmpty()) {

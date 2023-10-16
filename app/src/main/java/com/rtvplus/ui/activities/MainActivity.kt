@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.ActivityMainBinding
-import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.isOnline
 import com.rtvplus.utils.AppUtils.showAlertDialog
@@ -48,6 +47,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
 
+
         val username = SharedPreferencesUtil.getData(
             this,
             AppUtils.UsernameInputKey,
@@ -55,14 +55,14 @@ class MainActivity : AppCompatActivity() {
         ).toString()
 
 
-        val fragmentTag = intent.getStringExtra("fragmentToShow")
+        /*val fragmentTag = intent.getStringExtra("fragmentToShow")
         if (fragmentTag == "YourFragment") {
             val fragment = SubscriptionFragment()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, fragment, fragmentTag)
                 .commit()
             selectedItemId = R.id.SubscriptionFragment
-        }
+        }*/
 
         binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
             val itemId = menuItem.itemId
