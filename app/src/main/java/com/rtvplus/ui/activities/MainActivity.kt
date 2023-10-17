@@ -8,9 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.ActivityMainBinding
+import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.isOnline
 import com.rtvplus.utils.AppUtils.showAlertDialog
@@ -47,7 +50,6 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
 
-
         val username = SharedPreferencesUtil.getData(
             this,
             AppUtils.UsernameInputKey,
@@ -55,37 +57,32 @@ class MainActivity : AppCompatActivity() {
         ).toString()
 
 
-        /*val fragmentTag = intent.getStringExtra("fragmentToShow")
-        if (fragmentTag == "YourFragment") {
-            val fragment = SubscriptionFragment()
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView, fragment, fragmentTag)
-                .commit()
-            selectedItemId = R.id.SubscriptionFragment
-        }*/
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+      //  val navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+        NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
-        binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
-            val itemId = menuItem.itemId
-            if (selectedItemId != itemId) {
-                when (itemId) {
-                    R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
-                    R.id.LiveTvFragment -> {
-                        if (username.isNotEmpty()) {
-                            navController.navigate(R.id.LiveTvFragment)
-                        } else {
-                            val intent = Intent(this, LoginActivity::class.java)
-                            startActivity(intent)
-                            selectedItemId = R.id.HomeFragment
-                        }
-                    }
-
-                    R.id.SubscriptionFragment -> navController.navigate(R.id.SubscriptionFragment)
-                    R.id.MoreFragment -> navController.navigate(R.id.MoreFragment)
-                }
-                selectedItemId = itemId
-            }
-            true
-        }
+//        binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
+//            val itemId = menuItem.itemId
+//            if (selectedItemId != itemId) {
+//                when (itemId) {
+//                    R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
+//                    R.id.LiveTvFragment -> {
+//                        if (username.isNotEmpty()) {
+//                            navController.navigate(R.id.LiveTvFragment)
+//                        } else {
+//                            val intent = Intent(this, LoginActivity::class.java)
+//                            startActivity(intent)
+//                            selectedItemId = R.id.HomeFragment
+//                        }
+//                    }
+//
+//                    R.id.SubscriptionFragment -> navController.navigate(R.id.SubscriptionFragment)
+//                    R.id.MoreFragment -> navController.navigate(R.id.MoreFragment)
+//                }
+//                selectedItemId = itemId
+//            }
+//            true
+//        }
         binding.bottomNavigationBarId.setItemIconTintList(
             ContextCompat.getColorStateList(
                 this,

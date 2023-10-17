@@ -65,7 +65,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         val view = binding.root
         setContentView(view)
 
-
         val username = SharedPreferencesUtil.getData(
             this,
             AppUtils.UsernameInputKey,
@@ -94,7 +93,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         } else {
             binding.playerView.layoutParams.height =
                 resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._180sdp)
-
         }
         val button: ImageView = findViewById(R.id.fullscreen)
 

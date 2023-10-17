@@ -228,9 +228,18 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
     override fun onItemClickListener(position: Int, item: Content?) {
         if (item != null) {
 
-            val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
+            val phone = SharedPreferencesUtil.getData(
+                this,
+                AppUtils.LogInKey,
+                ""
+            )
+            val email = SharedPreferencesUtil.getData(
+                this,
+                AppUtils.GoogleSignInKey,
+                ""
+            )
 
-            if (username.isNotEmpty()) {
+            if (phone.toString().isNotEmpty() || email.toString().isNotEmpty()) {
                 if (isPremiumUser == 0 && item?.isfree == "0") {
 
                     val fragmentTransaction = this.supportFragmentManager.beginTransaction()
