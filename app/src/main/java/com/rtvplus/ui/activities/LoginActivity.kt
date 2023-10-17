@@ -98,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
                 ).show()
             }*/
 
-            if(enteredPhone.isNotEmpty() && enteredPhone.length == 11 && enteredPassword.isNotEmpty()){
+            if(enteredPhone.isNotEmpty() && enteredPassword.isNotEmpty() && enteredPhone.length == 11){
                 phoneText = "88$enteredPhone"
                 logInViewModel.fetchLogInData(phoneText!!, enteredPassword, "no", "1")
             }else{
