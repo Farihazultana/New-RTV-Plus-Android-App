@@ -40,7 +40,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
     private var isLoading = false
     private var isLastpage = false
     private val logInViewModel by viewModels<LogInViewModel>()
-    private var isPremiumUser: Int? = 0
+    lateinit var username: String
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,49 +55,26 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
-            title = R.string.my_favorite_toolbar.toString()
+            title = "My Favourites"
         }
-        val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
+        username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
 
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
-        lifecycleScope.launch(Dispatchers.IO) {
-            logInViewModel.logInData.collect {
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data
 
-                        for (item in logInResult) {
-                            val result = item.play
-                            isPremiumUser = result
-                        }
-                    }
-
-                    is ResultType.Error -> {
-                        isPremiumUser = 0
-
-                    }
-
-                    else -> {
-                        isPremiumUser = 0
-                    }
-                }
-            }
-
-        }
-        favoriteListAdapter = FavoriteListAdapter(null, this, this, isPremiumUser)
+        favoriteListAdapter = FavoriteListAdapter(null, this, this, checkIfPremiumUser())
         binding.favouriteListRecyclerview.layoutManager = GridLayoutManager(this, 2)
         binding.favouriteListRecyclerview.adapter = favoriteListAdapter
 
 
         if (username.isNotEmpty()) {
             loadMoreData()
+
             binding.favouriteListRecyclerview.addOnScrollListener(object :
                 RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-
                     val visibleItemCount = layoutManager.childCount
                     val totalItemCount = layoutManager.itemCount
                     val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
@@ -116,12 +93,17 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             })
         }
 
+        updateDataAfterRemove()
+
+       // getFavoriteContent()
+    }
+
+    private fun updateDataAfterRemove() {
         removeListViewModel.removeContentResponse.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
-
                 is ResultType.Success<*> -> {
                     val response = result.data as RemoveListResponse
                     if (response.status == "success") {
@@ -154,7 +136,10 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                 }
             }
         }
+    }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getFavoriteContent() {
         favoriteListViewModel.favoriteContent.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
@@ -187,8 +172,30 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             }
         }
     }
+    private fun checkIfPremiumUser(): Int {
+        var isPremiumUser: Int? = 0
+        lifecycleScope.launch(Dispatchers.IO) {
+            logInViewModel.logInData.collect {
+                when (it) {
+                    is ResultType.Success -> {
+                        val logInResult = it.data
 
-
+                        for (item in logInResult) {
+                            val result = item.play
+                            isPremiumUser = result
+                        }
+                    }
+                    is ResultType.Error -> {
+                        isPremiumUser = 0
+                    }
+                    else -> {
+                        isPremiumUser = 0
+                    }
+                }
+            }
+        }
+        return isPremiumUser!!
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -205,9 +212,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         if (username.isNotEmpty()) {
             removeListViewModel.removeFavoriteContent(contentId, username)
         }
-
     }
-
     @SuppressLint("NotifyDataSetChanged")
     private fun loadMoreData() {
 
@@ -220,7 +225,6 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
-
                 is ResultType.Success<*> -> {
                     val content = result.data as FavoriteResponse
                     if (content.contents.isNotEmpty()) {
@@ -262,7 +266,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "")
 
         if (username.toString().isNotEmpty()) {
-            if (isPremiumUser == 0 && item?.isfree == "0") {
+            if (checkIfPremiumUser() == 0 && item?.isfree == "0") {
                 val fragmentTransaction = this.supportFragmentManager.beginTransaction()
                 val subscriptionFragment = SubscriptionFragment()
                 fragmentTransaction.replace(

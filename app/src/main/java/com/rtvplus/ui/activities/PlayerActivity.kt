@@ -26,6 +26,7 @@ import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.rtvplus.R
+import com.rtvplus.data.models.comment.CommentResponse
 import com.rtvplus.data.models.favorite_list.AddListResponse
 import com.rtvplus.data.models.favorite_list.RemoveListResponse
 import com.rtvplus.data.models.single_content.playlist.PlayListResponse
@@ -39,6 +40,7 @@ import com.rtvplus.ui.viewmodels.AddFavoriteListViewModel
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.PlayListViewModel
 import com.rtvplus.ui.viewmodels.RemoveFavoriteListViewModel
+import com.rtvplus.ui.viewmodels.SaveCommentViewModel
 import com.rtvplus.ui.viewmodels.SingleContentViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.ResultType
@@ -54,6 +56,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     private val playListViewModel by viewModels<PlayListViewModel>()
     private val addListViewModel by viewModels<AddFavoriteListViewModel>()
     private val removeListViewModel by viewModels<RemoveFavoriteListViewModel>()
+    private val commentViewModel by viewModels<SaveCommentViewModel>()
     private lateinit var similarItemsAdapter: SimilarItemsAdapter
     private lateinit var playListAdapter: PlayListAdapter
     private lateinit var player: ExoPlayer
@@ -435,14 +438,38 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
         // Set a click listener for the Confirm button
         confirmButton.setOnClickListener {
-            // Handle the input from the EditText here
             val userInput = editText.text.toString()
-            // Do something with the user input
-
-            // Dismiss the AlertDialog after handling the input
+            commentViewModel.saveComment(username,userInput)
+            checkResponse()
             alertDialog.dismiss()
         }
         alertDialog.show()
+    }
+
+    private fun checkResponse() {
+        commentViewModel.saveCommentResponse.observe(this) { it ->
+            when (it) {
+                is ResultType.Loading -> {
+                    binding.progressbar.visibility = View.VISIBLE
+                }
+                is ResultType.Success<*> -> {
+                    val response = it.data as CommentResponse
+                    if (response.status == "success") {
+                        Toast.makeText(this@PlayerActivity, response.status, Toast.LENGTH_SHORT)
+                            .show()
+                        binding.progressbar.visibility = View.GONE
+                    }
+                }
+                is ResultType.Error -> {
+                    Toast.makeText(
+                        this@PlayerActivity,
+                        R.string.error_response_msg,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    binding.progressbar.visibility = View.GONE
+                }
+            }
+        }
     }
 
     fun isFullscreen(): Boolean {

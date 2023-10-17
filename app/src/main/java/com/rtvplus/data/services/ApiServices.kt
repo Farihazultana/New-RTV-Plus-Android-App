@@ -1,5 +1,6 @@
 package com.rtvplus.data.services
 
+import com.rtvplus.data.models.comment.CommentResponse
 import com.rtvplus.data.models.coupon_payment.RedeemCouponPaymentResponse
 import com.rtvplus.data.models.favorite_list.AddListResponse
 import com.rtvplus.data.models.favorite_list.FavoriteResponse
@@ -153,4 +154,11 @@ interface ApiServices {
         @Field("msisdn") msisdn: String,
         @Field("couponcode") couponcode: String
     ): Response<RedeemCouponPaymentResponse>
+
+    @FormUrlEncoded
+    @POST("flix_postfeedback.php")
+    suspend fun saveComment(
+        @Field("username") username: String,
+        @Field("comment") comment: String,
+    ): Response<CommentResponse>
 }

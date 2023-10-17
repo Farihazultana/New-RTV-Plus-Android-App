@@ -71,7 +71,6 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
 
             false
         }
-
         binding.searchVoiceBtn.visibility = View.VISIBLE
         binding.cancelButton.setOnClickListener {
             binding.searchView.setQuery("", false)
@@ -113,11 +112,6 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                     binding.searchVoiceBtn.visibility = View.GONE
                     binding.cancelButton.visibility = View.VISIBLE
 
-//                    Toast.makeText(
-//                        this@SearchActivity,
-//                        "Current Query: $newText",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
                 } else {
                     binding.searchVoiceBtn.visibility = View.VISIBLE
                     binding.cancelButton.visibility = View.GONE
