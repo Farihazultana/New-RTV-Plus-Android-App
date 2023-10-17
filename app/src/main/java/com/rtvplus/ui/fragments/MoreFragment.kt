@@ -50,14 +50,14 @@ class MoreFragment : Fragment() {
                 requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
             bottomNavigationView.selectedItemId = R.id.HomeFragment
         }
-        val fragmentManager = requireActivity().supportFragmentManager
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                fragmentManager.popBackStack()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+//        val fragmentManager = requireActivity().supportFragmentManager
+//
+//        val callback = object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                fragmentManager.popBackStack()
+//            }
+//        }
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         val username = SharedPreferencesUtil.getData(
             requireContext(),
@@ -98,8 +98,13 @@ class MoreFragment : Fragment() {
             startActivity(intent)
         }
         binding.feedBack.setOnClickListener {
-            val intent = Intent(requireContext(), FeedBackActivity::class.java)
-            startActivity(intent)
+            if (username.isNotEmpty()) {
+                val intent = Intent(requireContext(), FeedBackActivity::class.java)
+                startActivity(intent)
+            } else {
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         binding.rate.setOnClickListener {

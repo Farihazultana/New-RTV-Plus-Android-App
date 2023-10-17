@@ -5,6 +5,7 @@ import com.rtvplus.data.models.coupon_payment.RedeemCouponPaymentResponse
 import com.rtvplus.data.models.favorite_list.AddListResponse
 import com.rtvplus.data.models.favorite_list.FavoriteResponse
 import com.rtvplus.data.models.favorite_list.RemoveListResponse
+import com.rtvplus.data.models.feedback.FeedbackResponse
 import com.rtvplus.data.models.forgetPassword.ForgetPasswordResponse
 import com.rtvplus.data.models.home.HomeResponse
 import com.rtvplus.data.models.info.InfoResponse
@@ -161,4 +162,10 @@ interface ApiServices {
         @Field("username") username: String,
         @Field("comment") comment: String,
     ): Response<CommentResponse>
+    @FormUrlEncoded
+    @POST("flix_postfeedback.php")
+    suspend fun saveFeedback(
+        @Field("username") username: String,
+        @Field("comment") comment: String,
+    ): Response<FeedbackResponse>
 }

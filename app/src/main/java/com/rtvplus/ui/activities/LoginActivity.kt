@@ -27,8 +27,8 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.utils.AppUtils.LogInKey
+import com.rtvplus.utils.AppUtils.USER_GMAIL
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -332,6 +332,11 @@ class LoginActivity : AppCompatActivity() {
                             SharedPreferencesUtil.saveData(
                                 this@LoginActivity,
                                 UsernameInputKey,
+                                idToken
+                            )
+                            SharedPreferencesUtil.saveData(
+                                this@LoginActivity,
+                                USER_GMAIL,
                                 username
                             )
                             googleLogInViewModel.fetchGoogleLogInData(
