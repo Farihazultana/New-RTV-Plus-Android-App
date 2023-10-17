@@ -1,13 +1,14 @@
 package com.rtvplus.ui.activities
 
 import android.os.Bundle
-import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
+import com.rtvplus.R
 import com.rtvplus.data.models.info.InfoResponse
 import com.rtvplus.databinding.ActivityInfoBinding
 import com.rtvplus.ui.viewmodels.InfoViewModel
@@ -22,7 +23,6 @@ class InfoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInfoBinding.inflate(layoutInflater)
-        val view = binding.root
         setContentView(binding.root)
         val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -34,30 +34,32 @@ class InfoActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             if (appInfo != null) {
-                title = appInfo.capitalize(Locale.ROOT)
+                title =
+                    appInfo.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
             }
         }
 
-        infoViewModel.fetchInfo("8801825414747", appInfo.toString())
+        infoViewModel.fetchInfo("", appInfo.toString())
 
         infoViewModel.info.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
+
                 is ResultType.Success<*> -> {
                     val content = result.data as InfoResponse
                     if (content.details.isNotEmpty()) {
-
                         binding.infoDataTv.text = content.details
-                        binding.infoDataTv.text = Html.fromHtml(content.details)
+                        binding.infoDataTv.text =
+                            HtmlCompat.fromHtml(content.details, HtmlCompat.FROM_HTML_MODE_LEGACY)
                         binding.infoDataTv.movementMethod = LinkMovementMethod.getInstance()
                         binding.progressbar.visibility = View.GONE
                     } else {
                         binding.progressbar.visibility = View.GONE
                         Toast.makeText(
                             this@InfoActivity,
-                            "Something is wrong. Please try again",
+                            R.string.error_response_msg,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -66,7 +68,7 @@ class InfoActivity : AppCompatActivity() {
                 is ResultType.Error -> {
                     Toast.makeText(
                         this@InfoActivity,
-                        "Something is wrong. Please try again",
+                        R.string.error_response_msg,
                         Toast.LENGTH_SHORT
                     ).show()
                 }

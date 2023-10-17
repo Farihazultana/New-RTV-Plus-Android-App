@@ -46,7 +46,7 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
         binding.searchIcon.setOnClickListener {
             val intent = Intent(requireContext(), SearchActivity::class.java)
@@ -59,18 +59,6 @@ class HomeFragment : Fragment() {
             startActivity(intent)
             requireActivity().finish()
         }
-
-        val deviceId = deviceInfo.deviceId
-        val softwareVersion = deviceInfo.softwareVersion
-        val brand = deviceInfo.brand
-        val model = deviceInfo.model
-        val release = deviceInfo.release
-        val sdkVersion = deviceInfo.sdkVersion
-        val versionCode = deviceInfo.versionCode
-        val simSerialNumber = deviceInfo.simSerialNumber
-        val simOperatorName = deviceInfo.operatorName
-        val simOperatorCode = deviceInfo.versionCode
-
 
         return binding.root
     }

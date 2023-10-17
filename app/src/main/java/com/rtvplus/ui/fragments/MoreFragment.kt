@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -40,9 +39,9 @@ class MoreFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMoreBinding.inflate(inflater, container, false)
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
         binding.backButton.setOnClickListener {
             val navController = findNavController(binding.root)
@@ -56,11 +55,6 @@ class MoreFragment : Fragment() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 fragmentManager.popBackStack()
-//                val navController = findNavController(binding.root)
-//                navController.navigate(R.id.HomeFragment)
-//                val bottomNavigationView =
-//                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-//                bottomNavigationView.selectedItemId = R.id.HomeFragment
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
@@ -149,17 +143,20 @@ class MoreFragment : Fragment() {
                 val spResGoogle = SharedPreferencesUtil.getData(
                     requireContext(),
                     GoogleSignInKey,
-                    "default_value"
+                    ""
                 )
                 if (spResGoogle.toString().isNotEmpty()) {
                     LoginActivity.showOneTapUI = false
                     oneTapClient.signOut().addOnFailureListener {
-                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.error_response_msg, Toast.LENGTH_SHORT)
+                            .show()
                     }.addOnCompleteListener {
-                        Toast.makeText(context, "You are Signed out", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.signed_out_toast, Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
-                Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.signed_out_toast, Toast.LENGTH_SHORT)
+                    .show()
                 navigateToHomeFragment()
             } else {
                 Toast.makeText(
@@ -170,40 +167,12 @@ class MoreFragment : Fragment() {
             }
 
         }
-
-//        binding.logout.setOnClickListener {
-//            SharedPreferencesUtil.removeKey(requireContext(), LogInKey)
-//            SharedPreferencesUtil.removeKey(requireContext(), GoogleSignInKey)
-//            binding.logInAs.text = null
-//
-//            val spResGoogle = SharedPreferencesUtil.getData(
-//                requireContext(),
-//                GoogleSignInKey,
-//                ""
-//            )
-//            if (spResGoogle.toString().isNotEmpty()) {
-//                oneTapClient.signOut().addOnFailureListener {
-//                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-//                }.addOnCompleteListener {
-//                    Toast.makeText(context, "You are Signed out", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//            SharedPreferencesUtil.clear(requireContext())
-//            Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
-//            navigateToHomeFragment()
-//        }
         return binding.root
     }
 
     private fun navigateToHomeFragment() {
         val intent = Intent(requireContext(), MainActivity::class.java)
         startActivity(intent)
-
-//        val navController = Navigation.findNavController(binding.root)
-//        navController.navigate(R.id.HomeFragment)
-//        val bottomNavigationView =
-//            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-//        bottomNavigationView.selectedItemId = R.id.HomeFragment
     }
 
     private fun isOneTapClientInitialized(): Boolean {

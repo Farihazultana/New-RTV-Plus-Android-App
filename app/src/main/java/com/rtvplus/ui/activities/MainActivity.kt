@@ -25,14 +25,8 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var deviceInfo: DeviceInfo
-
     private lateinit var binding: ActivityMainBinding
-    var selectedItemId: Int = -1
-    lateinit var navHostFragment: NavHostFragment
-
-    companion object {
-        const val PERMISSION_REQUEST_CODE = 123
-    }
+    private lateinit var navHostFragment: NavHostFragment
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +34,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
-
 
         if (!isOnline(this)) {
             showAlertDialog(this)
@@ -50,39 +43,9 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
 
-        val username = SharedPreferencesUtil.getData(
-            this,
-            AppUtils.UsernameInputKey,
-            ""
-        ).toString()
-
-
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-      //  val navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
-//        binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
-//            val itemId = menuItem.itemId
-//            if (selectedItemId != itemId) {
-//                when (itemId) {
-//                    R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
-//                    R.id.LiveTvFragment -> {
-//                        if (username.isNotEmpty()) {
-//                            navController.navigate(R.id.LiveTvFragment)
-//                        } else {
-//                            val intent = Intent(this, LoginActivity::class.java)
-//                            startActivity(intent)
-//                            selectedItemId = R.id.HomeFragment
-//                        }
-//                    }
-//
-//                    R.id.SubscriptionFragment -> navController.navigate(R.id.SubscriptionFragment)
-//                    R.id.MoreFragment -> navController.navigate(R.id.MoreFragment)
-//                }
-//                selectedItemId = itemId
-//            }
-//            true
-//        }
         binding.bottomNavigationBarId.setItemIconTintList(
             ContextCompat.getColorStateList(
                 this,

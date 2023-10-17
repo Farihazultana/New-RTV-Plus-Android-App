@@ -1,5 +1,6 @@
 package com.rtvplus.ui.activities
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -28,13 +29,12 @@ class FeedBackActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
+            @SuppressLint("SetTextI18n")
             override fun afterTextChanged(s: Editable?) {
                 val currentCharacterCount = s?.length ?: 0
                 binding.textCounter.text = "$currentCharacterCount of 500"
             }
         })
-
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

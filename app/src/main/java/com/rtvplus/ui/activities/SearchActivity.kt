@@ -125,8 +125,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                 return true
             }
         })
-
-        searchListAdapter = SearchListAdapter(this@SearchActivity, emptyList(), this, null)
+        searchListAdapter = SearchListAdapter(emptyList(), this, null)
         binding.searchItemRecyclerView.layoutManager = GridLayoutManager(this, 2)
         binding.searchItemRecyclerView.adapter = searchListAdapter
 
@@ -240,7 +239,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
             )
 
             if (phone.toString().isNotEmpty() || email.toString().isNotEmpty()) {
-                if (isPremiumUser == 0 && item?.isfree == "0") {
+                if (isPremiumUser == 0 && item.isfree == "0") {
 
                     val fragmentTransaction = this.supportFragmentManager.beginTransaction()
                     val subscriptionFragment = SubscriptionFragment()
@@ -253,7 +252,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
 
                 } else {
                     val intent = Intent(this, PlayerActivity::class.java)
-                        .putExtra("id", item?.contentid)
+                        .putExtra("id", item.contentid)
                         .putExtra("type", "single")
                     startActivity(intent)
                 }
@@ -266,6 +265,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
 
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         val fragmentManager = supportFragmentManager
         val backStackEntryCount = fragmentManager.backStackEntryCount

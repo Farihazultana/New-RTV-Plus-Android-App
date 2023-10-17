@@ -1,9 +1,9 @@
 package com.rtvplus.ui.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +16,6 @@ import com.rtvplus.R
 import com.rtvplus.data.models.home.Content
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.PlayerActivity
-import com.rtvplus.utils.AppUtils.GoogleSignInKey
-import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.SharedPreferencesUtil
 
@@ -35,11 +33,6 @@ class ChildHomeAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-//            TYPE_BANNER -> {
-//                val view = LayoutInflater.from(parent.context)
-//                    .inflate(R.layout.row_obj_banner, parent, false)
-//                BannerViewHolder(view)
-//            }
             TYPE_CONTENT -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.row_obj_child_home_data, parent, false)
@@ -50,24 +43,17 @@ class ChildHomeAdapter(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentItem = contentData[position]
         when (holder) {
-//            is BannerViewHolder -> {
-//                holder.sliderAdapter = SliderAdapter(contentData)
-//                holder.sliderView.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
-//                holder.sliderView.setSliderAdapter(holder.sliderAdapter)
-//                holder.sliderView.scrollTimeInSec = 3
-//                holder.sliderView.isAutoCycle = true
-//                holder.sliderView.startAutoCycle()
-//            }
+
             is ContentViewHolder -> {
                 if (currentItem.isfree == "0" && isPemiumUser == 0) {
                     holder.premiumTextView.visibility = View.VISIBLE
                 } else {
                     holder.premiumTextView.visibility = View.GONE
                 }
-
                 holder.titleTextView.text = currentItem.name
 
                 if (currentItem.contenttype == "playlist") {
@@ -78,18 +64,15 @@ class ChildHomeAdapter(
                     holder.descriptionText.text = "Episodes-${currentItem.epcount}"
 
                     holder.itemView.setOnClickListener {
-
                         val username = SharedPreferencesUtil.getData(
                             myContext, UsernameInputKey, ""
                         )
                         if (username.toString().isNotEmpty()) {
-
                             if (isPemiumUser.toString() == "0" && currentItem.isfree == "0") {
 
                                 val bundle = Bundle()
                                 bundle.putString("nav_key", "from_child_fregment")
-
-                                navController.navigate(R.id.SubscriptionFragment,bundle)
+                                navController.navigate(R.id.SubscriptionFragment, bundle)
 
                             } else {
                                 val intent =
@@ -110,7 +93,6 @@ class ChildHomeAdapter(
                         drawableStart, 0, 0, 0
                     )
                     holder.descriptionText.text = currentItem.length2
-
                     holder.itemView.setOnClickListener {
 
                         val username = SharedPreferencesUtil.getData(
@@ -120,7 +102,7 @@ class ChildHomeAdapter(
                             if (isPemiumUser.toString() == "0" && currentItem.isfree == "0") {
                                 val bundle = Bundle()
                                 bundle.putString("nav_key", "from_child_fregment")
-                                navController.navigate(R.id.SubscriptionFragment,bundle)
+                                navController.navigate(R.id.SubscriptionFragment, bundle)
 
                             } else {
                                 val intent =
@@ -134,15 +116,10 @@ class ChildHomeAdapter(
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
                             holder.itemView.context.startActivity(intent)
                         }
-
-
                     }
                 }
-
                 Glide.with(holder.imageView.context).load(currentItem.image_location)
                     .placeholder(R.drawable.no_img).into(holder.imageView)
-
-
             }
         }
     }
@@ -159,10 +136,6 @@ class ChildHomeAdapter(
         }
     }
 
-    //    inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        val sliderView: SliderView = itemView.findViewById(R.id.imageSlider)
-//        lateinit var sliderAdapter: SliderAdapter
-//    }
     inner class ContentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.image_view_id)
         val titleTextView: TextView = itemView.findViewById(R.id.title_textView)

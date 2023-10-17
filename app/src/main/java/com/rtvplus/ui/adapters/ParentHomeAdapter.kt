@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,18 +17,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
+import com.jama.carouselview.CarouselView
+import com.jama.carouselview.enums.IndicatorAnimationType
+import com.jama.carouselview.enums.OffsetType
 import com.rtvplus.R
 import com.rtvplus.data.models.home.Data
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.PlayerActivity
 import com.rtvplus.ui.activities.SeeAllActivity
-import com.rtvplus.utils.AppUtils.GoogleSignInKey
-import com.rtvplus.utils.AppUtils.LogInKey
-import com.rtvplus.utils.SharedPreferencesUtil
-import com.jama.carouselview.CarouselView
-import com.jama.carouselview.enums.IndicatorAnimationType
-import com.jama.carouselview.enums.OffsetType
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.SharedPreferencesUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -38,7 +35,12 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>, private val navController: NavController, var isPemiumUser: Int?) :
+class ParentHomeAdapter(
+    private var myContext: Context,
+    var homeData: List<Data>,
+    private val navController: NavController,
+    var isPemiumUser: Int?
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var job: Job? = null
 
@@ -77,7 +79,7 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
 
         when (holder) {
             is ContentViewHolder -> {
-                if (!currentItem.contents.isNullOrEmpty()) {
+                if (currentItem.contents.isNotEmpty()) {
                     holder.childListAdapter =
                         ChildHomeAdapter(
                             myContext,
@@ -144,7 +146,7 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
 
                 holder.contentTitle.text = currentItem.catname
 
-                if (!currentItem.contents.isNullOrEmpty()) {
+                if (currentItem.contents.isNotEmpty()) {
                     val crossFadeFactory =
                         DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
                     val customCrossFadeOptions =
@@ -161,17 +163,14 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
                         val delayDuration = 5000
                         val interval = 100
                         while (isActive) {
-                            var randNum = Random.nextInt(1, currentItem.contents.size)
+                            val randNum = Random.nextInt(1, currentItem.contents.size)
                             val imageUrl = currentItem.contents[randNum].image_location
-
                             holder.thumbnailImage.setOnClickListener {
-
                                 val username = SharedPreferencesUtil.getData(
                                     myContext,
                                     UsernameInputKey,
                                     ""
                                 )
-
                                 if (username.toString().isNotEmpty()) {
                                     val intent =
                                         Intent(holder.itemView.context, PlayerActivity::class.java)
@@ -234,7 +233,6 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
     }
 
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        lateinit var bannerAdapter: BannerAdapter
         val carouselView: CarouselView = itemView.findViewById(R.id.carouselViewId)
     }
 
@@ -244,10 +242,5 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
         val contentTitle: TextView = itemView.findViewById(R.id.contentTitle)
         val handler: Handler = Handler(Looper.getMainLooper())
         var progress = 0
-    }
-
-    fun cancelUpdates() {
-        job?.cancel()
-        job = null
     }
 }

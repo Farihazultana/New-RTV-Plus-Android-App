@@ -16,6 +16,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.MediaItem
@@ -57,8 +59,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     private lateinit var player: ExoPlayer
     var clickedItemIndex = 0
     lateinit var username: String
-    lateinit var receivedValue: String
-    lateinit var contentType: String
+    private lateinit var receivedValue: String
+    private lateinit var contentType: String
     private val logInViewModel by viewModels<LogInViewModel>()
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
@@ -98,7 +100,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     }
 
 
-
     private fun initilizeSimilarContentAdapter() {
         similarItemsAdapter = SimilarItemsAdapter(emptyList(), this, checkIfPremiumUser())
         playListAdapter = PlayListAdapter(emptyList())
@@ -122,8 +123,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
     private fun keepScreenOn() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        window.decorView.systemUiVisibility =
-            (View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
 
     private fun checkIfPremiumUser(): Int {
@@ -143,7 +142,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
                     is ResultType.Error -> {
                         isPremiumUser = 0
-
                     }
 
                     else -> {
@@ -213,7 +211,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 is ResultType.Error -> {
                     Toast.makeText(
                         this@PlayerActivity,
-                        "Something is wrong. Please try again",
+                        R.string.error_response_msg,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -303,14 +301,19 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                         // Inflate the custom layout for the AlertDialog
                         displayCommentScreen()
                     }
-                    removeListViewModel.removeContentResponse.observe(this) { result ->
-                        when (result) {
+
+                    binding.shareIcon.setOnClickListener {
+                        shareContent(content.sharable)
+                    }
+
+                    removeListViewModel.removeContentResponse.observe(this) {
+                        when (it) {
                             is ResultType.Loading -> {
                                 binding.progressbar.visibility = View.VISIBLE
                             }
 
                             is ResultType.Success<*> -> {
-                                val response = result.data as RemoveListResponse
+                                val response = it.data as RemoveListResponse
                                 if (response.status == "success") {
                                     binding.progressbar.visibility = View.GONE
                                     Toast.makeText(
@@ -340,14 +343,14 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                             }
                         }
                     }
-                    addListViewModel.addContentResponse.observe(this) { result ->
-                        when (result) {
+                    addListViewModel.addContentResponse.observe(this) { it ->
+                        when (it) {
                             is ResultType.Loading -> {
                                 binding.progressbar.visibility = View.VISIBLE
                             }
 
                             is ResultType.Success<*> -> {
-                                val response = result.data as AddListResponse
+                                val response = it.data as AddListResponse
                                 if (response.status == "success") {
                                     binding.progressbar.visibility = View.GONE
                                     Toast.makeText(
@@ -377,7 +380,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                             }
                         }
                     }
-                    shareContent(content.sharable)
+
 
                     if (content.similar.isNotEmpty()) {
                         displaySimilarContent(content)
@@ -449,16 +452,16 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     fun setFullscreen(fullscreen: Boolean) {
         val playerView = binding.playerView
         val fullScreenbutton: ImageView = findViewById(R.id.fullscreen)
-
         if (fullscreen) {
             makeFullScreen(fullScreenbutton, playerView)
-
         } else {
             // Set the activity orientation back to portrait
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_24)
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            window.decorView.systemUiVisibility =
-                (View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            WindowInsetsControllerCompat(
+                this.window,
+                this.window.decorView
+            ).show(WindowInsetsCompat.Type.systemBars())
             playerView.layoutParams.height =
                 resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._180sdp)
             playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -472,8 +475,13 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         // Set the activity orientation to landscape
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_exit_24)
-        window.decorView.systemUiVisibility =
-            (View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+
+        WindowInsetsControllerCompat(this.window, this.window.decorView).let { controller ->
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+
         playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
     }
@@ -505,7 +513,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
     override fun onDestroy() {
         super.onDestroy()
-        player.stop()
     }
 
     override fun onStop() {
@@ -513,6 +520,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         player.stop()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         player.stop()
 

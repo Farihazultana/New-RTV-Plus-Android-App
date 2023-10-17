@@ -17,4 +17,7 @@
     <string name="web_client_id">158454071108-rgh0lgvonibcuateml95l5h7oe87mu17.apps.googleusercontent.com</string>
 
     <string name="error_response_msg">Something went wrong. Please try again</string>
+    <string name="no_favorite_item_available">No favorite item available</string>
+    <string name="signed_out_toast">You are Signed out</string>
+    <string name="my_favorite_toolbar">My Favourites</string>
 </resources>
