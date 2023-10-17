@@ -108,7 +108,7 @@ class LocalPaymentActivity : AppCompatActivity() {
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (shouldOpenInApp(url)) {
                 if (url != null) {
-                    if (url.equals("https://rtvplus.tv/")){
+                    if (url.equals("https://rtvplus.tv/")) {
                         finish()
                         return true
                     }
@@ -149,6 +149,7 @@ class LocalPaymentActivity : AppCompatActivity() {
         private fun shouldOpenInApp(url: String?): Boolean {
             return true
         }
+
         private fun handleSavedLocalPaymentData(paymentId: String, orderId: String) {
             saveLocalPaymentViewModel.fetchSavedLocalPaymentData(
                 getPhoneNumSP,
