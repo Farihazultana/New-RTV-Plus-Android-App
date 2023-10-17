@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.webkit.WebView
@@ -36,6 +35,27 @@ class LocalPaymentActivity : AppCompatActivity() {
         lateinit var getPhoneNumSP: String
     }
 
+    override fun onResume() {
+        super.onResume()
+        getPhoneNumSP = SharedPreferencesUtil.getData(
+            this,
+            UsernameInputKey,
+            "defaultValue"
+        ).toString()
+        Log.i("Payment", "Showing Saved Phone Input from SP : $getPhoneNumSP")
+
+        val sub_pack = intent.getStringExtra("sub_pack")
+        Log.i("Payment", "selected pack from Subscription Screen: $sub_pack")
+
+        if (sub_pack != null) {
+            if (getPhoneNumSP.isNotEmpty()) {
+                localPaymentViewModel.fetchLocalPaymentData(getPhoneNumSP, sub_pack)
+            } else {
+                Toast.makeText(this, "Please Login First!", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,24 +71,7 @@ class LocalPaymentActivity : AppCompatActivity() {
                 saveLocalPaymentViewModel
             )
 
-        getPhoneNumSP = SharedPreferencesUtil.getData(
-            this,
-            UsernameInputKey,
-            "defaultValue"
-        ).toString()
-        Log.i("Payment", "Showing Saved Phone Input from SP : $getPhoneNumSP")
 
-        val sub_pack = intent.getStringExtra("sub_pack")
-        Log.i("Payment", "selected pack from Subscription Screen: $sub_pack")
-
-        if (sub_pack != null){
-            if (getPhoneNumSP.isNotEmpty()){
-                localPaymentViewModel.fetchLocalPaymentData(getPhoneNumSP, sub_pack)
-            }
-            else{
-                Toast.makeText(this, "Please Login First!", Toast.LENGTH_LONG).show()
-            }
-        }
 
 
         lifecycleScope.launch {
@@ -105,8 +108,13 @@ class LocalPaymentActivity : AppCompatActivity() {
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (shouldOpenInApp(url)) {
                 if (url != null) {
-                    view?.loadUrl(url)
+                    if (url.equals("https://rtvplus.tv/")){
+                        finish()
+                        return true
+                    }
 
+                    view?.loadUrl(url)  //<------------
+                    Log.i("webView", "shouldOverrideUrlLoading: $url")
                     if (url.contains("ACCEPTED")) {
                         val uri = Uri.parse(url)
                         val paramNames = uri.queryParameterNames
@@ -122,17 +130,12 @@ class LocalPaymentActivity : AppCompatActivity() {
                         }
                         if (paymentId.isNotEmpty() && orderId.isNotEmpty()) {
                             handleSavedLocalPaymentData(paymentId, orderId)
-                        }
-                        else{
+                        } else {
                             finish()
                         }
-                        //finish()
-                        val intent = Intent(activity, MainActivity::class.java)
-                        activity.startActivity(intent)
+                        finish()
                     }
-                    else{
 
-                    }
                 }
                 return true
             }
@@ -146,7 +149,6 @@ class LocalPaymentActivity : AppCompatActivity() {
         private fun shouldOpenInApp(url: String?): Boolean {
             return true
         }
-
         private fun handleSavedLocalPaymentData(paymentId: String, orderId: String) {
             saveLocalPaymentViewModel.fetchSavedLocalPaymentData(
                 getPhoneNumSP,
@@ -200,15 +202,6 @@ class LocalPaymentActivity : AppCompatActivity() {
             //localPaymentView = null
         }
         super.finish()
-    }
-
-    override fun onBackPressed() {
-        if (!localPaymentView.url?.contains("ACCEPTED")!!) {
-            super.onBackPressed() // Finish the activity
-        } else {
-            localPaymentView.goBack() // Go back in the WebView history if "ACCEPTED" is in the URL
-            finish()
-        }
     }
 
 }
