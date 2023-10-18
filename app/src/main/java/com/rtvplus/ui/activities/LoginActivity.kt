@@ -47,8 +47,8 @@ class LoginActivity : AppCompatActivity() {
     lateinit var oneTapClient: SignInClient
     lateinit var signUpRequest: BeginSignInRequest
 
-    lateinit var enteredPhone : String
-    lateinit var enteredPassword : String
+    lateinit var enteredPhone: String
+    lateinit var enteredPassword: String
 
 
     companion object {
@@ -64,7 +64,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(view)
 
 
-
         //Text Counter for Phone number 0/11
         textCounter()
 
@@ -74,25 +73,29 @@ class LoginActivity : AppCompatActivity() {
             enteredPhone = binding.etPhoneText.text.toString()
             enteredPassword = binding.etPasswordText.text.toString()
 
-            if(enteredPhone.isNotEmpty() && enteredPassword.isNotEmpty() && enteredPhone.length == 11){
+            if (enteredPhone.isNotEmpty() && enteredPassword.isNotEmpty() && enteredPhone.length == 11) {
                 phoneText = "88$enteredPhone"
-                loginUsingPhoneNumber()
-            }else{
-                if (enteredPhone.isEmpty() || enteredPassword.isEmpty()){
-                    loginUsingPhoneNumber()
-                    Toast.makeText(this@LoginActivity, "Phone number or Password must not be empty! Please input first.", Toast.LENGTH_LONG).show()
-                }else{
-                    loginUsingPhoneNumber()
-                    Toast.makeText(this@LoginActivity, "Phone number should be 11 digits", Toast.LENGTH_LONG).show()
+                logInViewModel.fetchLogInData(phoneText!!, enteredPassword!!, "no", "1")
+
+            } else {
+                if (enteredPhone.isEmpty() || enteredPassword.isEmpty()) {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Phone number or Password must not be empty! Please input first.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Phone number should be 11 digits",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
 
             }
 
         }
-
-        //loginUsingPhoneNumber()
-
-
+        loginUsingPhoneNumber()
         forgetPassword()
 
         //Google Sign In
@@ -258,14 +261,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginUsingPhoneNumber() {
-        logInViewModel.fetchLogInData(phoneText!!, enteredPassword!!, "no", "1")
         lifecycleScope.launch {
             logInViewModel.logInData.collect {
+                var result = ""
                 when (it) {
                     is ResultType.Success -> {
-                        val logInResult = it.data
-                        for (item in logInResult) {
-                            val result = item.result
+                        val logInResult = it.data[0]
+                            result = logInResult.result
                             Log.i("LogIN", "Log In result to be saved: $result")
                             SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
 
@@ -276,16 +278,16 @@ class LoginActivity : AppCompatActivity() {
                                     UsernameInputKey,
                                     phoneText!!
                                 ).toString()
-
+                                Toast.makeText(this@LoginActivity, result, Toast.LENGTH_SHORT).show()
                                 finish()
                             } else {
                                 Toast.makeText(
                                     this@LoginActivity,
                                     "Username or Password incorrect. Try Again!",
-                                    Toast.LENGTH_LONG
+                                    Toast.LENGTH_SHORT
                                 ).show()
                             }
-                        }
+
                     }
 
                     is ResultType.Error -> {
@@ -296,13 +298,14 @@ class LoginActivity : AppCompatActivity() {
                         ).show()
                     }
 
-                    else -> {
-                        Log.i(TAG, "onActivityResult: Login data not available")
-                    }
+                    else -> {}
                 }
             }
         }
     }
+
+
+
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -407,8 +410,8 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-        startActivity(intent)
+        finish()
+
     }
 
 }

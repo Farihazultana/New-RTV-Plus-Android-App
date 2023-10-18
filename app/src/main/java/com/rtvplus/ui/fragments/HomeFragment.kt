@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -41,7 +42,7 @@ class HomeFragment : Fragment() {
     private var doubleBackPressedOnce = false
     private val homeViewModel by viewModels<HomeViewModel>()
     private val logInViewModel by viewModels<LogInViewModel>()
-    private var isPremiumUser: Int? = null
+    private var isPremiumUser: Int? = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,10 +51,6 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-        val bottomNavigationView =
-            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-        bottomNavigationView.selectedItemId = R.id.HomeFragment
 
         binding.searchIcon.setOnClickListener {
             val intent = Intent(requireContext(), SearchActivity::class.java)
@@ -97,7 +94,7 @@ class HomeFragment : Fragment() {
 
         var backPressedTime: Long = 0
 
-        val callback = object : OnBackPressedCallback(true) {
+        /*val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (backPressedTime + 3000 > System.currentTimeMillis()) {
                     requireActivity().finish()
@@ -112,7 +109,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)*/
 
 
         val username =
@@ -184,5 +181,6 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
 
 }

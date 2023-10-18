@@ -38,6 +38,11 @@ class SubscriptionAdapter(
         return SubscriptionViewHolder(itemView)
     }
 
+    fun updateData(newData: List<SubschemesItem?>) {
+        subscriptionData = newData
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(
         holder: SubscriptionViewHolder,
         @SuppressLint("RecyclerView") position: Int

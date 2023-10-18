@@ -1,5 +1,6 @@
 package com.rtvplus.ui.fragments.subscription
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.clearFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentSubscribeBottomBinding
@@ -62,7 +64,7 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             } else{
                 val intent = Intent(requireContext(), LocalPaymentActivity::class.java)
                 intent.putExtra("sub_pack", sub_packLocalPayment)
-                startActivity(intent)
+                startActivityForResult(intent, 1234)
                 dismiss()
             }
         }

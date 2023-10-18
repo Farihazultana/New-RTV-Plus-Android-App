@@ -1,6 +1,7 @@
 package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -28,33 +29,10 @@ class LocalPaymentActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLocalPaymentBinding
     private val localPaymentViewModel by viewModels<LocalPaymentViewModel>()
-    val saveLocalPaymentViewModel by viewModels<SaveLocalPaymentViewModel>()
+    private val saveLocalPaymentViewModel by viewModels<SaveLocalPaymentViewModel>()
     private lateinit var localPaymentView: WebView
 
-    companion object {
-        lateinit var getPhoneNumSP: String
-    }
-
-    override fun onResume() {
-        super.onResume()
-        getPhoneNumSP = SharedPreferencesUtil.getData(
-            this,
-            UsernameInputKey,
-            "defaultValue"
-        ).toString()
-        Log.i("Payment", "Showing Saved Phone Input from SP : $getPhoneNumSP")
-
-        val sub_pack = intent.getStringExtra("sub_pack")
-        Log.i("Payment", "selected pack from Subscription Screen: $sub_pack")
-
-        if (sub_pack != null) {
-            if (getPhoneNumSP.isNotEmpty()) {
-                localPaymentViewModel.fetchLocalPaymentData(getPhoneNumSP, sub_pack)
-            } else {
-                Toast.makeText(this, "Please Login First!", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
+    var getPhoneNumSP: String = ""
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,8 +49,20 @@ class LocalPaymentActivity : AppCompatActivity() {
                 saveLocalPaymentViewModel
             )
 
+        getPhoneNumSP= SharedPreferencesUtil.getData(
+        this,
+        UsernameInputKey,
+        "defaultValue"
+        ).toString()
+        val sub_pack = intent.getStringExtra("sub_pack")
 
-
+        if (sub_pack != null) {
+            if (getPhoneNumSP.isNotEmpty()) {
+                localPaymentViewModel.fetchLocalPaymentData(getPhoneNumSP, sub_pack)
+            } else {
+                Toast.makeText(this, "Please Login First!", Toast.LENGTH_LONG).show()
+            }
+        }
 
         lifecycleScope.launch {
             localPaymentViewModel.localPaymentData.collect {
@@ -90,7 +80,9 @@ class LocalPaymentActivity : AppCompatActivity() {
                         }
                     }
 
-                    else -> {}
+                    else -> {
+                        Toast.makeText(this@LocalPaymentActivity, "Something went wrong!", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -104,17 +96,16 @@ class LocalPaymentActivity : AppCompatActivity() {
         lateinit var paymentId: String
         lateinit var orderId: String
 
-
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (shouldOpenInApp(url)) {
                 if (url != null) {
                     if (url.equals("https://rtvplus.tv/")) {
+                        setResult(Activity.RESULT_OK)
                         finish()
                         return true
                     }
 
-                    view?.loadUrl(url)  //<------------
-                    Log.i("webView", "shouldOverrideUrlLoading: $url")
+                    view?.loadUrl(url)
                     if (url.contains("ACCEPTED")) {
                         val uri = Uri.parse(url)
                         val paramNames = uri.queryParameterNames
@@ -130,12 +121,14 @@ class LocalPaymentActivity : AppCompatActivity() {
                         }
                         if (paymentId.isNotEmpty() && orderId.isNotEmpty()) {
                             handleSavedLocalPaymentData(paymentId, orderId)
+                            finish()
                         } else {
                             finish()
                         }
                         finish()
+                        /*val intent = Intent(activity, MainActivity::class.java)
+                        activity.startActivity(intent)*/
                     }
-
                 }
                 return true
             }
@@ -149,7 +142,6 @@ class LocalPaymentActivity : AppCompatActivity() {
         private fun shouldOpenInApp(url: String?): Boolean {
             return true
         }
-
         private fun handleSavedLocalPaymentData(paymentId: String, orderId: String) {
             saveLocalPaymentViewModel.fetchSavedLocalPaymentData(
                 getPhoneNumSP,
@@ -192,6 +184,7 @@ class LocalPaymentActivity : AppCompatActivity() {
             }
         }
     }
+
 
     override fun finish() {
         binding.wvLocalPayment.removeAllViews()

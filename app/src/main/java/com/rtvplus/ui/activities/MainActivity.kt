@@ -4,13 +4,18 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.ActivityMainBinding
+import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.isOnline
 import com.rtvplus.utils.AppUtils.showAlertDialog
@@ -26,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     var selectedItemId: Int = -1
     lateinit var navHostFragment: NavHostFragment
+    var backPressedTime: Long = 0
 
     companion object {
         const val PERMISSION_REQUEST_CODE = 123
@@ -47,7 +53,6 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
 
-
         val username = SharedPreferencesUtil.getData(
             this,
             AppUtils.UsernameInputKey,
@@ -55,37 +60,32 @@ class MainActivity : AppCompatActivity() {
         ).toString()
 
 
-        /*val fragmentTag = intent.getStringExtra("fragmentToShow")
-        if (fragmentTag == "YourFragment") {
-            val fragment = SubscriptionFragment()
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView, fragment, fragmentTag)
-                .commit()
-            selectedItemId = R.id.SubscriptionFragment
-        }*/
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+      //  val navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+        NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
-        binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
-            val itemId = menuItem.itemId
-            if (selectedItemId != itemId) {
-                when (itemId) {
-                    R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
-                    R.id.LiveTvFragment -> {
-                        if (username.isNotEmpty()) {
-                            navController.navigate(R.id.LiveTvFragment)
-                        } else {
-                            val intent = Intent(this, LoginActivity::class.java)
-                            startActivity(intent)
-                            selectedItemId = R.id.HomeFragment
-                        }
-                    }
-
-                    R.id.SubscriptionFragment -> navController.navigate(R.id.SubscriptionFragment)
-                    R.id.MoreFragment -> navController.navigate(R.id.MoreFragment)
-                }
-                selectedItemId = itemId
-            }
-            true
-        }
+//        binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
+//            val itemId = menuItem.itemId
+//            if (selectedItemId != itemId) {
+//                when (itemId) {
+//                    R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
+//                    R.id.LiveTvFragment -> {
+//                        if (username.isNotEmpty()) {
+//                            navController.navigate(R.id.LiveTvFragment)
+//                        } else {
+//                            val intent = Intent(this, LoginActivity::class.java)
+//                            startActivity(intent)
+//                            selectedItemId = R.id.HomeFragment
+//                        }
+//                    }
+//
+//                    R.id.SubscriptionFragment -> navController.navigate(R.id.SubscriptionFragment)
+//                    R.id.MoreFragment -> navController.navigate(R.id.MoreFragment)
+//                }
+//                selectedItemId = itemId
+//            }
+//            true
+//        }
         binding.bottomNavigationBarId.setItemIconTintList(
             ContextCompat.getColorStateList(
                 this,
@@ -102,5 +102,17 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationBarId.visibility = View.GONE
     }
 
+    override fun onBackPressed() {
+        if (backPressedTime + 3000 > System.currentTimeMillis()) {
+            finish()
+        } else {
+            Toast.makeText(
+                this,
+                "Press back again to leave the app.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+        backPressedTime = System.currentTimeMillis()
+    }
 
 }

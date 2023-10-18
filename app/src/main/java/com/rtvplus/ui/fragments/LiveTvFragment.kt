@@ -1,5 +1,6 @@
 package com.rtvplus.ui.fragments
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,14 +12,31 @@ import androidx.fragment.app.Fragment
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentLiveTvBinding
 import com.rtvplus.ui.activities.MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.rtvplus.ui.activities.LoginActivity
+import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.SharedPreferencesUtil
 
 class LiveTvFragment : Fragment() {
     private lateinit var binding: FragmentLiveTvBinding
     private lateinit var player: ExoPlayer
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        val username = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
+
+        if (username.isEmpty()) {
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(intent)
+            findNavController().popBackStack()
+        }
+        super.onCreate(savedInstanceState)
+
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

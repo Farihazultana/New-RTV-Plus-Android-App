@@ -1,5 +1,6 @@
 package com.rtvplus.ui.fragments.subscription
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation.findNavController
@@ -24,6 +26,8 @@ import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.ui.activities.LoginActivity
+import com.rtvplus.ui.viewmodels.LocalPaymentViewModel
+import com.rtvplus.ui.viewmodels.SaveLocalPaymentViewModel
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -37,6 +41,9 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     private lateinit var subscriptionAdapter: SubscriptionAdapter
     private val subscriptionViewModel by viewModels<SubscriptionViewModel>()
     private var selectedPositions = -1
+
+    private var getPhoneNumSP: String = ""
+    private var sub_pack : String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,19 +70,16 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val fragmentManager = requireActivity().supportFragmentManager
         //go to previous screen
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-
-                val navController = findNavController(binding.root)
-                navController.navigate(R.id.HomeFragment)
-                val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-                bottomNavigationView.selectedItemId = R.id.HomeFragment
+                fragmentManager.popBackStack()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        val getPhoneNumSP = SharedPreferencesUtil.getData(
+        /*getPhoneNumSP = SharedPreferencesUtil.getData(
             requireContext(),
             UsernameInputKey,
             ""
@@ -113,10 +117,12 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                             if(item.userpack != "nopack"){
                                 binding.btnContinuePayment.visibility = View.GONE
                                 binding.textView.text = item.packtext
+                                sub_pack = item.sub_pack
                                 Log.i("Subscription", "onViewCreated: ${item.packtext} & ${item.userpack}")
                             }
                         }
                         subscriptionAdapter.notifyDataSetChanged()
+                        //Toast.makeText(requireContext(),"Reload", Toast.LENGTH_LONG).show()
                     }
 
                     is ResultType.Error -> {
@@ -128,7 +134,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                     }
                 }
             }
-        }
+        }*/
 
         //btn click listener
         binding.btnContinuePayment.setOnClickListener {
@@ -143,6 +149,71 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
             }
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Toast.makeText(requireContext(), "Reload", Toast.LENGTH_SHORT).show()
+        getPhoneNumSP = SharedPreferencesUtil.getData(
+            requireContext(),
+            UsernameInputKey,
+            ""
+        ).toString()
+        if (getPhoneNumSP.isNotEmpty()){
+            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
+            selectedPositions = -1
+            subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
+        }
+        else{
+            Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+
+        subscriptionAdapter = SubscriptionAdapter(emptyList(), this)
+        binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rvSubscriptionPacks.adapter = subscriptionAdapter
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            subscriptionViewModel.subscriptionData.collect { result ->
+                when (result) {
+                    is ResultType.Loading -> {
+                        binding.subscribeProgressBar.visibility = View.VISIBLE
+                        binding.textView.visibility = View.GONE
+                        binding.btnContinuePayment.visibility = View.GONE
+                    }
+
+                    is ResultType.Success -> {
+                        val subscriptionData = result.data
+                        subscriptionAdapter.subscriptionData = subscriptionData.subschemes
+                        binding.subscribeProgressBar.visibility = View.GONE
+                        binding.textView.visibility = View.VISIBLE
+                        binding.btnContinuePayment.visibility = View.VISIBLE
+                        for(item in subscriptionData.subschemes){
+                            if(item.userpack != "nopack"){
+                                binding.btnContinuePayment.visibility = View.GONE
+                                binding.textView.text = item.packtext
+                                sub_pack = item.sub_pack
+                                Log.i("Subscription", "onViewCreated: ${item.packtext} & ${item.userpack}")
+                            }
+                        }
+                        subscriptionAdapter.notifyDataSetChanged()
+                        //Toast.makeText(requireContext(),"Reload", Toast.LENGTH_LONG).show()
+                    }
+
+                    is ResultType.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            "Something is wrong. Please try again",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+
     }
 
     private fun showBottomSheet() {
