@@ -62,7 +62,8 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             } else{
                 val intent = Intent(requireContext(), LocalPaymentActivity::class.java)
                 intent.putExtra("sub_pack", sub_packLocalPayment)
-                startActivity(intent)
+                //startActivity(intent)
+                startActivityForResult(intent,1234)
                 dismiss()
             }
         }

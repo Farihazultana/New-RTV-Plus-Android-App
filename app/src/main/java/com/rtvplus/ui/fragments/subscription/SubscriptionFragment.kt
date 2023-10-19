@@ -121,6 +121,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                                     "Subscription",
                                     "onViewCreated: ${item.packtext} & ${item.userpack}"
                                 )
+                            }else{
+                                //
                             }
                         }
                         subscriptionAdapter.notifyDataSetChanged()//------***
@@ -164,12 +166,12 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         }
     }
 
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == 1234 && resultCode == Activity.RESULT_OK){
             subscription()
         }
-    }*/
+    }
 
     private fun showBottomSheet() {
         //val bottomSheetFragment = SubscribeBottomFragment()

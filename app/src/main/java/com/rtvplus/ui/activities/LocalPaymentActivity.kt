@@ -1,6 +1,7 @@
 package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -99,6 +100,7 @@ class LocalPaymentActivity : AppCompatActivity() {
             if (shouldOpenInApp(url)) {
                 if (url != null) {
                     if (url == "https://rtvplus.tv/") {
+                        setResult(Activity.RESULT_OK)
                         finish()
                         return true
                     }
@@ -119,10 +121,13 @@ class LocalPaymentActivity : AppCompatActivity() {
                         }
                         if (paymentId.isNotEmpty() && orderId.isNotEmpty()) {
                             handleSavedLocalPaymentData(paymentId, orderId)
+                            setResult(Activity.RESULT_OK)
                             finish()
                         } else {
+                            setResult(Activity.RESULT_OK)
                             finish()
                         }
+                        setResult(Activity.RESULT_OK)
                         finish()
                     }
                 }
@@ -158,6 +163,7 @@ class LocalPaymentActivity : AppCompatActivity() {
                                 "Payment",
                                 "Saved Local payment data: $savedLocalPayment"
                             )
+                            setResult(Activity.RESULT_OK)
                             finish()
                         }
 
@@ -170,11 +176,11 @@ class LocalPaymentActivity : AppCompatActivity() {
                         }
 
                         else -> {
-                            Toast.makeText(
+                            /*Toast.makeText(
                                 this@LocalPaymentActivity,
                                 "Something wend wrong, please try again!",
                                 Toast.LENGTH_SHORT
-                            ).show()
+                            ).show()*/
                         }
                     }
                 }
