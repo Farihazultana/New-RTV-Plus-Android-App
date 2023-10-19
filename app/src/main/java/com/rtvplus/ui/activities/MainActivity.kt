@@ -79,14 +79,14 @@ class MainActivity : AppCompatActivity() {
 //    }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-//        if (System.currentTimeMillis() - backPressedTime < DOUBLE_BACK_PRESS_INTERVAL) {
-//            super.onBackPressed()
-//            finish()
-//        } else {
-//            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
-//        }
-//        backPressedTime = System.currentTimeMillis()
+
+        if (System.currentTimeMillis() - backPressedTime < DOUBLE_BACK_PRESS_INTERVAL) {
+            super.onBackPressed()
+            finish()
+        } else {
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 
 

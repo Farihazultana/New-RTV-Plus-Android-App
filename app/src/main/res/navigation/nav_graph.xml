@@ -15,24 +15,48 @@
         android:id="@+id/SearchFragment"
         android:name="com.rtvplus.ui.fragments.SearchFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_HomeFragment"
+            app:destination="@id/HomeFragment"
+            app:popUpTo="@id/HomeFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/LiveTvFragment"
         android:name="com.rtvplus.ui.fragments.LiveTvFragment"
         android:label="Live Tv"
-        tools:layout="@layout/fragment_live_tv" />
+        tools:layout="@layout/fragment_live_tv">
+        <action
+            android:id="@+id/action_liveTvFragment_to_HomeFragment"
+            app:destination="@id/HomeFragment"
+            app:popUpTo="@id/HomeFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/SubscriptionFragment"
         android:name="com.rtvplus.ui.fragments.subscription.SubscriptionFragment"
         android:label="Subscription"
-        tools:layout="@layout/fragment_subscription" />
+        tools:layout="@layout/fragment_subscription">
+        <action
+            android:id="@+id/action_subscriptionFragment_to_HomeFragment"
+            app:destination="@id/HomeFragment"
+            app:popUpTo="@id/HomeFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/MoreFragment"
         android:name="com.rtvplus.ui.fragments.MoreFragment"
         android:label="More"
-        tools:layout="@layout/fragment_more" />
+        tools:layout="@layout/fragment_more">
+        <action
+            android:id="@+id/action_moreFragment_to_HomeFragment"
+            app:destination="@id/HomeFragment"
+            app:popUpTo="@id/HomeFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
 </navigation>

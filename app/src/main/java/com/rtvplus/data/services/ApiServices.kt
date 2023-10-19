@@ -12,6 +12,7 @@ import com.rtvplus.data.models.info.InfoResponse
 import com.rtvplus.data.models.local_payment.LocalPaymentResponse
 import com.rtvplus.data.models.local_payment.SaveLocalPaymentResponse
 import com.rtvplus.data.models.logIn.LogInResponse
+import com.rtvplus.data.models.post_play_time.PostPlayTimeResponse
 import com.rtvplus.data.models.registration.RegistrationResponse
 import com.rtvplus.data.models.search.SearchResponse
 import com.rtvplus.data.models.seeAll.SeeAllResponse
@@ -186,6 +187,6 @@ interface ApiServices {
         @Field("contentid") contentid: String,
         @Field("username") username: String,
         @Field("playtime") playtime: String
-    ): Response<TvShowsResponse>
+    ): Response<PostPlayTimeResponse>
 
 }

@@ -44,6 +44,7 @@ import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.PlayListViewModel
 import com.rtvplus.ui.viewmodels.RemoveFavoriteListViewModel
 import com.rtvplus.ui.viewmodels.SaveCommentViewModel
+import com.rtvplus.ui.viewmodels.SavePlayTimeViewModel
 import com.rtvplus.ui.viewmodels.SingleContentViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.ResultType
@@ -70,7 +71,9 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     private lateinit var catcode: String
     private lateinit var handler: Handler
     private var elapsedTime: Long = 0L
+    private var time: Long = 0L
     private val logInViewModel by viewModels<LogInViewModel>()
+    private val savePlayTimeViewModel by viewModels<SavePlayTimeViewModel>()
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -441,6 +444,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 if (player.isPlaying) {
                     elapsedTime += SystemClock.elapsedRealtime()
                 }
+                time += SystemClock.elapsedRealtime()
+
                 handler.postDelayed(this, 1000) // Update every second
             }
         }, 1000) // Initial delay of 1 second
@@ -591,9 +596,10 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     override fun onBackPressed() {
         player.stop()
 
+        savePlayTimeViewModel.savePlayTime(time.toString(),receivedValue,username,elapsedTime.toString())
 
         Log.e("elapsedTime",elapsedTime.toString())
-
+        Log.e("elapsedTime",time.toString())
 
         val fragmentManager = supportFragmentManager
         val backStackEntryCount = fragmentManager.backStackEntryCount

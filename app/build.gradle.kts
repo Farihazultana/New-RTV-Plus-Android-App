@@ -123,6 +123,7 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
 
+
     //Glide
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     //Image Slider
