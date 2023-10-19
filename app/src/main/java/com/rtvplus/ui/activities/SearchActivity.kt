@@ -239,7 +239,6 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                         R.id.subscriptionContainerView,
                         subscriptionFragment
                     )
-                    fragmentTransaction.addToBackStack(null)
                     fragmentTransaction.commit()
 
                 } else {

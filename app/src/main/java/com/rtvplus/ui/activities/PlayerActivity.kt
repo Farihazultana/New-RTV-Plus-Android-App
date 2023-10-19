@@ -535,7 +535,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                     R.id.subscriptionContainerView,
                     subscriptionFragment
                 )
-                fragmentTransaction.addToBackStack(null)
                 fragmentTransaction.commit()
 
             } else {

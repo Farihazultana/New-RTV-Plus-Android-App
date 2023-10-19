@@ -274,7 +274,6 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                     R.id.subscriptionContainerView,
                     subscriptionFragment
                 )
-                fragmentTransaction.addToBackStack(null)
                 fragmentTransaction.commit()
 
             } else {

@@ -21,7 +21,6 @@ import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -199,7 +198,6 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                             R.id.subscriptionContainerView,
                             subscriptionFragment
                         )
-                        fragmentTransaction.addToBackStack(null)
                         fragmentTransaction.commit()
                     } else {
                         Log.e(
@@ -231,7 +229,6 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                             R.id.subscriptionContainerView,
                             subscriptionFragment
                         )
-                        fragmentTransaction.addToBackStack(null)
                         fragmentTransaction.commit()
 
                     } else {
