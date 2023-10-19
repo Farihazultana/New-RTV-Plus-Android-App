@@ -77,16 +77,19 @@ class HomeFragment : Fragment() {
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (backPressedTime + 3000 > System.currentTimeMillis()) {
-                    requireActivity().finish()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Press back again to leave the app.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-                backPressedTime = System.currentTimeMillis()
+
+                requireActivity().finish()
+
+//                if (backPressedTime + 3000 > System.currentTimeMillis()) {
+//                    requireActivity().finish()
+//                } else {
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Press back again to leave the app.",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                }
+//                backPressedTime = System.currentTimeMillis()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)

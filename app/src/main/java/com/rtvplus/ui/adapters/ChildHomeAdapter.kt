@@ -24,13 +24,12 @@ class ChildHomeAdapter(
     private var contentData: List<Content>,
     private var contentViewType: String,
     private val navController: NavController,
-    var isPemiumUser: Int?
+    var isPemiumUser: Int?,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         private const val TYPE_BANNER = 0
         private const val TYPE_CONTENT = 1
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_CONTENT -> {
@@ -78,6 +77,7 @@ class ChildHomeAdapter(
                                 val intent =
                                     Intent(holder.itemView.context, PlayerActivity::class.java)
                                 intent.putExtra("id", currentItem.contentid)
+                                intent.putExtra("ct", currentItem.catcode)
                                 holder.itemView.context.startActivity(intent)
                             }
 

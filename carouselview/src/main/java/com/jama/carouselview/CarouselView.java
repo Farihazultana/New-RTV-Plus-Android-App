@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
@@ -127,7 +128,76 @@ public class CarouselView extends FrameLayout {
     this.enableAutoPlay();
   }
 
-  private void setScrollListener() {
+
+//  private void setScrollListener() {
+//    final int SCROLL_THRESHOLD = 200; // Set scroll threshold to match parent
+//
+//    this.carouselRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//      private int scrollDx = 0;
+//      private int scrollDy = 0;
+//
+//      @Override
+//      public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//        super.onScrolled(recyclerView, dx, dy);
+//        scrollDx += dx;
+//        scrollDy += dy;
+//
+//        // If the absolute scroll distance is greater than the RecyclerView's height, stop the scroll
+//        if (Math.abs(scrollDx) > SCROLL_THRESHOLD || Math.abs(scrollDy) > SCROLL_THRESHOLD) {
+//          recyclerView.stopScroll();
+//          scrollDx = 0;
+//          scrollDy = 0;
+//        }
+//
+//        if (carouselScrollListener != null) {
+//          carouselScrollListener.onScrolled(recyclerView, dx, dy);
+//        }
+//      }
+//
+//      // Rest of the onScrollStateChanged method remains the same
+//    });
+//  }
+
+//    private void setScrollListener() {
+//      final int SCROLL_THRESHOLD = 100;
+//    this.carouselRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//      private int scrollDx = 0;
+//      private int scrollDy = 0;
+//
+//      @Override
+//      public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//        super.onScrollStateChanged(recyclerView, newState);
+//        View centerView = snapHelper.findSnapView(layoutManager);
+//        int position = layoutManager.getPosition(centerView);
+//
+//        if (carouselScrollListener != null) {
+//          carouselScrollListener.onScrollStateChanged(recyclerView, newState, position);
+//        }
+//        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//          pageIndicatorView.setSelection(position);
+//          setCurrentItem(position);
+//        }
+//      }
+//
+//      @Override
+//      public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//        super.onScrolled(recyclerView, dx, dy);
+//
+//        scrollDx += dx;
+//
+//        // If the absolute scroll distance is greater than the RecyclerView's height, stop the scroll
+//        if (Math.abs(scrollDx) > SCROLL_THRESHOLD) {
+//          recyclerView.stopScroll();
+//          scrollDy = 0;
+//        }
+//        if (carouselScrollListener != null) {
+//          carouselScrollListener.onScrolled(recyclerView, dx, dy);
+//        }
+//      }
+//    });
+//  }
+
+    private void setScrollListener() {
     this.carouselRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override
       public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -136,10 +206,12 @@ public class CarouselView extends FrameLayout {
         int position = layoutManager.getPosition(centerView);
         if (carouselScrollListener != null) {
           carouselScrollListener.onScrollStateChanged(recyclerView, newState, position);
+
         }
         if (newState == RecyclerView.SCROLL_STATE_IDLE) {
           pageIndicatorView.setSelection(position);
           setCurrentItem(position);
+
         }
       }
 
@@ -152,6 +224,63 @@ public class CarouselView extends FrameLayout {
       }
     });
   }
+
+
+      //  private void setScrollListener() {
+//    this.carouselRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//      @Override
+//      public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//        super.onScrollStateChanged(recyclerView, newState);
+//        View centerView = snapHelper.findSnapView(layoutManager);
+//        int position = layoutManager.getPosition(centerView);
+//        if (carouselScrollListener != null) {
+//          carouselScrollListener.onScrollStateChanged(recyclerView, newState, position);
+//        }
+//        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//          pageIndicatorView.setSelection(position);
+//          setCurrentItem(position);
+//        }
+//      }
+//
+//      @Override
+//      public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//        super.onScrolled(recyclerView, dx, dy);
+//        if (carouselScrollListener != null) {
+//          carouselScrollListener.onScrolled(recyclerView, dx, dy);
+//        }
+//      }
+//    });
+//  }
+
+
+
+
+
+//  private void setScrollListener() {
+//    this.carouselRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//      @Override
+//      public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//        super.onScrollStateChanged(recyclerView, newState);
+//        View centerView = snapHelper.findSnapView(layoutManager);
+//        int position = layoutManager.getPosition(centerView);
+//        if (carouselScrollListener != null) {
+//          carouselScrollListener.onScrollStateChanged(recyclerView, newState, position);
+//        }
+//        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//          pageIndicatorView.setSelection(position);
+//          setCurrentItem(position);
+//        }
+//      }
+//
+//      @Override
+//      public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//        super.onScrolled(recyclerView, dx, dy);
+//        if (carouselScrollListener != null) {
+//          carouselScrollListener.onScrolled(recyclerView, dx, dy);
+//        }
+//      }
+//    });
+//  }
 
   public void setAutoPlay(boolean enableAutoPlay) {
     this.enableAutoPlay = enableAutoPlay;

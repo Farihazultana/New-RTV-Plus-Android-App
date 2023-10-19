@@ -149,6 +149,13 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     implementation(project(":carouselview"))
+    implementation(project(":whynotimagecarousel"))
+
+    implementation ("com.google.android.material:material:1.5.0")
+//
+    implementation ("me.relex:circleindicator:2.1.6")
+//
+   implementation ("org.imaginativeworld.whynotimagecarousel:whynotimagecarousel:2.1.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

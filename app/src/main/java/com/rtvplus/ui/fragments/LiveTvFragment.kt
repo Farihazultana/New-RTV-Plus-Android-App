@@ -62,14 +62,16 @@ class LiveTvFragment : Fragment() {
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 player.stop()
-                val mainActivity = requireActivity() as MainActivity
-                mainActivity.showBottomNavigationBar()
+                requireActivity().finish()
 
-                val navController = findNavController(binding.root)
-                navController.navigate(R.id.HomeFragment)
-                val bottomNavigationView =
-                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-                bottomNavigationView.selectedItemId = R.id.HomeFragment
+//                val mainActivity = requireActivity() as MainActivity
+//                mainActivity.showBottomNavigationBar()
+
+//                val navController = findNavController(binding.root)
+//                navController.navigate(R.id.HomeFragment)
+//                val bottomNavigationView =
+//                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+//                bottomNavigationView.selectedItemId = R.id.HomeFragment
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)

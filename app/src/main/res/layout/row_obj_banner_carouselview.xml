@@ -5,28 +5,103 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.jama.carouselview.CarouselView
-        android:id="@+id/carouselViewId"
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        app:carouselOffset="center"
-        app:enableSnapping="true"
-        app:indicatorAnimationType="drop"
-        app:indicatorPadding="5"
-        app:indicatorRadius="5"
-        app:indicatorSelectedColor="@color/green"
-        app:indicatorUnselectedColor="@color/sliderIndicatorColor"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:resource="@layout/row_obj_slider_view"
-        app:scaleOnScroll="false"
-        app:setAutoPlay="true"
-        app:setAutoPlayDelay="3000"
-        app:size="10"
-        app:spacing="10" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="8dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp" />
+
+                <me.relex.circleindicator.CircleIndicator2
+                    android:id="@+id/custom_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    app:ci_animator="@animator/scale_with_alpha"
+                    app:ci_drawable="@drawable/dot"
+                    app:ci_drawable_unselected="@drawable/dot" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <org.imaginativeworld.whynotimagecarousel.ImageCarousel
+            android:id="@+id/carousel4"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="16dp"
+            android:translationZ="8dp"
+            app:autoPlay="true"
+            app:autoPlayDelay="1000"
+            app:carouselGravity="CENTER"
+            app:carouselPaddingBottom="8dp"
+            app:carouselPaddingTop="8dp"
+            app:carouselType="SHOWCASE"
+            app:imageScaleType="centerCrop"
+            app:scaleOnScroll="true"
+            app:scalingFactor=".05"
+            app:showBottomShadow="false"
+            app:showCaption="false"
+            app:showIndicator="false"
+            app:showNavigationButtons="false"
+            app:showTopShadow="false" />
+
+    </FrameLayout>
+
+
+    <!--    <com.jama.carouselview.CarouselView-->
+    <!--        android:id="@+id/carouselViewId"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="8dp"-->
+    <!--        android:layout_marginEnd="16dp"-->
+    <!--        app:carouselOffset="center"-->
+    <!--        app:enableSnapping="true"-->
+    <!--        app:indicatorAnimationType="swap"-->
+    <!--        app:indicatorPadding="5"-->
+    <!--        app:indicatorRadius="5"-->
+    <!--        app:indicatorSelectedColor="@color/green"-->
+    <!--        app:indicatorUnselectedColor="@color/sliderIndicatorColor"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:resource="@layout/row_obj_slider_view"-->
+    <!--        app:scaleOnScroll="false"-->
+    <!--        app:setAutoPlay="true"-->
+    <!--        app:setAutoPlayDelay="3000"-->
+    <!--        app:size="10"-->
+    <!--        app:spacing="10" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

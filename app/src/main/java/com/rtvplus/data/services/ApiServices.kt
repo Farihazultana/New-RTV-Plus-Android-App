@@ -19,6 +19,7 @@ import com.rtvplus.data.models.single_content.playlist.PlayListResponse
 import com.rtvplus.data.models.single_content.single.SingleContentResponse
 import com.rtvplus.data.models.socialmedia_login.google.GoogleLogInResponse
 import com.rtvplus.data.models.subscription.SubscriptionResponse
+import com.rtvplus.data.models.tv_shows.TvShowsResponse
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -45,7 +46,8 @@ interface ApiServices {
     suspend fun getPlayListData(
         @Field("username") username: String,
         @Field("cc") cc: String,
-        @Field("resolution") resolution: String
+        @Field("resolution") resolution: String,
+        @Field("ct") ct: String
     ): Response<PlayListResponse>
 
     @FormUrlEncoded
@@ -168,4 +170,22 @@ interface ApiServices {
         @Field("username") username: String,
         @Field("comment") comment: String,
     ): Response<FeedbackResponse>
+
+    @FormUrlEncoded
+    @POST("flix_json_app_dramaserial.php")
+    suspend fun getTvShowsData(
+        @Field("username") username: String,
+        @Field("cc") cc: String,
+        @Field("resolution") resolution: String
+    ): Response<TvShowsResponse>
+
+    @FormUrlEncoded
+    @POST("flix_postplaytime.php")
+    suspend fun savePlayData(
+        @Field("time") time: String,
+        @Field("contentid") contentid: String,
+        @Field("username") username: String,
+        @Field("playtime") playtime: String
+    ): Response<TvShowsResponse>
+
 }

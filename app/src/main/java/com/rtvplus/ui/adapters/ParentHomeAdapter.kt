@@ -107,39 +107,43 @@ class ParentHomeAdapter(
             }
 
             is BannerViewHolder -> {
-                holder.carouselView.apply {
-                    size = homeData.size
-                    resource = R.layout.row_obj_slider_view
-                    autoPlay = true
-                    indicatorAnimationType = IndicatorAnimationType.THIN_WORM
-                    carouselOffset = OffsetType.CENTER
-                    setCarouselViewListener { view, position ->
-                        val imageView = view.findViewById<ImageView>(R.id.myimage)
-                        Glide.with(imageView).load(currentItem.contents[position].image_location)
-                            .placeholder(R.drawable.no_img).into(imageView)
+                holder.carousel4.setData("https://rtvplus.tv/images/yt_th_spot_rtvplus/RTydRLmKJxD.jpg")
 
-                        imageView.setOnClickListener {
 
-                            val username = SharedPreferencesUtil.getData(
-                                myContext,
-                                UsernameInputKey,
-                                ""
-                            )
-                            if (username.toString().isNotEmpty()) {
-                                val intent =
-                                    Intent(holder.itemView.context, PlayerActivity::class.java)
-                                intent.putExtra("id", currentItem.contents[position].contentid)
-                                intent.putExtra("type", "single")
-                                holder.itemView.context.startActivity(intent)
-                            } else {
-                                val intent =
-                                    Intent(holder.itemView.context, LoginActivity::class.java)
-                                holder.itemView.context.startActivity(intent)
-                            }
-                        }
-                    }
-                    show()
-                }
+
+//                holder.carouselView.apply {
+//                    size = homeData.size
+//                    resource = R.layout.row_obj_slider_view
+//                    autoPlay = true
+//                    indicatorAnimationType = IndicatorAnimationType.THIN_WORM
+//                    carouselOffset = OffsetType.CENTER
+//                    setCarouselViewListener { view, position ->
+//                        val imageView = view.findViewById<ImageView>(R.id.myimage)
+//                        Glide.with(imageView).load(currentItem.contents[position].image_location)
+//                            .placeholder(R.drawable.no_img).into(imageView)
+//
+//                        imageView.setOnClickListener {
+//
+//                            val username = SharedPreferencesUtil.getData(
+//                                myContext,
+//                                UsernameInputKey,
+//                                ""
+//                            )
+//                            if (username.toString().isNotEmpty()) {
+//                                val intent =
+//                                    Intent(holder.itemView.context, PlayerActivity::class.java)
+//                                intent.putExtra("id", currentItem.contents[position].contentid)
+//                                intent.putExtra("type", "single")
+//                                holder.itemView.context.startActivity(intent)
+//                            } else {
+//                                val intent =
+//                                    Intent(holder.itemView.context, LoginActivity::class.java)
+//                                holder.itemView.context.startActivity(intent)
+//                            }
+//                        }
+//                    }
+//                    show()
+//                }
             }
 
             is ThumbnailViewHolder -> {
@@ -233,7 +237,7 @@ class ParentHomeAdapter(
     }
 
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val carouselView: CarouselView = itemView.findViewById(R.id.carouselViewId)
+        val carousel4: CarouselView = itemView.findViewById(R.id.carousel4)
     }
 
     inner class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

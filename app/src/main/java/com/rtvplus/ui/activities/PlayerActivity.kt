@@ -3,7 +3,10 @@ package com.rtvplus.ui.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -64,6 +67,9 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     lateinit var username: String
     private lateinit var receivedValue: String
     private lateinit var contentType: String
+    private lateinit var catcode: String
+    private lateinit var handler: Handler
+    private var elapsedTime: Long = 0L
     private val logInViewModel by viewModels<LogInViewModel>()
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
@@ -80,6 +86,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         ).toString()
         receivedValue = intent.getStringExtra("id").toString()
         contentType = intent.getStringExtra("type").toString()
+        catcode = intent.getStringExtra("ct").toString()
 
         initilizeSimilarContentAdapter()
 
@@ -99,6 +106,22 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
             playSingleContent()
         } else {
             playPlayListContent()
+        }
+
+        handler = Handler()
+        startTimer()
+
+    }
+
+    private fun hideStatusBar() {
+        if (Build.VERSION.SDK_INT < 16) {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        } else {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+            actionBar?.hide()
         }
     }
 
@@ -163,7 +186,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
             playListViewModel.fetchPlayListContent(
                 username,
                 receivedValue,
-                "hd"
+                "hd",
+                catcode
             )
         }
         playListViewModel.content.observe(this) { result ->
@@ -410,6 +434,18 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         player.play()
     }
 
+    private fun startTimer() {
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                Log.e("elapsedTime", elapsedTime.toString())
+                if (player.isPlaying) {
+                    elapsedTime += SystemClock.elapsedRealtime()
+                }
+                handler.postDelayed(this, 1000) // Update every second
+            }
+        }, 1000) // Initial delay of 1 second
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private fun displaySimilarContent(content: SingleContentResponse) {
         binding.similarItemRecyclerView.adapter = similarItemsAdapter
@@ -479,9 +515,12 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     fun setFullscreen(fullscreen: Boolean) {
         val playerView = binding.playerView
         val fullScreenbutton: ImageView = findViewById(R.id.fullscreen)
+
         if (fullscreen) {
             makeFullScreen(fullScreenbutton, playerView)
+            hideStatusBar()
         } else {
+            hideStatusBar()
             // Set the activity orientation back to portrait
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_24)
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -545,11 +584,16 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     override fun onStop() {
         super.onStop()
         player.stop()
+        handler.removeCallbacksAndMessages(null)
     }
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         player.stop()
+
+
+        Log.e("elapsedTime",elapsedTime.toString())
+
 
         val fragmentManager = supportFragmentManager
         val backStackEntryCount = fragmentManager.backStackEntryCount
@@ -557,6 +601,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         if (backStackEntryCount > 0) {
             // Pop the fragment on the first back button click
             fragmentManager.popBackStack()
+            handler.removeCallbacksAndMessages(null)
         } else {
             // If the back stack is empty, navigate back or exit the activity
             super.onBackPressed()
