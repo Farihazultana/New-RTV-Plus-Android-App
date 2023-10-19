@@ -105,31 +105,31 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
             logInViewModel.fetchLogInData(username.toString(), "", "yes", "1")
         }
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            logInViewModel.logInData.collect {
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data
 
-                        for (item in logInResult) {
-                            val result = item.play
-                            isPremiumUser = result
-                            similarItemsAdapter.isPemiumUser = isPremiumUser
-                        }
-                    }
+        logInViewModel.logInData.observe(this) {
+            when (it) {
+                is ResultType.Success -> {
+                    val logInResult = it.data
 
-                    is ResultType.Error -> {
-                        isPremiumUser = 0
-
-                    }
-
-                    else -> {
-
+                    for (item in logInResult) {
+                        val result = item.play
+                        isPremiumUser = result
+                        similarItemsAdapter.isPemiumUser = isPremiumUser
                     }
                 }
-            }
 
+                is ResultType.Error -> {
+                    isPremiumUser = 0
+
+                }
+
+                else -> {
+
+                }
+            }
         }
+
+
 
         if (receivedValue != null && contentType == "single") {
 

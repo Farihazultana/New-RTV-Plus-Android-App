@@ -67,30 +67,30 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         }
 
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            logInViewModel.logInData.collect {
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data
 
-                        for (item in logInResult) {
-                            val result = item.play
-                            isPremiumUser = result
-                        }
-                    }
+        logInViewModel.logInData.observe(this) {
+            when (it) {
+                is ResultType.Success -> {
+                    val logInResult = it.data
 
-                    is ResultType.Error -> {
-                        isPremiumUser = 0
-
-                    }
-
-                    else -> {
-
+                    for (item in logInResult) {
+                        val result = item.play
+                        isPremiumUser = result
                     }
                 }
-            }
 
+                is ResultType.Error -> {
+                    isPremiumUser = 0
+
+                }
+
+                else -> {
+
+                }
+            }
         }
+
+
         favoriteListAdapter = FavoriteListAdapter(null, this, this, isPremiumUser)
         binding.favouriteListRecyclerview.layoutManager = GridLayoutManager(this, 2)
         binding.favouriteListRecyclerview.adapter = favoriteListAdapter
@@ -288,6 +288,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             startActivity(intent)
         }
     }
+
     override fun onBackPressed() {
         val fragmentManager = supportFragmentManager
         val backStackEntryCount = fragmentManager.backStackEntryCount

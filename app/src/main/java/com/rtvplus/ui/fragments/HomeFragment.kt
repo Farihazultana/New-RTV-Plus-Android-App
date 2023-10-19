@@ -121,7 +121,7 @@ class HomeFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            logInViewModel.logInData.collect {
+            logInViewModel.logInData.observe(requireActivity()) {
                 when (it) {
                     is ResultType.Success -> {
                         val logInResult = it.data
@@ -133,7 +133,11 @@ class HomeFragment : Fragment() {
                     }
 
                     is ResultType.Error -> {
-
+                        Toast.makeText(
+                            requireActivity(),
+                            "Something is wrong, please try again!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     else -> {
@@ -143,7 +147,6 @@ class HomeFragment : Fragment() {
             }
 
         }
-
 
 
         viewLifecycleOwner.lifecycleScope.launch {

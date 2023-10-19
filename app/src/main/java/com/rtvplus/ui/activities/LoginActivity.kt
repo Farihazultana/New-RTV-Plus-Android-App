@@ -76,7 +76,6 @@ class LoginActivity : AppCompatActivity() {
             if (enteredPhone.isNotEmpty() && enteredPassword.isNotEmpty() && enteredPhone.length == 11) {
                 phoneText = "88$enteredPhone"
                 logInViewModel.fetchLogInData(phoneText!!, enteredPassword!!, "no", "1")
-
             } else {
                 if (enteredPhone.isEmpty() || enteredPassword.isEmpty()) {
                     Toast.makeText(
@@ -197,7 +196,7 @@ class LoginActivity : AppCompatActivity() {
                             "forget",
                         )
                         lifecycleScope.launch {
-                            forgetPasswordViewModel.forgetPasswordData.collect {
+                            forgetPasswordViewModel.forgetPasswordData.observe(this@LoginActivity) {
                                 when (it) {
                                     is ResultType.Success -> {
                                         val result = it.data
@@ -262,50 +261,47 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginUsingPhoneNumber() {
         lifecycleScope.launch {
-            logInViewModel.logInData.collect {
+            logInViewModel.logInData.observe(this@LoginActivity) {
                 var result = ""
                 when (it) {
                     is ResultType.Success -> {
                         val logInResult = it.data[0]
-                            result = logInResult.result
-                            Log.i("LogIN", "Log In result to be saved: $result")
-                            SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
+                        result = logInResult.result
 
-                            if (result == "success") {
-                                Log.i("TAGP", "LogIn: $result")
-                                SharedPreferencesUtil.saveData(
-                                    this@LoginActivity,
-                                    UsernameInputKey,
-                                    phoneText!!
-                                ).toString()
-                                Toast.makeText(this@LoginActivity, result, Toast.LENGTH_SHORT).show()
-                                finish()
-                            } else {
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "Username or Password incorrect. Try Again!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                        SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
+
+                        if (result == "success") {
+                            SharedPreferencesUtil.saveData(
+                                this@LoginActivity,
+                                UsernameInputKey,
+                                phoneText!!
+                            ).toString()
+                            Toast.makeText(this@LoginActivity, result, Toast.LENGTH_SHORT).show()
+                            finish()
+                        } else {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Username or Password incorrect. Try Again!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
 
                     }
 
                     is ResultType.Error -> {
                         Toast.makeText(
                             this@LoginActivity,
-                            "Something is wrong, please try again!",
+                            "Username or Password incorrect. Try Again!",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
 
-                    else -> {}
+                    else -> {
+                    }
                 }
             }
         }
     }
-
-
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -349,7 +345,7 @@ class LoginActivity : AppCompatActivity() {
                                 imageUri.toString()
                             )
                             lifecycleScope.launch {
-                                googleLogInViewModel.googleLogInData.collect {
+                                googleLogInViewModel.googleLogInData.observe(this@LoginActivity) {
                                     when (it) {
                                         is ResultType.Success -> {
                                             val result = it.data

@@ -3,7 +3,6 @@ package com.rtvplus.ui.fragments.subscription
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,10 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.rtvplus.R
 import com.rtvplus.data.models.subscription.SubschemesItem
@@ -24,10 +22,7 @@ import com.rtvplus.ui.adapters.SubscriptionAdapter
 import com.rtvplus.ui.viewmodels.SubscriptionViewModel
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.ui.activities.LoginActivity
-import com.rtvplus.ui.viewmodels.LocalPaymentViewModel
-import com.rtvplus.ui.viewmodels.SaveLocalPaymentViewModel
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -52,9 +47,14 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         binding = FragmentSubscriptionBinding.inflate(inflater, container, false)
         bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
 
-
         val fragmentManager = requireActivity().supportFragmentManager
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
+
+        getPhoneNumSP = SharedPreferencesUtil.getData(
+            requireContext(),
+            UsernameInputKey,
+            ""
+        ).toString()
 
         toolBarIconSubscribe.setOnClickListener {
             fragmentManager.popBackStack()
@@ -63,6 +63,10 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
 //            val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
 //            bottomNavigationView.selectedItemId = R.id.HomeFragment
         }
+
+        subscriptionAdapter = SubscriptionAdapter(emptyList(), this)
+        binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rvSubscriptionPacks.adapter = subscriptionAdapter
 
         return binding.root
     }
@@ -79,63 +83,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        /*getPhoneNumSP = SharedPreferencesUtil.getData(
-            requireContext(),
-            UsernameInputKey,
-            ""
-        ).toString()
-        if (getPhoneNumSP.isNotEmpty()){
-            subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
-        }
-        else{
-            Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            startActivity(intent)
-        }
-
-
-        subscriptionAdapter = SubscriptionAdapter(emptyList(), this)
-        binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rvSubscriptionPacks.adapter = subscriptionAdapter
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            subscriptionViewModel.subscriptionData.collect { result ->
-                when (result) {
-                    is ResultType.Loading -> {
-                        binding.subscribeProgressBar.visibility = View.VISIBLE
-                        binding.textView.visibility = View.GONE
-                        binding.btnContinuePayment.visibility = View.GONE
-                    }
-
-                    is ResultType.Success -> {
-                        val subscriptionData = result.data
-                        subscriptionAdapter.subscriptionData = subscriptionData.subschemes
-                        binding.subscribeProgressBar.visibility = View.GONE
-                        binding.textView.visibility = View.VISIBLE
-                        binding.btnContinuePayment.visibility = View.VISIBLE
-                        for(item in subscriptionData.subschemes){
-                            if(item.userpack != "nopack"){
-                                binding.btnContinuePayment.visibility = View.GONE
-                                binding.textView.text = item.packtext
-                                sub_pack = item.sub_pack
-                                Log.i("Subscription", "onViewCreated: ${item.packtext} & ${item.userpack}")
-                            }
-                        }
-                        subscriptionAdapter.notifyDataSetChanged()
-                        //Toast.makeText(requireContext(),"Reload", Toast.LENGTH_LONG).show()
-                    }
-
-                    is ResultType.Error -> {
-                        Toast.makeText(
-                            requireContext(),
-                            "Something is wrong. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-        }*/
-
         //btn click listener
         binding.btnContinuePayment.setOnClickListener {
             if (selectedPositions != -1) {
@@ -149,35 +96,9 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
             }
 
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        Toast.makeText(requireContext(), "Reload", Toast.LENGTH_SHORT).show()
-        getPhoneNumSP = SharedPreferencesUtil.getData(
-            requireContext(),
-            UsernameInputKey,
-            ""
-        ).toString()
-        if (getPhoneNumSP.isNotEmpty()){
-            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
-            selectedPositions = -1
-            subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
-        }
-        else{
-            Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            startActivity(intent)
-        }
-
-
-        subscriptionAdapter = SubscriptionAdapter(emptyList(), this)
-        binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rvSubscriptionPacks.adapter = subscriptionAdapter
 
         viewLifecycleOwner.lifecycleScope.launch {
-            subscriptionViewModel.subscriptionData.collect { result ->
+            subscriptionViewModel.subscriptionData.observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is ResultType.Loading -> {
                         binding.subscribeProgressBar.visibility = View.VISIBLE
@@ -191,16 +112,20 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                         binding.subscribeProgressBar.visibility = View.GONE
                         binding.textView.visibility = View.VISIBLE
                         binding.btnContinuePayment.visibility = View.VISIBLE
-                        for(item in subscriptionData.subschemes){
-                            if(item.userpack != "nopack"){
+                        for (item in subscriptionData.subschemes) {
+                            if (item.userpack != "nopack") {
                                 binding.btnContinuePayment.visibility = View.GONE
                                 binding.textView.text = item.packtext
                                 sub_pack = item.sub_pack
-                                Log.i("Subscription", "onViewCreated: ${item.packtext} & ${item.userpack}")
+                                Log.i(
+                                    "Subscription",
+                                    "onViewCreated: ${item.packtext} & ${item.userpack}"
+                                )
                             }
                         }
-                        subscriptionAdapter.notifyDataSetChanged()
-                        //Toast.makeText(requireContext(),"Reload", Toast.LENGTH_LONG).show()
+                        subscriptionAdapter.notifyDataSetChanged()//------***
+
+                        Toast.makeText(requireContext(),"Observed successfully", Toast.LENGTH_LONG).show()
                     }
 
                     is ResultType.Error -> {
@@ -214,7 +139,37 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
             }
         }
 
+
     }
+
+    override fun onResume() {
+
+        subscription()
+
+        super.onResume()
+    }
+
+    private fun subscription() {
+        Toast.makeText(requireContext(), "Reload", Toast.LENGTH_SHORT).show()
+
+        if (getPhoneNumSP.isNotEmpty()) {
+            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
+            selectedPositions = -1
+            subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
+            //subscriptionAdapter.notifyDataSetChanged()//------***
+        } else {
+            Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 1234 && resultCode == Activity.RESULT_OK){
+            subscription()
+        }
+    }*/
 
     private fun showBottomSheet() {
         //val bottomSheetFragment = SubscribeBottomFragment()
@@ -240,13 +195,14 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
             args.putString("sub_pack", item.sub_pack)
             args.putString("pack_name", item.pack_name)
             if (selectedPositions != -1) {
-                binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.green))
+                binding.btnContinuePayment.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.green))
             } else {
-                binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
+                binding.btnContinuePayment.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.grey))
             }
         }else{
-            this.selectedPositions = position
+            this.selectedPositions = -1
         }
+        subscriptionAdapter.notifyDataSetChanged()
     }
 
 }

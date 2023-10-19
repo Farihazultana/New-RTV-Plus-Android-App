@@ -1,7 +1,6 @@
 package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -65,7 +64,7 @@ class LocalPaymentActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            localPaymentViewModel.localPaymentData.collect {
+            localPaymentViewModel.localPaymentData.observe(this@LocalPaymentActivity) {
                 when (it) {
                     is ResultType.Loading -> {
                         binding.pbLoading.visibility = View.VISIBLE
@@ -99,8 +98,7 @@ class LocalPaymentActivity : AppCompatActivity() {
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (shouldOpenInApp(url)) {
                 if (url != null) {
-                    if (url.equals("https://rtvplus.tv/")) {
-                        setResult(Activity.RESULT_OK)
+                    if (url == "https://rtvplus.tv/") {
                         finish()
                         return true
                     }
@@ -126,8 +124,6 @@ class LocalPaymentActivity : AppCompatActivity() {
                             finish()
                         }
                         finish()
-                        /*val intent = Intent(activity, MainActivity::class.java)
-                        activity.startActivity(intent)*/
                     }
                 }
                 return true
@@ -162,6 +158,7 @@ class LocalPaymentActivity : AppCompatActivity() {
                                 "Payment",
                                 "Saved Local payment data: $savedLocalPayment"
                             )
+                            finish()
                         }
 
                         is ResultType.Error -> {
@@ -195,6 +192,7 @@ class LocalPaymentActivity : AppCompatActivity() {
             localPaymentView.destroy()
             //localPaymentView = null
         }
+
         super.finish()
     }
 
