@@ -21,6 +21,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.rtvplus.R
 import com.rtvplus.data.models.home.Data
+import com.rtvplus.databinding.ItemCustomFixedSizeLayout3Binding
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.PlayerActivity
 import com.rtvplus.ui.activities.SeeAllActivity
@@ -32,8 +33,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import me.relex.circleindicator.CircleIndicator2
 import org.imaginativeworld.whynotimagecarousel.ImageCarousel
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
+import org.imaginativeworld.whynotimagecarousel.utils.setImage
 import kotlin.random.Random
 
 class ParentHomeAdapter(
@@ -110,9 +114,10 @@ class ParentHomeAdapter(
 
             is BannerViewHolder -> {
 
-
                 holder.carousel4.registerLifecycle(lifecycle)
-                holder.carousel4.infiniteCarousel = true
+                holder.carousel4.infiniteCarousel = false
+                holder.carousel4.infiniteCarousel = false
+                holder.carousel4.autoPlay = true
 
                 // Custom view
                 holder.carousel4.carouselListener = object : CarouselListener {
@@ -143,19 +148,48 @@ class ParentHomeAdapter(
                 }
 
 
-                // holder.carousel4.setData("https://rtvplus.tv/images/yt_th_spot_rtvplus/RTydRLmKJxD.jpg")
+
+//                holder.carousel4.carouselListener = object : CarouselListener {
+//                    override fun onCreateViewHolder(
+//                        layoutInflater: LayoutInflater,
+//                        parent: ViewGroup
+//                    ): ViewBinding {
+//                        return ItemCustomFixedSizeLayout3Binding.inflate(
+//                            layoutInflater,
+//                            parent,
+//                            false
+//                        )
+//                    }
+//
+//                    override fun onBindViewHolder(
+//                        binding: ViewBinding,
+//                        item: CarouselItem,
+//                        position: Int
+//                    ) {
+//                        val currentBinding = binding as ItemCustomFixedSizeLayout3Binding
+//
+//                        currentBinding.imageView.apply {
+//                            scaleType = ImageView.ScaleType.CENTER_CROP
+//
+//                            setImage(item, R.drawable.ic_wb_cloudy_with_padding)
+//                        }
+//                    }
+//                }
+
 
                 val listFour = mutableListOf<CarouselItem>()
 
                 for (item in currentItem.contents) {
                     listFour.add(
                         CarouselItem(
-                            imageUrl = item
+                            imageUrl = item.image_location
                         )
                     )
                 }
 
                 holder.carousel4.setData(listFour)
+                holder.carousel4.setIndicator(holder.custom_indicator)
+
 
 
 //                holder.carouselView.apply {
@@ -287,6 +321,7 @@ class ParentHomeAdapter(
 
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val carousel4: ImageCarousel = itemView.findViewById(R.id.carousel4)
+        val custom_indicator : CircleIndicator2 = itemView.findViewById(R.id.custom_indicator)
         //  val carouselView : CarouselView = itemView.findViewById(R.id.carouselViewId)
     }
 
