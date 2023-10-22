@@ -115,8 +115,7 @@ class ParentHomeAdapter(
             is BannerViewHolder -> {
 
                 holder.carousel4.registerLifecycle(lifecycle)
-                holder.carousel4.infiniteCarousel = false
-                holder.carousel4.infiniteCarousel = false
+                holder.carousel4.infiniteCarousel = true
                 holder.carousel4.autoPlay = true
 
                 // Custom view
