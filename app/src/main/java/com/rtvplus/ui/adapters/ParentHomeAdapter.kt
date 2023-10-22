@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,9 +19,6 @@ import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
-import com.jama.carouselview.CarouselView
-import com.jama.carouselview.enums.IndicatorAnimationType
-import com.jama.carouselview.enums.OffsetType
 import com.rtvplus.R
 import com.rtvplus.data.models.home.Data
 import com.rtvplus.ui.activities.LoginActivity
@@ -42,7 +40,8 @@ class ParentHomeAdapter(
     private var myContext: Context,
     var homeData: List<Data>,
     private val navController: NavController,
-    var isPemiumUser: Int?
+    var isPemiumUser: Int?,
+    var lifecycle: Lifecycle
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var job: Job? = null
@@ -112,7 +111,7 @@ class ParentHomeAdapter(
             is BannerViewHolder -> {
 
 
-                holder.carousel4.registerLifecycle(myContext)
+                holder.carousel4.registerLifecycle(lifecycle)
                 holder.carousel4.infiniteCarousel = true
 
                 // Custom view
@@ -144,7 +143,7 @@ class ParentHomeAdapter(
                 }
 
 
-               // holder.carousel4.setData("https://rtvplus.tv/images/yt_th_spot_rtvplus/RTydRLmKJxD.jpg")
+                // holder.carousel4.setData("https://rtvplus.tv/images/yt_th_spot_rtvplus/RTydRLmKJxD.jpg")
 
                 val listFour = mutableListOf<CarouselItem>()
 
@@ -273,7 +272,7 @@ class ParentHomeAdapter(
             TYPE_BANNER
         } else if (currentItem.contentviewtype == "11") {
             TYPE_THUMBNAIL
-        }  else {
+        } else {
             TYPE_CONTENT
         }
     }
@@ -288,7 +287,7 @@ class ParentHomeAdapter(
 
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val carousel4: ImageCarousel = itemView.findViewById(R.id.carousel4)
-      //  val carouselView : CarouselView = itemView.findViewById(R.id.carouselViewId)
+        //  val carouselView : CarouselView = itemView.findViewById(R.id.carouselViewId)
     }
 
     inner class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

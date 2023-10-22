@@ -81,7 +81,7 @@ class HomeFragment : Fragment() {
         homeViewModel.fetchHomeData("", "home")
 
         parentHomeAdapter =
-            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null)
+            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null, lifecycle)
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
