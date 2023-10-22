@@ -15,20 +15,20 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.rtvplus.R
-import com.rtvplus.databinding.ActivityLoginBinding
-import com.rtvplus.ui.viewmodels.ForgetPasswordViewModel
-import com.rtvplus.ui.viewmodels.GoogleLogInViewModel
-import com.rtvplus.ui.viewmodels.LogInViewModel
-import com.rtvplus.utils.ResultType
-import com.rtvplus.utils.SharedPreferencesUtil
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.textfield.TextInputEditText
+import com.rtvplus.R
+import com.rtvplus.databinding.ActivityLoginBinding
+import com.rtvplus.ui.viewmodels.ForgetPasswordViewModel
+import com.rtvplus.ui.viewmodels.GoogleLogInViewModel
+import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.ResultType
+import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -272,28 +272,28 @@ class LoginActivity : AppCompatActivity() {
                     is ResultType.Success -> {
                         var result = it.data[0].result
 
-                            Log.i("LogIN", "Log In result to be saved: $result")
-                            SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
+                        Log.i("LogIN", "Log In result to be saved: $result")
+                        SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
 
-                            if (result == "success") {
-                                Log.i("TAGP", "LogIn: $result")
-                                SharedPreferencesUtil.saveData(
-                                    this@LoginActivity,
-                                    UsernameInputKey,
-                                    phoneText!!
-                                ).toString()
-                                Toast.makeText(this@LoginActivity, result, Toast.LENGTH_SHORT).show()
-                                finish()
-                            } else {
-                                result = null.toString()
-                                Toast.makeText(this@LoginActivity, result, Toast.LENGTH_SHORT).show()
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "Username or Password incorrect. Try Again!",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                return@collect
-                            }
+                        if (result == "success") {
+                            Log.i("TAGP", "LogIn: $result")
+                            SharedPreferencesUtil.saveData(
+                                this@LoginActivity,
+                                UsernameInputKey,
+                                phoneText!!
+                            ).toString()
+                            Toast.makeText(this@LoginActivity, result, Toast.LENGTH_SHORT).show()
+                            finish()
+                        } else {
+                            result = null.toString()
+                            Toast.makeText(this@LoginActivity, result, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@LoginActivity,
+                                "Username or Password incorrect. Try Again!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            return@collect
+                        }
 
                     }
 

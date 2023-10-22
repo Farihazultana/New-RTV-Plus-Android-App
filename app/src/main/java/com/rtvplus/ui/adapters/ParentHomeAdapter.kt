@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,15 +36,13 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.imaginativeworld.whynotimagecarousel.ImageCarousel
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
-import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 import kotlin.random.Random
 
 class ParentHomeAdapter(
     private var myContext: Context,
     var homeData: List<Data>,
     private val navController: NavController,
-    var isPemiumUser: Int?,
-    private val lifecycleOwner: LifecycleOwner
+    var isPemiumUser: Int?
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var job: Job? = null
@@ -54,7 +51,6 @@ class ParentHomeAdapter(
         private const val TYPE_BANNER = 0
         private const val TYPE_CONTENT = 1
         private const val TYPE_THUMBNAIL = 2
-        private const val TYPE_CONTINUE_WATCHING = 3
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -115,52 +111,52 @@ class ParentHomeAdapter(
 
             is BannerViewHolder -> {
 
-//                holder.carousel4.registerLifecycle(lifecycleOwner)
-//                holder.carousel4.infiniteCarousel = true
-//
-//                // Custom view
-//                holder.carousel4.carouselListener = object : CarouselListener {
-//                    override fun onCreateViewHolder(
-//                        layoutInflater: LayoutInflater,
-//                        parent: ViewGroup
-//                    ): ViewBinding {
-//                        return ItemCustomFixedSizeLayout3Binding.inflate(
-//                            layoutInflater,
-//                            parent,
-//                            false
-//                        )
-//                    }
-//
-//                    override fun onBindViewHolder(
-//                        binding: ViewBinding,
-//                        item: CarouselItem,
-//                        position: Int
-//                    ) {
-//                        val currentBinding = binding as ItemCustomFixedSizeLayout3Binding
-//
-//                        currentBinding.imageView.apply {
-//                            scaleType = ImageView.ScaleType.CENTER_CROP
-//
-//                            setImage(item, R.drawable.ic_wb_cloudy_with_padding)
-//                        }
-//                    }
-//                }
-//
-//
-//               // holder.carousel4.setData("https://rtvplus.tv/images/yt_th_spot_rtvplus/RTydRLmKJxD.jpg")
-//
-//                val listFour = mutableListOf<CarouselItem>()
-//
-//                for (item in currentItem.contents) {
-//                    listFour.add(
-//                        CarouselItem(
-//                            imageUrl = item
-//                        )
-//                    )
-//                }
-//
-//                holder.carousel4.setData(listFour)
 
+                holder.carousel4.registerLifecycle(myContext)
+                holder.carousel4.infiniteCarousel = true
+
+                // Custom view
+                holder.carousel4.carouselListener = object : CarouselListener {
+                    override fun onCreateViewHolder(
+                        layoutInflater: LayoutInflater,
+                        parent: ViewGroup
+                    ): ViewBinding {
+                        return ItemCustomFixedSizeLayout3Binding.inflate(
+                            layoutInflater,
+                            parent,
+                            false
+                        )
+                    }
+
+                    override fun onBindViewHolder(
+                        binding: ViewBinding,
+                        item: CarouselItem,
+                        position: Int
+                    ) {
+                        val currentBinding = binding as ItemCustomFixedSizeLayout3Binding
+
+                        currentBinding.imageView.apply {
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+
+                            setImage(item, R.drawable.ic_wb_cloudy_with_padding)
+                        }
+                    }
+                }
+
+
+               // holder.carousel4.setData("https://rtvplus.tv/images/yt_th_spot_rtvplus/RTydRLmKJxD.jpg")
+
+                val listFour = mutableListOf<CarouselItem>()
+
+                for (item in currentItem.contents) {
+                    listFour.add(
+                        CarouselItem(
+                            imageUrl = item
+                        )
+                    )
+                }
+
+                holder.carousel4.setData(listFour)
 
 
 //                holder.carouselView.apply {
@@ -264,35 +260,6 @@ class ParentHomeAdapter(
 
             }
 
-            is ContinueWatchingViewHolder ->
-            {
-                if (currentItem.contents.isNotEmpty()) {
-                    holder.continueWatchingAdapter =
-                        ContinueWatchingAdapter(
-                            myContext,
-                            currentItem.contents,
-                            currentItem.contentviewtype,
-                            navController,
-                            isPemiumUser
-                        )
-                    holder.recyclerView.layoutManager = LinearLayoutManager(
-                        holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false
-                    )
-                    holder.textView.text = currentItem.catname
-                    holder.recyclerView.adapter = holder.continueWatchingAdapter
-                    holder.seeAll.setOnClickListener {
-                        val intent = Intent(holder.itemView.context, SeeAllActivity::class.java)
-                        intent.putExtra("catcode", currentItem.catcode)
-                        intent.putExtra("catname", currentItem.catname)
-                        holder.itemView.context.startActivity(intent)
-                    }
-                } else {
-                    holder.textView.visibility = View.GONE
-                    holder.recyclerView.visibility = View.GONE
-                    holder.seeAll.visibility = View.GONE
-                }
-
-            }
         }
     }
 
@@ -306,12 +273,7 @@ class ParentHomeAdapter(
             TYPE_BANNER
         } else if (currentItem.contentviewtype == "11") {
             TYPE_THUMBNAIL
-        }
-        else if (currentItem.contentviewtype == "5")
-        {
-            TYPE_CONTINUE_WATCHING
-        }
-        else {
+        }  else {
             TYPE_CONTENT
         }
     }
@@ -323,17 +285,10 @@ class ParentHomeAdapter(
         val seeAll: TextView = itemView.findViewById(R.id.seeAll)
     }
 
-    inner class ContinueWatchingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
-    {
-        lateinit var continueWatchingAdapter: ContinueWatchingAdapter
-        val recyclerView: RecyclerView = itemView.findViewById(R.id.listItem_recyclerview)
-        val textView: TextView = itemView.findViewById(R.id.title_textviewID)
-        val seeAll: TextView = itemView.findViewById(R.id.seeAll)
-        val progressBar : ProgressBar = itemView.findViewById(R.id.progressBar)
-    }
 
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val carousel4: ImageCarousel  = itemView.findViewById(R.id.carousel4)
+        val carousel4: ImageCarousel = itemView.findViewById(R.id.carousel4)
+      //  val carouselView : CarouselView = itemView.findViewById(R.id.carouselViewId)
     }
 
     inner class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -45,7 +45,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         binding = FragmentSubscriptionBinding.inflate(inflater, container, false)
         bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
 
-
         val fragmentManager = requireActivity().supportFragmentManager
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
 

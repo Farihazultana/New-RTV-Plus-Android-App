@@ -14,7 +14,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.FragmentHomeBinding
 import com.rtvplus.ui.activities.MainActivity
@@ -26,7 +25,6 @@ import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,11 +32,13 @@ import javax.inject.Inject
 class HomeFragment : Fragment() {
     @Inject
     lateinit var deviceInfo: DeviceInfo
+
     private lateinit var binding: FragmentHomeBinding
     private lateinit var parentHomeAdapter: ParentHomeAdapter
+    private var doubleBackPressedOnce = false
     private val homeViewModel by viewModels<HomeViewModel>()
     private val logInViewModel by viewModels<LogInViewModel>()
-    lateinit var username: String
+    private var isPremiumUser: Int? = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +46,7 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         binding.searchIcon.setOnClickListener {
             val intent = Intent(requireContext(), SearchActivity::class.java)
@@ -60,6 +60,18 @@ class HomeFragment : Fragment() {
             requireActivity().finish()
         }
 
+        val deviceId = deviceInfo.deviceId
+        val softwareVersion = deviceInfo.softwareVersion
+        val brand = deviceInfo.brand
+        val model = deviceInfo.model
+        val release = deviceInfo.release
+        val sdkVersion = deviceInfo.sdkVersion
+        val versionCode = deviceInfo.versionCode
+        val simSerialNumber = deviceInfo.simSerialNumber
+        val simOperatorName = deviceInfo.operatorName
+        val simOperatorCode = deviceInfo.versionCode
+
+
         return binding.root
     }
 
@@ -69,7 +81,7 @@ class HomeFragment : Fragment() {
         homeViewModel.fetchHomeData("", "home")
 
         parentHomeAdapter =
-            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null,requireActivity())
+            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null)
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
@@ -77,74 +89,31 @@ class HomeFragment : Fragment() {
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-
-                requireActivity().finish()
-
-//                if (backPressedTime + 3000 > System.currentTimeMillis()) {
-//                    requireActivity().finish()
-//                } else {
-//                    Toast.makeText(
-//                        requireContext(),
-//                        "Press back again to leave the app.",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                }
-//                backPressedTime = System.currentTimeMillis()
+                if (backPressedTime + 3000 > System.currentTimeMillis()) {
+                    requireActivity().finish()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Press back again to leave the app.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                backPressedTime = System.currentTimeMillis()
             }
         }
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        username = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
 
+        val username =
+            SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
+                .toString()
 
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
-        checkIfPremiumUser()
 
-        displayHomeData()
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun displayHomeData() {
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.homeData.collect { result ->
-                when (result) {
-                    is ResultType.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                        binding.tryAgainBtn.visibility = View.GONE
-                    }
-
-                    is ResultType.Success -> {
-                        if (checkIfPremiumUser().toString().isNotEmpty()) {
-                            val homeData = result.data
-                            parentHomeAdapter.homeData = homeData.data
-                            parentHomeAdapter.isPemiumUser = checkIfPremiumUser()
-                            binding.progressBar.visibility = View.GONE
-                            binding.tryAgainBtn.visibility = View.GONE
-                            binding.parentRecyclerview.visibility = View.VISIBLE
-                            parentHomeAdapter.notifyDataSetChanged()
-                        }
-
-                    }
-
-                    is ResultType.Error -> {
-                        Toast.makeText(
-                            requireContext(),
-                            R.string.error_response_msg,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        binding.progressBar.visibility = View.GONE
-                        binding.tryAgainBtn.visibility = View.VISIBLE
-
-                    }
-                }
-            }
-        }
-    }
-    private fun checkIfPremiumUser(): Int {
-        var isPremiumUser: Int? = 0
-        lifecycleScope.launch(Dispatchers.IO) {
             logInViewModel.logInData.collect {
                 when (it) {
                     is ResultType.Success -> {
@@ -157,17 +126,51 @@ class HomeFragment : Fragment() {
                     }
 
                     is ResultType.Error -> {
-                        isPremiumUser = 0
 
                     }
 
                     else -> {
-                        isPremiumUser = 0
+
+                    }
+                }
+            }
+
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            homeViewModel.homeData.collect { result ->
+                when (result) {
+                    is ResultType.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.tryAgainBtn.visibility = View.GONE
+                    }
+
+                    is ResultType.Success -> {
+                        if (isPremiumUser.toString().isNotEmpty()) {
+                            val homeData = result.data
+                            parentHomeAdapter.homeData = homeData.data
+                            parentHomeAdapter.isPemiumUser = isPremiumUser
+                            binding.progressBar.visibility = View.GONE
+                            binding.tryAgainBtn.visibility = View.GONE
+                            binding.parentRecyclerview.visibility = View.VISIBLE
+                            parentHomeAdapter.notifyDataSetChanged()
+                        }
+
+                    }
+
+                    is ResultType.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            "Something is wrong. Please try again",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        binding.progressBar.visibility = View.GONE
+                        binding.tryAgainBtn.visibility = View.VISIBLE
+
                     }
                 }
             }
         }
-        return isPremiumUser!!
     }
 
 

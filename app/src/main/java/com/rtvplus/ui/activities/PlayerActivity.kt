@@ -68,6 +68,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     lateinit var username: String
     private lateinit var receivedValue: String
     private lateinit var contentType: String
+    private var startFrom: Long? = 0L
     private lateinit var catcode: String
     private lateinit var handler: Handler
     private var elapsedTime: Long = 0L
@@ -90,6 +91,11 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         receivedValue = intent.getStringExtra("id").toString()
         contentType = intent.getStringExtra("type").toString()
         catcode = intent.getStringExtra("ct").toString()
+
+        val isPlayed = intent.getStringExtra("isplayed")
+        if (!isPlayed.isNullOrEmpty()) {
+            startFrom = isPlayed.toLong()
+        }
 
         initilizeSimilarContentAdapter()
 
@@ -434,6 +440,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         val mediaItem = MediaItem.fromUri(content)
         player.setMediaItem(mediaItem)
         player.prepare()
+        Log.e("playTime", startFrom.toString())
+        player.seekTo(startFrom!!)
         player.play()
     }
 
@@ -480,7 +488,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         // Set a click listener for the Confirm button
         confirmButton.setOnClickListener {
             val userInput = editText.text.toString()
-            commentViewModel.saveComment(username,userInput)
+            commentViewModel.saveComment(username, userInput)
             checkResponse()
             alertDialog.dismiss()
         }
@@ -493,6 +501,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
+
                 is ResultType.Success<*> -> {
                     val response = it.data as CommentResponse
                     if (response.status == "success") {
@@ -501,6 +510,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                         binding.progressbar.visibility = View.GONE
                     }
                 }
+
                 is ResultType.Error -> {
                     Toast.makeText(
                         this@PlayerActivity,
@@ -596,10 +606,15 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     override fun onBackPressed() {
         player.stop()
 
-        savePlayTimeViewModel.savePlayTime(time.toString(),receivedValue,username,elapsedTime.toString())
+        savePlayTimeViewModel.savePlayTime(
+            time.toString(),
+            receivedValue,
+            username,
+            elapsedTime.toString()
+        )
 
-        Log.e("elapsedTime",elapsedTime.toString())
-        Log.e("elapsedTime",time.toString())
+        Log.e("elapsedTime", elapsedTime.toString())
+        Log.e("elapsedTime", time.toString())
 
         val fragmentManager = supportFragmentManager
         val backStackEntryCount = fragmentManager.backStackEntryCount

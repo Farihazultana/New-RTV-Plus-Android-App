@@ -1,6 +1,5 @@
 package com.rtvplus.ui.adapters
 
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -29,11 +28,11 @@ class ContinueWatchingAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         private const val TYPE_BANNER = 0
-        private const val TYPE_CONTINUE_WATCHING = 1
+        private const val TYPE_CONTENT = 1
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_CONTINUE_WATCHING -> {
+            TYPE_CONTENT -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.row_obj_continue_watching_data, parent, false)
                 ContentViewHolder(view)
@@ -133,7 +132,7 @@ class ContinueWatchingAdapter(
         return if (contentViewType == "4") {
             TYPE_BANNER
         } else {
-            TYPE_CONTINUE_WATCHING
+            TYPE_CONTENT
         }
     }
 
