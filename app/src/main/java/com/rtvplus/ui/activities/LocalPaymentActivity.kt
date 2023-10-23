@@ -56,6 +56,10 @@ class LocalPaymentActivity : AppCompatActivity() {
         ).toString()
         val sub_pack = intent.getStringExtra("sub_pack")
 
+        localPaymentData(sub_pack)
+    }
+
+    private fun localPaymentData(sub_pack: String?) {
         if (sub_pack != null) {
             if (getPhoneNumSP.isNotEmpty()) {
                 localPaymentViewModel.fetchLocalPaymentData(getPhoneNumSP, sub_pack)
@@ -81,7 +85,11 @@ class LocalPaymentActivity : AppCompatActivity() {
                     }
 
                     else -> {
-                        Toast.makeText(this@LocalPaymentActivity, "Something went wrong!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@LocalPaymentActivity,
+                            "Something went wrong!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -199,6 +207,9 @@ class LocalPaymentActivity : AppCompatActivity() {
             //localPaymentView = null
         }
 
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("subscription", "subscription")
+        startActivity(intent)
         super.finish()
     }
 

@@ -1,13 +1,13 @@
 package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -15,13 +15,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.ActivityMainBinding
-import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.isOnline
 import com.rtvplus.utils.AppUtils.showAlertDialog
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     var selectedItemId: Int = -1
     lateinit var navHostFragment: NavHostFragment
     var backPressedTime: Long = 0
+    var doubleBackToExitPressedOnce = false
 
     companion object {
         const val PERMISSION_REQUEST_CODE = 123
@@ -52,6 +53,11 @@ class MainActivity : AppCompatActivity() {
         navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
+
+        val sub = intent.getStringExtra("subscription")
+        if (sub == "subscription"){
+            navController.navigate(R.id.SubscriptionFragment)
+        }
 
         val username = SharedPreferencesUtil.getData(
             this,

@@ -37,6 +37,12 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
         args.putString("redeem_pack", selectedPackforRedeemCoupon)
 
         bottomBinding.rbLocal.isChecked = true
+        bottomBinding.cvLocalPayment.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.card_background_color
+            )
+        )
 
         bottomBinding.cvLocalPayment.setOnClickListener {
             bottomBinding.rbLocal.isChecked = true

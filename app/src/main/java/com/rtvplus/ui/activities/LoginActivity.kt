@@ -53,6 +53,8 @@ class LoginActivity : AppCompatActivity() {
 
     companion object {
         var showOneTapUI = true
+        var packCode: String? = null
+        var packText: String? = null
     }
 
     @SuppressLint("CommitPrefEdits")
@@ -259,7 +261,7 @@ class LoginActivity : AppCompatActivity() {
         dialog.window!!.attributes!!.windowAnimations = R.style.animation
     }
 
-    private fun loginUsingPhoneNumber() {
+    fun loginUsingPhoneNumber() {
         lifecycleScope.launch {
             logInViewModel.logInData.observe(this@LoginActivity) {
                 var result = ""
@@ -267,6 +269,8 @@ class LoginActivity : AppCompatActivity() {
                     is ResultType.Success -> {
                         val logInResult = it.data[0]
                         result = logInResult.result
+                        packCode = logInResult.packcode
+                        packText = logInResult.packtext
 
                         SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
 
@@ -407,7 +411,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
-
     }
 
 }

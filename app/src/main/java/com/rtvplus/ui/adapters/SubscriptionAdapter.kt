@@ -16,12 +16,12 @@ import java.util.Locale
 
 
 class SubscriptionAdapter(
-    var subscriptionData: List<SubschemesItem?>?,
     private val cardClickListener: CardClickListener
 
 ) : RecyclerView.Adapter<SubscriptionAdapter.SubscriptionViewHolder>() {
 
     private var selectedPositions = -1
+    var subscriptionData: ArrayList<SubschemesItem> = ArrayList()
 
     inner class SubscriptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val packageName: TextView = itemView.findViewById(R.id.tv_packName)
@@ -65,17 +65,33 @@ class SubscriptionAdapter(
             }
         }
 
-        if(item?.userpack == item?.sub_pack){
-            holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.green_lite))
+
+        if(item?.userpack == item?.sub_pack || selectedPositions == position){
+            if (item?.userpack == item?.sub_pack){
+                holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.green_lite))
+            }
             holder.checkedCard.visibility = View.VISIBLE
+
+            return
         }else{
+            holder.checkedCard.visibility = View.GONE
             holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.white))
         }
 
     }
 
+    fun setData(subschemes: ArrayList<SubschemesItem>) {
+        if (subscriptionData.isNotEmpty()){
+            subscriptionData.clear()
+        }
+        this.subscriptionData = subschemes
+        selectedPositions = -1
+        notifyDataSetChanged()
+
+    }
+
     override fun getItemCount(): Int {
-        return subscriptionData?.size ?: -1
+        return subscriptionData.size ?: -1
     }
 
     interface CardClickListener {
