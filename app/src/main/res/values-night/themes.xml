@@ -5,4 +5,9 @@
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="android:windowIsTranslucent">true</item>
     </style>
+
+    <style name="progressBarGreen" parent="@style/Theme.AppCompat">
+        <item name="colorAccent">@color/green</item>
+    </style>
+
 </resources>

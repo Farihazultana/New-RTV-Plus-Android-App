@@ -15,4 +15,8 @@
     <string name="tk_275_for_6_months">TK 275 For 6 Months</string>
     <string name="tk_500_for_1_year">TK 500 For 1 Year</string>
     <string name="web_client_id">158454071108-rgh0lgvonibcuateml95l5h7oe87mu17.apps.googleusercontent.com</string>
+
+    <string name="error_response_msg">Something went wrong. Please try again</string>
+    <string name="no_favorite_item_available">No favorite item available</string>
+    <string name="signed_out_toast">You are Signed out</string>
 </resources>

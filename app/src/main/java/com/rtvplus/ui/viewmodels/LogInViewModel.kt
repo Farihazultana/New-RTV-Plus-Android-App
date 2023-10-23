@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LogInViewModel @Inject constructor(private val repository: LogInRepository) : ViewModel() {
     private val _logInData = MutableStateFlow<ResultType<LogInResponse>>(ResultType.Loading)
-    val logInData: StateFlow<ResultType<LogInResponse>> = _logInData
+    val logInData: StateFlow<ResultType<LogInResponse>> get() = _logInData
     fun fetchLogInData(userName: String, password: String, haspin: String, tc:String,) {
         viewModelScope.launch {
             try {

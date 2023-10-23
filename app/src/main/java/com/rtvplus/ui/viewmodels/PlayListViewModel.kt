@@ -16,10 +16,10 @@ class PlayListViewModel @Inject constructor(private val singleContentRepository:
     private val _content = MutableLiveData<ResultType<PlayListResponse>>(ResultType.Loading)
     val content: MutableLiveData<ResultType<PlayListResponse>> = _content
 
-    fun fetchPlayListContent(username: String, cc: String, resolution: String) {
+    fun fetchPlayListContent(username: String, cc: String, resolution: String, ct: String) {
         viewModelScope.launch {
             try {
-                val result = singleContentRepository.getPlayListData(username, cc, resolution)
+                val result = singleContentRepository.getPlayListData(username, cc, resolution, ct)
                 _content.value = result
             } catch (e: Exception) {
                 _content.value = ResultType.Error(e)

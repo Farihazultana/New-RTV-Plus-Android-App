@@ -23,6 +23,7 @@ object AppUtils {
     const val LogInKey = "LogIn_Result"
     const val UsernameInputKey = "PhoneKey"
     const val GoogleSignInKey = "Google"
+    const val USER_GMAIL = "rtv_user_gmail_001"
 
     val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
     val phoneRegex = Regex("^8801[3-9]\\d{8}$")

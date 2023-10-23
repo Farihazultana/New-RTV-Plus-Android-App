@@ -21,7 +21,6 @@ import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.ui.viewmodels.FavoriteListViewModel
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.RemoveFavoriteListViewModel
-import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -41,7 +40,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
     private var isLoading = false
     private var isLastpage = false
     private val logInViewModel by viewModels<LogInViewModel>()
-    private var isPremiumUser: Int? = 0
+    lateinit var username: String
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,52 +57,24 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             setDisplayShowHomeEnabled(true)
             title = "My Favourites"
         }
-
-        val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
-
+        username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
 
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
 
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            logInViewModel.logInData.collect {
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data
-
-                        for (item in logInResult) {
-                            val result = item.play
-                            isPremiumUser = result
-                        }
-                    }
-
-                    is ResultType.Error -> {
-                        isPremiumUser = 0
-
-                    }
-
-                    else -> {
-
-                    }
-                }
-            }
-
-        }
-        favoriteListAdapter = FavoriteListAdapter(null, this, this, isPremiumUser)
+        favoriteListAdapter = FavoriteListAdapter(null, this, this, checkIfPremiumUser())
         binding.favouriteListRecyclerview.layoutManager = GridLayoutManager(this, 2)
         binding.favouriteListRecyclerview.adapter = favoriteListAdapter
 
 
-
-        if (username.toString().isNotEmpty()) {
+        if (username.isNotEmpty()) {
             loadMoreData()
+
             binding.favouriteListRecyclerview.addOnScrollListener(object :
                 RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-
                     val visibleItemCount = layoutManager.childCount
                     val totalItemCount = layoutManager.itemCount
                     val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
@@ -122,12 +93,17 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             })
         }
 
+        updateDataAfterRemove()
+
+       // getFavoriteContent()
+    }
+
+    private fun updateDataAfterRemove() {
         removeListViewModel.removeContentResponse.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
-
                 is ResultType.Success<*> -> {
                     val response = result.data as RemoveListResponse
                     if (response.status == "success") {
@@ -138,8 +114,8 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        if (username.toString().isNotEmpty()) {
-                            favoriteListViewModel.fetchFavoriteContent(username.toString(), "1")
+                        if (username.isNotEmpty()) {
+                            favoriteListViewModel.fetchFavoriteContent(username, "1")
                         }
                     } else {
                         Toast.makeText(
@@ -154,13 +130,16 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                 is ResultType.Error -> {
                     Toast.makeText(
                         this@FavoriteListActivity,
-                        "Something is wrong. Please try again",
+                        R.string.error_response_msg,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             }
         }
+    }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getFavoriteContent() {
         favoriteListViewModel.favoriteContent.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
@@ -178,7 +157,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                         favoriteListAdapter.content = emptyList()
                         favoriteListAdapter.notifyDataSetChanged()
                         binding.emptyResultTv.visibility = View.VISIBLE
-                        binding.emptyResultTv.text = "No favorite item available"
+                        binding.emptyResultTv.text = getString(R.string.no_favorite_item_available)
                         binding.progressbar.visibility = View.GONE
                     }
                 }
@@ -186,15 +165,37 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                 is ResultType.Error -> {
                     Toast.makeText(
                         this@FavoriteListActivity,
-                        "Something is wrong. Please try again",
+                        R.string.error_response_msg,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             }
         }
     }
+    private fun checkIfPremiumUser(): Int {
+        var isPremiumUser: Int? = 0
+        lifecycleScope.launch(Dispatchers.IO) {
+            logInViewModel.logInData.collect {
+                when (it) {
+                    is ResultType.Success -> {
+                        val logInResult = it.data
 
-
+                        for (item in logInResult) {
+                            val result = item.play
+                            isPremiumUser = result
+                        }
+                    }
+                    is ResultType.Error -> {
+                        isPremiumUser = 0
+                    }
+                    else -> {
+                        isPremiumUser = 0
+                    }
+                }
+            }
+        }
+        return isPremiumUser!!
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -208,24 +209,22 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
     @SuppressLint("NotifyDataSetChanged")
     override fun onRemoveItemClicked(contentId: String) {
         val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
-        if (username.toString().isNotEmpty()) {
-            removeListViewModel.removeFavoriteContent(contentId, username.toString())
+        if (username.isNotEmpty()) {
+            removeListViewModel.removeFavoriteContent(contentId, username)
         }
-
     }
-
+    @SuppressLint("NotifyDataSetChanged")
     private fun loadMoreData() {
 
         val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
 
-        favoriteListViewModel.fetchFavoriteContent(username.toString(), currentPage.toString())
+        favoriteListViewModel.fetchFavoriteContent(username, currentPage.toString())
 
         favoriteListViewModel.favoriteContent.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
-
                 is ResultType.Success<*> -> {
                     val content = result.data as FavoriteResponse
                     if (content.contents.isNotEmpty()) {
@@ -246,7 +245,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                         favoriteListAdapter.content = emptyList()
                         favoriteListAdapter.notifyDataSetChanged()
                         binding.emptyResultTv.visibility = View.VISIBLE
-                        binding.emptyResultTv.text = "No favorite item available"
+                        binding.emptyResultTv.text = R.string.no_favorite_item_available.toString()
                         binding.progressbar.visibility = View.GONE
                     }
                 }
@@ -264,10 +263,10 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
     }
 
     override fun onItemClickListener(position: Int, item: Content?) {
-        val username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "")
+        val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "")
 
         if (username.toString().isNotEmpty()) {
-            if (isPremiumUser == 0 && item?.isfree == "0") {
+            if (checkIfPremiumUser() == 0 && item?.isfree == "0") {
                 val fragmentTransaction = this.supportFragmentManager.beginTransaction()
                 val subscriptionFragment = SubscriptionFragment()
                 fragmentTransaction.replace(
@@ -288,6 +287,8 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             startActivity(intent)
         }
     }
+
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         val fragmentManager = supportFragmentManager
         val backStackEntryCount = fragmentManager.backStackEntryCount

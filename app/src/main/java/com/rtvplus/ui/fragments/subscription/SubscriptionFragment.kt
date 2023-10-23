@@ -2,29 +2,26 @@ package com.rtvplus.ui.fragments.subscription
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.rtvplus.R
 import com.rtvplus.data.models.subscription.SubschemesItem
 import com.rtvplus.databinding.FragmentSubscribeBottomBinding
 import com.rtvplus.databinding.FragmentSubscriptionBinding
+import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.adapters.SubscriptionAdapter
 import com.rtvplus.ui.viewmodels.SubscriptionViewModel
+import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.rtvplus.ui.activities.LoginActivity
-import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -44,7 +41,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     ): View {
         binding = FragmentSubscriptionBinding.inflate(inflater, container, false)
         bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
-
 
         val fragmentManager = requireActivity().supportFragmentManager
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
@@ -82,10 +78,9 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
             UsernameInputKey,
             ""
         ).toString()
-        if (getPhoneNumSP.isNotEmpty()){
+        if (getPhoneNumSP.isNotEmpty()) {
             subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
-        }
-        else{
+        } else {
             Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
             val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
@@ -111,11 +106,14 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                         binding.subscribeProgressBar.visibility = View.GONE
                         binding.textView.visibility = View.VISIBLE
                         binding.btnContinuePayment.visibility = View.VISIBLE
-                        for(item in subscriptionData.subschemes){
-                            if(item.userpack != "nopack"){
+                        for (item in subscriptionData.subschemes) {
+                            if (item.userpack != "nopack") {
                                 binding.btnContinuePayment.visibility = View.GONE
                                 binding.textView.text = item.packtext
-                                Log.i("Subscription", "onViewCreated: ${item.packtext} & ${item.userpack}")
+                                Log.i(
+                                    "Subscription",
+                                    "onViewCreated: ${item.packtext} & ${item.userpack}"
+                                )
                             }
                         }
                         subscriptionAdapter.notifyDataSetChanged()
@@ -163,7 +161,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     }
 
     override fun onCardClickListener(position: Int, item: SubschemesItem?) {
-        if(item?.userpack == "nopack"){
+        if (item?.userpack == "nopack") {
             this.selectedPositions = position
             //binding.btnContinuePayment.isEnabled = selectedPositions != -1
             //showBottomSheet(item?.sub_text)
@@ -175,7 +173,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
             } else {
                 binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
             }
-        }else{
+        } else {
             this.selectedPositions = position
         }
     }

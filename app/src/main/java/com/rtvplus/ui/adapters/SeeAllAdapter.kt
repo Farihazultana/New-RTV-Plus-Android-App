@@ -1,5 +1,6 @@
 package com.rtvplus.ui.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -36,6 +37,7 @@ class SeeAllAdapter(
         return seeAllData?.size ?: -1
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: SeeAllViewHolder, position: Int) {
         val item = seeAllData?.get(position)
         if (item != null) {
@@ -44,11 +46,9 @@ class SeeAllAdapter(
                 .placeholder(R.drawable.no_img)
                 .into(holder.contentImage)
         }
-        Log.e("jjjjjjjjjjjjjjjjjjjjjjjjjjjjj",isPemiumUser.toString())
         if (item?.isfree == "0" && isPemiumUser == 0) {
             holder.premiumText.visibility = View.VISIBLE
-        }
-        else{
+        } else {
             holder.premiumText.visibility = View.GONE
         }
 
@@ -84,7 +84,6 @@ class SeeAllAdapter(
 
         }
     }
-
     interface itemClickListener {
         fun onItemClickListener(position: Int, item: Content?)
     }

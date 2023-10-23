@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +11,11 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.FragmentHomeBinding
@@ -75,9 +74,6 @@ class HomeFragment : Fragment() {
         val simOperatorName = deviceInfo.operatorName
         val simOperatorCode = deviceInfo.versionCode
 
-        Log.e("iiiiiiiiiiiiiiiiiiiiii", simSerialNumber)
-        Log.e("iiiiiiiiiiiiiiiiiiiiii", simOperatorName)
-        Log.e("iiiiiiiiiiiiiiiiiiiiii", simOperatorCode.toString())
 
         return binding.root
     }
@@ -88,7 +84,7 @@ class HomeFragment : Fragment() {
         homeViewModel.fetchHomeData("", "home")
 
         parentHomeAdapter =
-            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null)
+            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null, lifecycle,this)
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
@@ -144,8 +140,6 @@ class HomeFragment : Fragment() {
 
         }
 
-
-
         viewLifecycleOwner.lifecycleScope.launch {
             homeViewModel.homeData.collect { result ->
                 when (result) {
@@ -180,6 +174,14 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+    }
+    // Function to bind a fragment to the FragmentContainerView
+    fun bindFragment(fragment: Fragment) {
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(android.R.id.content, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
 
