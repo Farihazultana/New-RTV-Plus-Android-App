@@ -1,6 +1,7 @@
 package com.rtvplus.ui.fragments
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -9,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -29,6 +31,7 @@ import com.rtvplus.utils.SharedPreferencesUtil
 
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
+    private lateinit var dialog: Dialog
 
     companion object {
         lateinit var oneTapClient: SignInClient
@@ -139,54 +142,57 @@ class MoreFragment : Fragment() {
         }
 
         binding.logout.setOnClickListener {
-            SharedPreferencesUtil.clear(requireContext())
-            Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
-            if (isOneTapClientInitialized()) {
-                SharedPreferencesUtil.clear(requireContext())
-                binding.logInAs.text = null
-
-                if (username.isNotEmpty()) {
-                    LoginActivity.showOneTapUI = false
-                    oneTapClient.signOut().addOnFailureListener {
-                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-                    }.addOnCompleteListener {
-                        //Toast.makeText(context, "You are Signed Out!", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                navigateToHomeFragment()
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    "OneTapClient is not initialized",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
+            handleLogoutClick(username)
         }
 
-//        binding.logout.setOnClickListener {
-//            SharedPreferencesUtil.removeKey(requireContext(), LogInKey)
-//            SharedPreferencesUtil.removeKey(requireContext(), GoogleSignInKey)
-//            binding.logInAs.text = null
-//
-//            val spResGoogle = SharedPreferencesUtil.getData(
-//                requireContext(),
-//                GoogleSignInKey,
-//                ""
-//            )
-//            if (spResGoogle.toString().isNotEmpty()) {
-//                oneTapClient.signOut().addOnFailureListener {
-//                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-//                }.addOnCompleteListener {
-//                    Toast.makeText(context, "You are Signed out", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//            SharedPreferencesUtil.clear(requireContext())
-//            Toast.makeText(requireContext(), "You are Logged Out!", Toast.LENGTH_SHORT).show()
-//            navigateToHomeFragment()
-//        }
         return binding.root
+    }
+
+    private fun handleLogoutClick(username: String){
+        openDialog()
+        val btnLogout = dialog.findViewById<Button>(R.id.btnLogout)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
+
+        dialog.show()
+        btnLogout.setOnClickListener { logout(username) }
+        btnCancel.setOnClickListener { dialog.dismiss() }
+    }
+
+    private fun logout(username: String) {
+        SharedPreferencesUtil.clear(requireContext())
+        Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
+        if (isOneTapClientInitialized()) {
+            SharedPreferencesUtil.clear(requireContext())
+            binding.logInAs.text = null
+
+            if (username.isNotEmpty()) {
+                LoginActivity.showOneTapUI = false
+                oneTapClient.signOut().addOnFailureListener {
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                }.addOnCompleteListener {
+                    //Toast.makeText(context, "You are Signed Out!", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            navigateToHomeFragment()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "OneTapClient is not initialized",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun openDialog() {
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.logout_dialog)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.setCancelable(true)
+        dialog.window!!.attributes!!.windowAnimations = R.style.animation
     }
 
     private fun navigateToHomeFragment() {
