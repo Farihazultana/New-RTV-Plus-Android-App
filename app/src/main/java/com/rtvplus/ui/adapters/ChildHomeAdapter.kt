@@ -97,6 +97,7 @@ class ChildHomeAdapter(
 
                         } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             holder.itemView.context.startActivity(intent)
                         }
                     }
@@ -132,6 +133,7 @@ class ChildHomeAdapter(
 
                         } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             holder.itemView.context.startActivity(intent)
                         }
                     }
@@ -182,6 +184,7 @@ class ChildHomeAdapter(
 
                         } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             holder.itemView.context.startActivity(intent)
                         }
                     }
@@ -217,6 +220,7 @@ class ChildHomeAdapter(
 
                         } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             holder.itemView.context.startActivity(intent)
                         }
                     }

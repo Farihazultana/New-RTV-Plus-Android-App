@@ -80,7 +80,9 @@ class MainActivity : AppCompatActivity() {
 //    }
 
     override fun onBackPressed() {
+
         super.onBackPressed()
+
 //        if (System.currentTimeMillis() - backPressedTime < DOUBLE_BACK_PRESS_INTERVAL) {
 //            super.onBackPressed()
 //            finish()
