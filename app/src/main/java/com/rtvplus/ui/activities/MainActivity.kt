@@ -14,6 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.ActivityMainBinding
+import com.rtvplus.ui.fragments.HomeFragment
 import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.isOnline
@@ -79,14 +80,14 @@ class MainActivity : AppCompatActivity() {
 //    }
 
     override fun onBackPressed() {
-
-        if (System.currentTimeMillis() - backPressedTime < DOUBLE_BACK_PRESS_INTERVAL) {
-            super.onBackPressed()
-            finish()
-        } else {
-            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
-        }
-        backPressedTime = System.currentTimeMillis()
+        super.onBackPressed()
+//        if (System.currentTimeMillis() - backPressedTime < DOUBLE_BACK_PRESS_INTERVAL) {
+//            super.onBackPressed()
+//            finish()
+//        } else {
+//            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+//        }
+//        backPressedTime = System.currentTimeMillis()
     }
 
 

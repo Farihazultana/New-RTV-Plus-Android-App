@@ -17,5 +17,4 @@ dependencyResolutionManagement {
 rootProject.name = "RTV-Plus-Android-App-Revamp"
 //include(":app")
 include(":app")
-include(":carouselview")
 include(":whynotimagecarousel")

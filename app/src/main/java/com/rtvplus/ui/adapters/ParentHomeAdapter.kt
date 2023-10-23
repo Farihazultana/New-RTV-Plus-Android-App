@@ -5,12 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +27,7 @@ import com.rtvplus.databinding.ItemCustomFixedSizeLayout3Binding
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.PlayerActivity
 import com.rtvplus.ui.activities.SeeAllActivity
+import com.rtvplus.ui.fragments.HomeFragment
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.SharedPreferencesUtil
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +48,8 @@ class ParentHomeAdapter(
     var homeData: List<Data>,
     private val navController: NavController,
     var isPemiumUser: Int?,
-    var lifecycle: Lifecycle
+    var lifecycle: Lifecycle,
+    private val homeFragment: HomeFragment
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var job: Job? = null
@@ -92,7 +96,8 @@ class ParentHomeAdapter(
                             currentItem.contents,
                             currentItem.contentviewtype,
                             navController,
-                            isPemiumUser
+                            isPemiumUser,
+                            homeFragment
                         )
                     holder.recyclerView.layoutManager = LinearLayoutManager(
                         holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false
@@ -120,6 +125,7 @@ class ParentHomeAdapter(
 
                 // Custom view
                 holder.carousel4.carouselListener = object : CarouselListener {
+
                     override fun onCreateViewHolder(
                         layoutInflater: LayoutInflater,
                         parent: ViewGroup
@@ -185,6 +191,7 @@ class ParentHomeAdapter(
                         )
                     )
                 }
+
 
                 holder.carousel4.setData(listFour)
                 holder.carousel4.setIndicator(holder.custom_indicator)

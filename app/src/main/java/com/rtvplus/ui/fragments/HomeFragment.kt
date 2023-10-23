@@ -10,10 +10,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.FragmentHomeBinding
 import com.rtvplus.ui.activities.MainActivity
@@ -81,7 +84,7 @@ class HomeFragment : Fragment() {
         homeViewModel.fetchHomeData("", "home")
 
         parentHomeAdapter =
-            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null, lifecycle)
+            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null, lifecycle,this)
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
@@ -171,6 +174,14 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+    }
+    // Function to bind a fragment to the FragmentContainerView
+    fun bindFragment(fragment: Fragment) {
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(android.R.id.content, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
 

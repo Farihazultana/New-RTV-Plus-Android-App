@@ -19,6 +19,8 @@ import com.rtvplus.R
 import com.rtvplus.data.models.home.Content
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.PlayerActivity
+import com.rtvplus.ui.fragments.HomeFragment
+import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.SharedPreferencesUtil
 
@@ -28,6 +30,7 @@ class ChildHomeAdapter(
     private var contentViewType: String,
     private val navController: NavController,
     var isPemiumUser: Int?,
+    private val homeFragment: HomeFragment
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         private const val TYPE_BANNER = 0
@@ -80,7 +83,9 @@ class ChildHomeAdapter(
 
                                 val bundle = Bundle()
                                 bundle.putString("nav_key", "from_child_fregment")
-                                navController.navigate(R.id.SubscriptionFragment, bundle)
+                              //  navController.navigate(R.id.SubscriptionFragment, bundle)
+                                val subscriptionFragment = SubscriptionFragment()
+                                homeFragment.bindFragment(subscriptionFragment)
 
                             } else {
                                 val intent =
@@ -111,7 +116,11 @@ class ChildHomeAdapter(
                             if (isPemiumUser.toString() == "0" && currentItem.isfree == "0") {
                                 val bundle = Bundle()
                                 bundle.putString("nav_key", "from_child_fregment")
-                                navController.navigate(R.id.SubscriptionFragment, bundle)
+
+                                val subscriptionFragment = SubscriptionFragment()
+                                homeFragment.bindFragment(subscriptionFragment)
+
+                               // navController.navigate(R.id.SubscriptionFragment, bundle)
 
                             } else {
                                 val intent =
@@ -134,7 +143,7 @@ class ChildHomeAdapter(
             is ContinueWatchingViewHolder -> {
 
                 holder.progressBar.progress = 60
-                holder.progressBar.setProgressTintList(ColorStateList.valueOf(R.color.green))
+
 
                 if (currentItem.isfree == "0" && isPemiumUser == 0) {
                     holder.premiumTextView.visibility = View.VISIBLE
@@ -159,7 +168,9 @@ class ChildHomeAdapter(
 
                                 val bundle = Bundle()
                                 bundle.putString("nav_key", "from_child_fregment")
-                                navController.navigate(R.id.SubscriptionFragment, bundle)
+                               // navController.navigate(R.id.SubscriptionFragment, bundle)
+                                val subscriptionFragment = SubscriptionFragment()
+                                homeFragment.bindFragment(subscriptionFragment)
 
                             } else {
                                 val intent =
@@ -190,7 +201,9 @@ class ChildHomeAdapter(
                             if (isPemiumUser.toString() == "0" && currentItem.isfree == "0") {
                                 val bundle = Bundle()
                                 bundle.putString("nav_key", "from_child_fregment")
-                                navController.navigate(R.id.SubscriptionFragment, bundle)
+                              //  navController.navigate(R.id.SubscriptionFragment, bundle)
+                                val subscriptionFragment = SubscriptionFragment()
+                                homeFragment.bindFragment(subscriptionFragment)
 
                             } else {
 

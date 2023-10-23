@@ -59,10 +59,12 @@ class LiveTvFragment : Fragment() {
         username = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
             .toString()
 
+        val fragmentManager = requireActivity().supportFragmentManager
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 player.stop()
-                requireActivity().finish()
+                fragmentManager.popBackStack()
+              //  requireActivity().finish()
 
 //                val mainActivity = requireActivity() as MainActivity
 //                mainActivity.showBottomNavigationBar()

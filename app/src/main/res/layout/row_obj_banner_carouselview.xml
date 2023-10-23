@@ -10,7 +10,7 @@
         android:layout_marginEnd="8dp"
         android:translationZ="8dp"
         app:autoPlay="true"
-        app:autoPlayDelay="4000"
+        app:autoPlayDelay="3000"
         app:carouselGravity="CENTER"
         app:carouselType="SHOWCASE"
         app:imageScaleType="center"
@@ -28,7 +28,7 @@
     <me.relex.circleindicator.CircleIndicator2
         android:id="@+id/custom_indicator"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="16dp"
         app:ci_animator="@animator/scale_with_alpha"
         app:ci_drawable="@drawable/dot"
         app:ci_drawable_unselected="@drawable/dot"
