@@ -73,6 +73,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     private lateinit var handler: Handler
     private var elapsedTime: Long = 0L
     private var time: Long = 0L
+    private var isInList: Int = 0
     private val logInViewModel by viewModels<LogInViewModel>()
     private val savePlayTimeViewModel by viewModels<SavePlayTimeViewModel>()
 
@@ -116,6 +117,26 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         } else {
             playPlayListContent()
         }
+
+
+        binding.favouriteIcon.setOnClickListener {
+            if (isInList == 1) {
+                if (username.isNotEmpty()) {
+                    removeListViewModel.removeFavoriteContent(receivedValue, username)
+                }
+            } else {
+                if (username.isNotEmpty()) {
+                    addListViewModel.addFavoriteContent(receivedValue, username)
+                }
+            }
+        }
+
+        if (isInList == 1) {
+            binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
+        } else {
+            binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
+        }
+
 
         handler = Handler()
         startTimer()
@@ -303,35 +324,39 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                     // Build the media item.
                     buildMediaItem(content.url)
 
-                    var isInList = 0
+                    isInList = content.mylist
 
-                    if (isInList == 0) {
-                        binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
-                    } else {
-                        binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
-                    }
+//                    binding.favouriteIcon.setImageResource(
+//                        if (isInList == 0) {
+//                            R.drawable.baseline_favorite_border_24
+//                        } else {
+//                            R.drawable.baseline_favorite_24
+//                        }
+//                    )
 
-                    binding.favouriteIcon.setOnClickListener {
-
-                        if (isInList == 1) {
-
-                            if (username.isNotEmpty()) {
-                                removeListViewModel.removeFavoriteContent(
-                                    content.id,
-                                    username
-                                )
-                            }
-                        } else {
-
-                            if (username.isNotEmpty()) {
-                                addListViewModel.addFavoriteContent(
-                                    content.id,
-                                    username
-                                )
-                            }
-
-                        }
-                    }
+//                    binding.favouriteIcon.setOnClickListener {
+//
+//                        if (isInList == 1) {
+//
+//                            if (username.isNotEmpty()) {
+//                                removeListViewModel.removeFavoriteContent(
+//                                    content.id,
+//                                    username
+//                                )
+//                            }
+//                        }
+//                        else {
+//                            binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
+//                            if (username.isNotEmpty()) {
+//                                addListViewModel.addFavoriteContent(
+//                                    content.id,
+//                                    username
+//                                )
+//                            }
+//
+//                        }
+//
+//                    }
 
                     binding.commentIcon.setOnClickListener {
                         // Inflate the custom layout for the AlertDialog
@@ -357,8 +382,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                         response.status,
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
-                                    isInList = 1
+                                    binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
 
                                 } else {
                                     Toast.makeText(
@@ -395,7 +419,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                         Toast.LENGTH_SHORT
                                     ).show()
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
-                                    isInList = 1
 
                                 } else {
                                     Toast.makeText(

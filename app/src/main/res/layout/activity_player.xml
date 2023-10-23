@@ -53,7 +53,6 @@
                 android:id="@+id/favouriteIcon"
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
-                android:src="@drawable/baseline_favorite_border_24"
                 app:layout_constraintBottom_toBottomOf="@+id/commentIcon"
                 app:layout_constraintEnd_toStartOf="@+id/shareIcon"
                 app:layout_constraintHorizontal_bias="0.5"
