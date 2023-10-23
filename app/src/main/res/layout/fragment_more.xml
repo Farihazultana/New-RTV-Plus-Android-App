@@ -150,7 +150,7 @@
                 android:background="@drawable/rounded_background"
                 android:drawablePadding="@dimen/_12sdp"
                 android:padding="@dimen/_8sdp"
-                android:text="Lisence"
+                android:text="License"
                 android:textSize="@dimen/_12sdp"
                 app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
                 app:drawableStartCompat="@drawable/baseline_copyright_24"

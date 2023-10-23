@@ -5,38 +5,50 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.rtvplus.R
 import com.rtvplus.data.models.home.Data
+import com.rtvplus.databinding.ItemCustomFixedSizeLayout3Binding
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.PlayerActivity
 import com.rtvplus.ui.activities.SeeAllActivity
-import com.rtvplus.utils.SharedPreferencesUtil
-import com.jama.carouselview.CarouselView
-import com.jama.carouselview.enums.IndicatorAnimationType
-import com.jama.carouselview.enums.OffsetType
+import com.rtvplus.ui.fragments.HomeFragment
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.SharedPreferencesUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import me.relex.circleindicator.CircleIndicator2
+import org.imaginativeworld.whynotimagecarousel.ImageCarousel
+import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
+import org.imaginativeworld.whynotimagecarousel.utils.setImage
 import kotlin.random.Random
 
-class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>, private val navController: NavController, var isPemiumUser: Int?) :
+class ParentHomeAdapter(
+    private var myContext: Context,
+    var homeData: List<Data>,
+    private val navController: NavController,
+    var isPemiumUser: Int?,
+    var lifecycle: Lifecycle,
+    private val homeFragment: HomeFragment
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var job: Job? = null
 
@@ -75,14 +87,15 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
 
         when (holder) {
             is ContentViewHolder -> {
-                if (!currentItem.contents.isNullOrEmpty()) {
+                if (currentItem.contents.isNotEmpty()) {
                     holder.childListAdapter =
                         ChildHomeAdapter(
                             myContext,
                             currentItem.contents,
                             currentItem.contentviewtype,
                             navController,
-                            isPemiumUser
+                            isPemiumUser,
+                            homeFragment
                         )
                     holder.recyclerView.layoutManager = LinearLayoutManager(
                         holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false
@@ -103,46 +116,126 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
             }
 
             is BannerViewHolder -> {
-                holder.carouselView.apply {
-                    size = homeData.size
-                    resource = R.layout.row_obj_slider_view
-                    autoPlay = true
-                    indicatorAnimationType = IndicatorAnimationType.THIN_WORM
-                    carouselOffset = OffsetType.CENTER
-                    setCarouselViewListener { view, position ->
-                        val imageView = view.findViewById<ImageView>(R.id.myimage)
-                        Glide.with(imageView).load(currentItem.contents[position].image_location)
-                            .placeholder(R.drawable.no_img).into(imageView)
 
-                        imageView.setOnClickListener {
+                holder.carousel4.registerLifecycle(lifecycle)
+                holder.carousel4.infiniteCarousel = true
+                holder.carousel4.autoPlay = true
 
-                            val username = SharedPreferencesUtil.getData(
-                                myContext,
-                                UsernameInputKey,
-                                ""
-                            )
-                            if (username.toString().isNotEmpty()) {
-                                val intent =
-                                    Intent(holder.itemView.context, PlayerActivity::class.java)
-                                intent.putExtra("id", currentItem.contents[position].contentid)
-                                intent.putExtra("type", "single")
-                                holder.itemView.context.startActivity(intent)
-                            } else {
-                                val intent =
-                                    Intent(holder.itemView.context, LoginActivity::class.java)
-                                holder.itemView.context.startActivity(intent)
-                            }
+                // Custom view
+                holder.carousel4.carouselListener = object : CarouselListener {
+
+                    override fun onCreateViewHolder(
+                        layoutInflater: LayoutInflater,
+                        parent: ViewGroup
+                    ): ViewBinding {
+                        return ItemCustomFixedSizeLayout3Binding.inflate(
+                            layoutInflater,
+                            parent,
+                            false
+                        )
+                    }
+
+                    override fun onBindViewHolder(
+                        binding: ViewBinding,
+                        item: CarouselItem,
+                        position: Int
+                    ) {
+                        val currentBinding = binding as ItemCustomFixedSizeLayout3Binding
+
+                        currentBinding.imageView.apply {
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+
+                            setImage(item, R.drawable.ic_wb_cloudy_with_padding)
                         }
                     }
-                    show()
                 }
+
+
+
+//                holder.carousel4.carouselListener = object : CarouselListener {
+//                    override fun onCreateViewHolder(
+//                        layoutInflater: LayoutInflater,
+//                        parent: ViewGroup
+//                    ): ViewBinding {
+//                        return ItemCustomFixedSizeLayout3Binding.inflate(
+//                            layoutInflater,
+//                            parent,
+//                            false
+//                        )
+//                    }
+//
+//                    override fun onBindViewHolder(
+//                        binding: ViewBinding,
+//                        item: CarouselItem,
+//                        position: Int
+//                    ) {
+//                        val currentBinding = binding as ItemCustomFixedSizeLayout3Binding
+//
+//                        currentBinding.imageView.apply {
+//                            scaleType = ImageView.ScaleType.CENTER_CROP
+//
+//                            setImage(item, R.drawable.ic_wb_cloudy_with_padding)
+//                        }
+//                    }
+//                }
+
+
+                val listFour = mutableListOf<CarouselItem>()
+
+                for (item in currentItem.contents) {
+                    listFour.add(
+                        CarouselItem(
+                            imageUrl = item.image_location
+                        )
+                    )
+                }
+
+
+                holder.carousel4.setData(listFour)
+                holder.carousel4.setIndicator(holder.custom_indicator)
+
+
+
+//                holder.carouselView.apply {
+//                    size = homeData.size
+//                    resource = R.layout.row_obj_slider_view
+//                    autoPlay = true
+//                    indicatorAnimationType = IndicatorAnimationType.THIN_WORM
+//                    carouselOffset = OffsetType.CENTER
+//                    setCarouselViewListener { view, position ->
+//                        val imageView = view.findViewById<ImageView>(R.id.myimage)
+//                        Glide.with(imageView).load(currentItem.contents[position].image_location)
+//                            .placeholder(R.drawable.no_img).into(imageView)
+//
+//                        imageView.setOnClickListener {
+//
+//                            val username = SharedPreferencesUtil.getData(
+//                                myContext,
+//                                UsernameInputKey,
+//                                ""
+//                            )
+//                            if (username.toString().isNotEmpty()) {
+//                                val intent =
+//                                    Intent(holder.itemView.context, PlayerActivity::class.java)
+//                                intent.putExtra("id", currentItem.contents[position].contentid)
+//                                intent.putExtra("type", "single")
+//                                holder.itemView.context.startActivity(intent)
+//                            } else {
+//                                val intent =
+//                                    Intent(holder.itemView.context, LoginActivity::class.java)
+//                                holder.itemView.context.startActivity(intent)
+//                            }
+//                        }
+//                    }
+//                    show()
+//                }
             }
 
             is ThumbnailViewHolder -> {
 
                 holder.contentTitle.text = currentItem.catname
 
-                if (!currentItem.contents.isNullOrEmpty()) {
+                if (currentItem.contents.isNotEmpty()) {
                     val crossFadeFactory =
                         DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
                     val customCrossFadeOptions =
@@ -159,17 +252,14 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
                         val delayDuration = 5000
                         val interval = 100
                         while (isActive) {
-                            var randNum = Random.nextInt(1, currentItem.contents.size)
+                            val randNum = Random.nextInt(1, currentItem.contents.size)
                             val imageUrl = currentItem.contents[randNum].image_location
-
                             holder.thumbnailImage.setOnClickListener {
-
                                 val username = SharedPreferencesUtil.getData(
                                     myContext,
                                     UsernameInputKey,
                                     ""
                                 )
-
                                 if (username.toString().isNotEmpty()) {
                                     val intent =
                                         Intent(holder.itemView.context, PlayerActivity::class.java)
@@ -206,6 +296,7 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
                 }
 
             }
+
         }
     }
 
@@ -231,9 +322,11 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
         val seeAll: TextView = itemView.findViewById(R.id.seeAll)
     }
 
+
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        lateinit var bannerAdapter: BannerAdapter
-        val carouselView: CarouselView = itemView.findViewById(R.id.carouselViewId)
+        val carousel4: ImageCarousel = itemView.findViewById(R.id.carousel4)
+        val custom_indicator : CircleIndicator2 = itemView.findViewById(R.id.custom_indicator)
+        //  val carouselView : CarouselView = itemView.findViewById(R.id.carouselViewId)
     }
 
     inner class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -244,8 +337,4 @@ class ParentHomeAdapter(private var myContext: Context, var homeData: List<Data>
         var progress = 0
     }
 
-    fun cancelUpdates() {
-        job?.cancel()
-        job = null
-    }
 }

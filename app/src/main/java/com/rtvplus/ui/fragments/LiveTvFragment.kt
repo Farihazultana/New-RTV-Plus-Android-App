@@ -8,31 +8,43 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentLiveTvBinding
-import com.rtvplus.ui.activities.MainActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.ui.activities.LoginActivity
+import com.rtvplus.ui.activities.MainActivity
+import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class LiveTvFragment : Fragment() {
     private lateinit var binding: FragmentLiveTvBinding
     private lateinit var player: ExoPlayer
+    private val logInViewModel by viewModels<LogInViewModel>()
+    lateinit var username: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val username = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
+        val username =
+            SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
+                .toString()
 
         if (username.isEmpty()) {
             val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
-            findNavController().popBackStack()
         }
         super.onCreate(savedInstanceState)
 
@@ -40,21 +52,28 @@ class LiveTvFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentLiveTvBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        username = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
+            .toString()
+
+        val fragmentManager = requireActivity().supportFragmentManager
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 player.stop()
-                val mainActivity = requireActivity() as MainActivity
-                mainActivity.showBottomNavigationBar()
+                fragmentManager.popBackStack()
+              //  requireActivity().finish()
 
-                val navController = findNavController(binding.root)
-                navController.navigate(R.id.HomeFragment)
-                val bottomNavigationView =
-                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-                bottomNavigationView.selectedItemId = R.id.HomeFragment
+//                val mainActivity = requireActivity() as MainActivity
+//                mainActivity.showBottomNavigationBar()
+
+//                val navController = findNavController(binding.root)
+//                navController.navigate(R.id.HomeFragment)
+//                val bottomNavigationView =
+//                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+//                bottomNavigationView.selectedItemId = R.id.HomeFragment
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
@@ -75,23 +94,50 @@ class LiveTvFragment : Fragment() {
             val isFullscreen = isFullscreen()
             setFullscreen(!isFullscreen)
         }
-
-        val mediaItem =
-            MediaItem.fromUri("https://streamingengine.rtvplus.tv/rtv720/mp4:RTHe9apWCX6.mp4/playlist.m3u8")
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.play()
-
-
+        val url = getLiveTvUrl()
+        playLiveTv(url)
 
         return view
     }
 
-    fun isFullscreen(): Boolean {
+    private fun playLiveTv(url: String) {
+        val mediaItem =
+            MediaItem.fromUri(url)
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.play()
+    }
+
+    private fun getLiveTvUrl(): String {
+        if (username.isNotEmpty()) {
+            logInViewModel.fetchLogInData(username, "", "yes", "1")
+        }
+        var url = ""
+
+
+            logInViewModel.logInData.observe(viewLifecycleOwner) {
+                url = when (it) {
+                    is ResultType.Success -> {
+                        it.data[0].liveurl
+                    }
+                    is ResultType.Error -> {
+                        ""
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            }
+
+
+        return url
+    }
+
+    private fun isFullscreen(): Boolean {
         return requireActivity().requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     }
 
-    fun setFullscreen(fullscreen: Boolean) {
+    private fun setFullscreen(fullscreen: Boolean) {
         val playerView = binding.playerView
         val fullScreenbutton: ImageView = requireActivity().findViewById(R.id.fullscreen)
 
@@ -100,35 +146,34 @@ class LiveTvFragment : Fragment() {
             requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_exit_24)
 
-            requireActivity().window.decorView.systemUiVisibility =
-                (View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-
+            WindowInsetsControllerCompat(
+                requireActivity().window,
+                requireActivity().window.decorView
+            ).let { controller ->
+                controller.hide(WindowInsetsCompat.Type.systemBars())
+                controller.systemBarsBehavior =
+                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
 
             val mainActivity = requireActivity() as MainActivity
             mainActivity.hideBottomNavigationBar()
-
             playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+
         } else {
             // Set the activity orientation back to portrait
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_24)
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-            requireActivity().window.decorView.systemUiVisibility =
-                (View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            WindowInsetsControllerCompat(
+                requireActivity().window,
+                requireActivity().window.decorView
+            ).show(WindowInsetsCompat.Type.systemBars())
             val mainActivity = requireActivity() as MainActivity
             mainActivity.showBottomNavigationBar()
-
             playerView.layoutParams.height =
                 resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._180sdp)
             playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        player.stop()
     }
 
     override fun onStop() {

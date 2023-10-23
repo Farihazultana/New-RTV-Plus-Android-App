@@ -1,7 +1,5 @@
 package com.rtvplus.ui.adapters
 
-import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rtvplus.R
 import com.rtvplus.data.models.search.Content
-import com.rtvplus.ui.activities.LoginActivity
-import com.rtvplus.ui.activities.PlayerActivity
-import com.rtvplus.utils.AppUtils
-import com.rtvplus.utils.SharedPreferencesUtil
-
 
 class SearchListAdapter(
-    private var myContext: Context,
     var content: List<Content?>?,
     private val listener: itemClickListener,
     var isPemiumUser: Int?
@@ -65,45 +57,6 @@ class SearchListAdapter(
         holder.itemView.setOnClickListener {
             listener.onItemClickListener(position, item)
         }
-
-//        holder.itemView.setOnClickListener {
-//            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-//            intent.putExtra("id", item?.contentid)
-//            intent.putExtra("type", "single")
-//            holder.itemView.context.startActivity(intent)
-//        }
-//        holder.itemView.setOnClickListener {
-//            val spRes = SharedPreferencesUtil.getData(
-//                myContext,
-//                AppUtils.LogInKey,
-//                ""
-//            )
-//            val spResGoogle = SharedPreferencesUtil.getData(
-//                myContext,
-//                AppUtils.GoogleSignInKey,
-//                ""
-//            )
-//            Log.i("SPref", "onBindViewHolder: $spRes")
-//
-//            if (spRes.toString().isNotEmpty() || spResGoogle.toString().isNotEmpty()) {
-//
-//                if (isPemiumUser == 0 && item?.isfree?.toInt() == 0) {
-//
-//
-//
-//                } else {
-//                    val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-//                    intent.putExtra("id", item?.contentid)
-//                    intent.putExtra("type", "single")
-//                    holder.itemView.context.startActivity(intent)
-//                }
-//
-//            } else {
-//                val intent = Intent(holder.itemView.context, LoginActivity::class.java)
-//                holder.itemView.context.startActivity(intent)
-//            }
-//
-//        }
     }
 
     inner class SearchListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

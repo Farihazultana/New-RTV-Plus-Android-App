@@ -109,16 +109,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (backPressedTime + 3000 > System.currentTimeMillis()) {
-            finish()
-        } else {
-            Toast.makeText(
-                this,
-                "Press back again to leave the app.",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-        backPressedTime = System.currentTimeMillis()
+
+        super.onBackPressed()
+
+//        if (System.currentTimeMillis() - backPressedTime < DOUBLE_BACK_PRESS_INTERVAL) {
+//            super.onBackPressed()
+//            finish()
+//        } else {
+//            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+//        }
+//        backPressedTime = System.currentTimeMillis()
     }
+
 
 }

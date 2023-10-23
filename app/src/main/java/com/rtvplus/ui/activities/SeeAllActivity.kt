@@ -1,8 +1,8 @@
 package com.rtvplus.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -36,6 +36,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
     private var isLastpage = false
     private var isPremiumUser: Int? = 0
     private val logInViewModel by viewModels<LogInViewModel>()
+    lateinit var username: String
 
     companion object {
         lateinit var catCode: String
@@ -53,15 +54,18 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
             onBackPressed()
         }
 
+        username = SharedPreferencesUtil.getData(
+            this,
+            UsernameInputKey,
+            ""
+        ).toString()
+
         catCode = intent.getStringExtra("catcode").toString()
         catName = intent.getStringExtra("catname").toString()
 
         seeAllAdapter = SeeAllAdapter(this, emptyList(), this, null)
         binding.rvSeeAll.layoutManager = layoutManager
         binding.rvSeeAll.adapter = seeAllAdapter
-
-
-        val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
 
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
@@ -89,7 +93,6 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
             }
         }
 
-
         if (catCode.isNotEmpty()) {
             loadMoreData() // Initial data load
 
@@ -115,6 +118,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun loadMoreData() {
         seeAllViewModel.fetchSeeAllData(currentPage.toString(), catCode, "0", "1")
 
@@ -151,7 +155,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                     is ResultType.Error -> {
                         Toast.makeText(
                             this@SeeAllActivity,
-                            "Something is wrong. Please try again",
+                            R.string.error_response_msg,
                             Toast.LENGTH_SHORT
                         ).show()
                         isLoading = false
@@ -161,6 +165,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         val fragmentManager = supportFragmentManager
         val backStackEntryCount = fragmentManager.backStackEntryCount
@@ -178,20 +183,11 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
 
         if (item != null) {
 
-            val username = SharedPreferencesUtil.getData(
-                this,
-                UsernameInputKey,
-                ""
-            )
             if (item.contenttype == "playlist") {
 
-                if (username.toString().isNotEmpty()) {
+                if (username.isNotEmpty()) {
 
-                    if (isPremiumUser.toString() == "0" && item?.isfree == "0") {
-
-                        Log.e("fffffffffffffffffffff", item?.isfree.toString())
-                        Log.e("fffffffffffffffffffff", isPremiumUser.toString())
-
+                    if (isPremiumUser.toString() == "0" && item.isfree == "0") {
                         val fragmentTransaction = this.supportFragmentManager.beginTransaction()
                         val subscriptionFragment = SubscriptionFragment()
                         fragmentTransaction.replace(
@@ -200,17 +196,8 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                         )
                         fragmentTransaction.commit()
                     } else {
-                        Log.e(
-                            "fffffffffffffffffffff",
-                            "Inside else block: ${item?.isfree.toString()}"
-                        )
-                        Log.e(
-                            "fffffffffffffffffffff",
-                            "Inside else block: ${isPremiumUser.toString()}"
-                        )
-
                         val intent = Intent(this, PlayerActivity::class.java)
-                        intent.putExtra("id", item?.contentid)
+                        intent.putExtra("id", item.contentid)
                         startActivity(intent)
                     }
                 } else {
@@ -220,9 +207,8 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
 
             } else {
 
-                if (username.toString().isNotEmpty()) {
-                    if (isPremiumUser == 0 && item?.isfree == "0") {
-
+                if (username.isNotEmpty()) {
+                    if (isPremiumUser == 0 && item.isfree == "0") {
                         val fragmentTransaction = this.supportFragmentManager.beginTransaction()
                         val subscriptionFragment = SubscriptionFragment()
                         fragmentTransaction.replace(
@@ -233,7 +219,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
 
                     } else {
                         val intent = Intent(this, PlayerActivity::class.java)
-                            .putExtra("id", item?.contentid)
+                            .putExtra("id", item.contentid)
                             .putExtra("type", "single")
                         startActivity(intent)
                     }

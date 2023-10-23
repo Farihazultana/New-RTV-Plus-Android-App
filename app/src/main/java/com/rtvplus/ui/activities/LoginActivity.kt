@@ -279,7 +279,7 @@ class LoginActivity : AppCompatActivity() {
                         packText = logInResult.packtext
 
                         //storing login info
-                        storeLoginInfo(logInResult)
+                        //storeLoginInfo(logInResult)
 
                         SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
 
@@ -316,7 +316,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun storeLoginInfo(logInResult: LogInResponseItem) {
+    /*private fun storeLoginInfo(logInResult: LogInResponseItem) {
         loginInfo[0].audioad = logInResult.audioad
         loginInfo[0].autorenew = logInResult.autorenew
         loginInfo[0].concurrent = logInResult.concurrent
@@ -343,7 +343,7 @@ class LoginActivity : AppCompatActivity() {
         loginInfo[0].showad = logInResult.showad
         loginInfo[0].token = logInResult.token
         loginInfo[0].ugc = logInResult.ugc
-    }
+    }*/
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -443,6 +443,7 @@ class LoginActivity : AppCompatActivity() {
     override fun finish() {
         super.finish()
         val intent = Intent(this@LoginActivity, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
 

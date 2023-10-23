@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +11,11 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.FragmentHomeBinding
@@ -75,9 +74,6 @@ class HomeFragment : Fragment() {
         val simOperatorName = deviceInfo.operatorName
         val simOperatorCode = deviceInfo.versionCode
 
-        Log.e("iiiiiiiiiiiiiiiiiiiiii", simSerialNumber)
-        Log.e("iiiiiiiiiiiiiiiiiiiiii", simOperatorName)
-        Log.e("iiiiiiiiiiiiiiiiiiiiii", simOperatorCode.toString())
 
         return binding.root
     }
@@ -88,13 +84,13 @@ class HomeFragment : Fragment() {
         homeViewModel.fetchHomeData("", "home")
 
         parentHomeAdapter =
-            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null)
+            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null, lifecycle,this)
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
         var backPressedTime: Long = 0
 
-        /*val callback = object : OnBackPressedCallback(true) {
+        val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (backPressedTime + 3000 > System.currentTimeMillis()) {
                     requireActivity().finish()
@@ -109,7 +105,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)*/
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
 
         val username =
@@ -120,8 +116,8 @@ class HomeFragment : Fragment() {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            logInViewModel.logInData.observe(requireActivity()) {
+
+            logInViewModel.logInData.observe(viewLifecycleOwner) {
                 when (it) {
                     is ResultType.Success -> {
                         val logInResult = it.data
@@ -133,21 +129,16 @@ class HomeFragment : Fragment() {
                     }
 
                     is ResultType.Error -> {
-                        Toast.makeText(
-                            requireActivity(),
-                            "Something is wrong, please try again!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+
                     }
 
                     else -> {
 
                     }
                 }
-            }
+
 
         }
-
 
         viewLifecycleOwner.lifecycleScope.launch {
             homeViewModel.homeData.collect { result ->
@@ -183,6 +174,14 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+    }
+    // Function to bind a fragment to the FragmentContainerView
+    fun bindFragment(fragment: Fragment) {
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(android.R.id.content, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
 

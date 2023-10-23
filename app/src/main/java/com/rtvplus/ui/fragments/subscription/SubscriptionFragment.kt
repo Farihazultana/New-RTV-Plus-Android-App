@@ -189,7 +189,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         if (requestCode == 1234 && resultCode == Activity.RESULT_OK) {
             subscription()
 
-            subscriptionAdapter.notifyDataSetChanged()
+            //subscriptionAdapter.notifyDataSetChanged()
         }
     }
 

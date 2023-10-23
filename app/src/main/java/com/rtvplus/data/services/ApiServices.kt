@@ -1,15 +1,18 @@
 package com.rtvplus.data.services
 
+import com.rtvplus.data.models.comment.CommentResponse
 import com.rtvplus.data.models.coupon_payment.RedeemCuoponPaymentResponse
 import com.rtvplus.data.models.favorite_list.AddListResponse
 import com.rtvplus.data.models.favorite_list.FavoriteResponse
 import com.rtvplus.data.models.favorite_list.RemoveListResponse
+import com.rtvplus.data.models.feedback.FeedbackResponse
 import com.rtvplus.data.models.forgetPassword.ForgetPasswordResponse
 import com.rtvplus.data.models.home.HomeResponse
 import com.rtvplus.data.models.info.InfoResponse
 import com.rtvplus.data.models.local_payment.LocalPaymentResponse
 import com.rtvplus.data.models.local_payment.SaveLocalPaymentResponse
 import com.rtvplus.data.models.logIn.LogInResponse
+import com.rtvplus.data.models.post_play_time.PostPlayTimeResponse
 import com.rtvplus.data.models.registration.RegistrationResponse
 import com.rtvplus.data.models.search.SearchResponse
 import com.rtvplus.data.models.seeAll.SeeAllResponse
@@ -17,6 +20,7 @@ import com.rtvplus.data.models.single_content.playlist.PlayListResponse
 import com.rtvplus.data.models.single_content.single.SingleContentResponse
 import com.rtvplus.data.models.socialmedia_login.google.GoogleLogInResponse
 import com.rtvplus.data.models.subscription.SubscriptionResponse
+import com.rtvplus.data.models.tv_shows.TvShowsResponse
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -43,7 +47,8 @@ interface ApiServices {
     suspend fun getPlayListData(
         @Field("username") username: String,
         @Field("cc") cc: String,
-        @Field("resolution") resolution: String
+        @Field("resolution") resolution: String,
+        @Field("ct") ct: String
     ): Response<PlayListResponse>
 
     @FormUrlEncoded
@@ -153,4 +158,35 @@ interface ApiServices {
         @Field("msisdn") msisdn: String,
         @Field("couponcode") couponcode: String
     ): Response<RedeemCuoponPaymentResponse>
+
+    @FormUrlEncoded
+    @POST("flix_postfeedback.php")
+    suspend fun saveComment(
+        @Field("username") username: String,
+        @Field("comment") comment: String,
+    ): Response<CommentResponse>
+    @FormUrlEncoded
+    @POST("flix_postfeedback.php")
+    suspend fun saveFeedback(
+        @Field("username") username: String,
+        @Field("comment") comment: String,
+    ): Response<FeedbackResponse>
+
+    @FormUrlEncoded
+    @POST("flix_json_app_dramaserial.php")
+    suspend fun getTvShowsData(
+        @Field("username") username: String,
+        @Field("cc") cc: String,
+        @Field("resolution") resolution: String
+    ): Response<TvShowsResponse>
+
+    @FormUrlEncoded
+    @POST("flix_postplaytime.php")
+    suspend fun savePlayData(
+        @Field("time") time: String,
+        @Field("contentid") contentid: String,
+        @Field("username") username: String,
+        @Field("playtime") playtime: String
+    ): Response<PostPlayTimeResponse>
+
 }

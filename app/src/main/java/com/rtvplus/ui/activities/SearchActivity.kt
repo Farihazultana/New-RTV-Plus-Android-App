@@ -71,7 +71,6 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
 
             false
         }
-
         binding.searchVoiceBtn.visibility = View.VISIBLE
         binding.cancelButton.setOnClickListener {
             binding.searchView.setQuery("", false)
@@ -113,11 +112,6 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                     binding.searchVoiceBtn.visibility = View.GONE
                     binding.cancelButton.visibility = View.VISIBLE
 
-//                    Toast.makeText(
-//                        this@SearchActivity,
-//                        "Current Query: $newText",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
                 } else {
                     binding.searchVoiceBtn.visibility = View.VISIBLE
                     binding.cancelButton.visibility = View.GONE
@@ -125,8 +119,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                 return true
             }
         })
-
-        searchListAdapter = SearchListAdapter(this@SearchActivity, emptyList(), this, null)
+        searchListAdapter = SearchListAdapter(emptyList(), this, null)
         binding.searchItemRecyclerView.layoutManager = GridLayoutManager(this, 2)
         binding.searchItemRecyclerView.adapter = searchListAdapter
 
@@ -157,9 +150,9 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
 
                 }
             }
+
+
         }
-
-
 
 
         searchViewModel.searchData.observe(this) { result ->
@@ -228,10 +221,19 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
     override fun onItemClickListener(position: Int, item: Content?) {
         if (item != null) {
 
-            val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
+            val phone = SharedPreferencesUtil.getData(
+                this,
+                AppUtils.LogInKey,
+                ""
+            )
+            val email = SharedPreferencesUtil.getData(
+                this,
+                AppUtils.GoogleSignInKey,
+                ""
+            )
 
-            if (username.isNotEmpty()) {
-                if (isPremiumUser == 0 && item?.isfree == "0") {
+            if (phone.toString().isNotEmpty() || email.toString().isNotEmpty()) {
+                if (isPremiumUser == 0 && item.isfree == "0") {
 
                     val fragmentTransaction = this.supportFragmentManager.beginTransaction()
                     val subscriptionFragment = SubscriptionFragment()
@@ -239,11 +241,12 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                         R.id.subscriptionContainerView,
                         subscriptionFragment
                     )
+                    fragmentTransaction.addToBackStack(null)
                     fragmentTransaction.commit()
 
                 } else {
                     val intent = Intent(this, PlayerActivity::class.java)
-                        .putExtra("id", item?.contentid)
+                        .putExtra("id", item.contentid)
                         .putExtra("type", "single")
                     startActivity(intent)
                 }
@@ -256,6 +259,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
 
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         val fragmentManager = supportFragmentManager
         val backStackEntryCount = fragmentManager.backStackEntryCount

@@ -41,9 +41,9 @@ class MoreFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMoreBinding.inflate(inflater, container, false)
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
         binding.backButton.setOnClickListener {
             val navController = findNavController(binding.root)
@@ -52,19 +52,14 @@ class MoreFragment : Fragment() {
                 requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
             bottomNavigationView.selectedItemId = R.id.HomeFragment
         }
-        val fragmentManager = requireActivity().supportFragmentManager
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                fragmentManager.popBackStack()
-//                val navController = findNavController(binding.root)
-//                navController.navigate(R.id.HomeFragment)
-//                val bottomNavigationView =
-//                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-//                bottomNavigationView.selectedItemId = R.id.HomeFragment
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+//        val fragmentManager = requireActivity().supportFragmentManager
+//
+//        val callback = object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                fragmentManager.popBackStack()
+//            }
+//        }
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         val username = SharedPreferencesUtil.getData(
             requireContext(),
@@ -105,8 +100,13 @@ class MoreFragment : Fragment() {
             startActivity(intent)
         }
         binding.feedBack.setOnClickListener {
-            val intent = Intent(requireContext(), FeedBackActivity::class.java)
-            startActivity(intent)
+            if (username.isNotEmpty()) {
+                val intent = Intent(requireContext(), FeedBackActivity::class.java)
+                startActivity(intent)
+            } else {
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         binding.rate.setOnClickListener {
@@ -144,11 +144,10 @@ class MoreFragment : Fragment() {
         binding.logout.setOnClickListener {
             handleLogoutClick(username)
         }
-
         return binding.root
     }
 
-    private fun handleLogoutClick(username: String){
+    private fun handleLogoutClick(username: String) {
         openDialog()
         val btnLogout = dialog.findViewById<Button>(R.id.btnLogout)
         val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
@@ -198,12 +197,6 @@ class MoreFragment : Fragment() {
     private fun navigateToHomeFragment() {
         val intent = Intent(requireContext(), MainActivity::class.java)
         startActivity(intent)
-
-//        val navController = Navigation.findNavController(binding.root)
-//        navController.navigate(R.id.HomeFragment)
-//        val bottomNavigationView =
-//            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-//        bottomNavigationView.selectedItemId = R.id.HomeFragment
     }
 
     private fun isOneTapClientInitialized(): Boolean {
