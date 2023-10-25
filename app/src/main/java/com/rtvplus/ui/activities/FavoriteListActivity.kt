@@ -95,7 +95,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
 
         updateDataAfterRemove()
 
-       // getFavoriteContent()
+        // getFavoriteContent()
     }
 
     private fun updateDataAfterRemove() {
@@ -104,6 +104,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
+
                 is ResultType.Success<*> -> {
                     val response = result.data as RemoveListResponse
                     if (response.status == "success") {
@@ -172,30 +173,34 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             }
         }
     }
+
     private fun checkIfPremiumUser(): Int {
         var isPremiumUser: Int? = 0
-        lifecycleScope.launch(Dispatchers.IO) {
-            logInViewModel.logInData.collect {
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data
 
-                        for (item in logInResult) {
-                            val result = item.play
-                            isPremiumUser = result
-                        }
+        logInViewModel.logInData.observe(this) {
+            when (it) {
+                is ResultType.Success -> {
+                    val logInResult = it.data
+
+                    for (item in logInResult) {
+                        val result = item.play
+                        isPremiumUser = result
                     }
-                    is ResultType.Error -> {
-                        isPremiumUser = 0
-                    }
-                    else -> {
-                        isPremiumUser = 0
-                    }
+                }
+
+                is ResultType.Error -> {
+                    isPremiumUser = 0
+                }
+
+                else -> {
+                    isPremiumUser = 0
                 }
             }
         }
+
         return isPremiumUser!!
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -213,6 +218,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             removeListViewModel.removeFavoriteContent(contentId, username)
         }
     }
+
     @SuppressLint("NotifyDataSetChanged")
     private fun loadMoreData() {
 
@@ -225,6 +231,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
+
                 is ResultType.Success<*> -> {
                     val content = result.data as FavoriteResponse
                     if (content.contents.isNotEmpty()) {

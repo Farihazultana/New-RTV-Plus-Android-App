@@ -1,6 +1,7 @@
 package com.rtvplus.ui.fragments
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -9,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -23,13 +25,13 @@ import com.rtvplus.ui.activities.FeedBackActivity
 import com.rtvplus.ui.activities.InfoActivity
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.MainActivity
-import com.rtvplus.utils.AppUtils.GoogleSignInKey
 import com.rtvplus.utils.AppUtils.PACKAGE_NAME
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.SharedPreferencesUtil
 
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
+    private lateinit var dialog: Dialog
 
     companion object {
         lateinit var oneTapClient: SignInClient
@@ -140,39 +142,56 @@ class MoreFragment : Fragment() {
         }
 
         binding.logout.setOnClickListener {
-            SharedPreferencesUtil.clear(requireContext())
-            if (isOneTapClientInitialized()) {
-                SharedPreferencesUtil.clear(requireContext())
-                binding.logInAs.text = null
-
-                val spResGoogle = SharedPreferencesUtil.getData(
-                    requireContext(),
-                    GoogleSignInKey,
-                    ""
-                )
-                if (spResGoogle.toString().isNotEmpty()) {
-                    LoginActivity.showOneTapUI = false
-                    oneTapClient.signOut().addOnFailureListener {
-                        Toast.makeText(context, R.string.error_response_msg, Toast.LENGTH_SHORT)
-                            .show()
-                    }.addOnCompleteListener {
-                        Toast.makeText(context, R.string.signed_out_toast, Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-                Toast.makeText(requireContext(), R.string.signed_out_toast, Toast.LENGTH_SHORT)
-                    .show()
-                navigateToHomeFragment()
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    "OneTapClient is not initialized",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
+            handleLogoutClick(username)
         }
         return binding.root
+    }
+
+    private fun handleLogoutClick(username: String) {
+        openDialog()
+        val btnLogout = dialog.findViewById<Button>(R.id.btnLogout)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
+
+        dialog.show()
+        btnLogout.setOnClickListener { logout(username) }
+        btnCancel.setOnClickListener { dialog.dismiss() }
+    }
+
+    private fun logout(username: String) {
+        SharedPreferencesUtil.clear(requireContext())
+        Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
+        if (isOneTapClientInitialized()) {
+            SharedPreferencesUtil.clear(requireContext())
+            binding.logInAs.text = null
+
+            if (username.isNotEmpty()) {
+                LoginActivity.showOneTapUI = false
+                oneTapClient.signOut().addOnFailureListener {
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                }.addOnCompleteListener {
+                    //Toast.makeText(context, "You are Signed Out!", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            navigateToHomeFragment()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "OneTapClient is not initialized",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun openDialog() {
+        dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.logout_dialog)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.setCancelable(true)
+        dialog.window!!.attributes!!.windowAnimations = R.style.animation
     }
 
     private fun navigateToHomeFragment() {

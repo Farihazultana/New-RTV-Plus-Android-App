@@ -1,8 +1,6 @@
 package com.rtvplus.ui.adapters
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,12 +16,12 @@ import java.util.Locale
 
 
 class SubscriptionAdapter(
-    var subscriptionData: List<SubschemesItem?>?,
     private val cardClickListener: CardClickListener
 
 ) : RecyclerView.Adapter<SubscriptionAdapter.SubscriptionViewHolder>() {
 
     private var selectedPositions = -1
+    var subscriptionData: ArrayList<SubschemesItem> = ArrayList()
 
     inner class SubscriptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val packageName: TextView = itemView.findViewById(R.id.tv_packName)
@@ -38,13 +36,13 @@ class SubscriptionAdapter(
         return SubscriptionViewHolder(itemView)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(
         holder: SubscriptionViewHolder,
         @SuppressLint("RecyclerView") position: Int
     ) {
         val item = subscriptionData?.get(position)
         Log.i("Tag", "onBindViewHolder: $item")
-
 
         if (item != null) {
             val packName = item.pack_name.lowercase(Locale.ROOT)
@@ -55,30 +53,45 @@ class SubscriptionAdapter(
             holder.subText.text = item.sub_text
         }
 
-
         holder.checkedCard.visibility =
             if (selectedPositions == position) View.VISIBLE else View.GONE
-
-
-        if(item?.userpack == item?.sub_pack){
-            holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.green_lite))
-            holder.checkedCard.visibility = View.VISIBLE
-        }
 
         holder.itemView.setOnClickListener {
             if (item?.userpack == "nopack"){
                 selectedPositions = position
                 cardClickListener.onCardClickListener(position, item)
-                notifyDataSetChanged()
             }else{
                 holder.itemView.isClickable = false
             }
-
         }
+
+
+        if(item?.userpack == item?.sub_pack || selectedPositions == position){
+            if (item?.userpack == item?.sub_pack){
+                holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.green_lite))
+            }
+            holder.checkedCard.visibility = View.VISIBLE
+
+            return
+        }else{
+            holder.checkedCard.visibility = View.GONE
+            holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.white))
+        }
+
+    }
+
+    fun setData(subschemes: ArrayList<SubschemesItem>) {
+        if (subscriptionData.isNotEmpty()){
+            subscriptionData.clear()
+        }
+        this.subscriptionData = subschemes
+        selectedPositions = -1
+        notifyDataSetChanged()
+
     }
 
     override fun getItemCount(): Int {
-        return subscriptionData?.size ?: -1
+        return subscriptionData.size ?: -1
     }
 
     interface CardClickListener {

@@ -1,5 +1,6 @@
 package com.rtvplus.ui.viewmodels
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rtvplus.data.models.socialmedia_login.google.GoogleLogInResponse
@@ -14,8 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GoogleLogInViewModel @Inject constructor(private val repository: GoogleLogInRepository):ViewModel(){
-    private val _googleLogInData = MutableStateFlow<ResultType<GoogleLogInResponse>>(ResultType.Loading)
-    val googleLogInData : StateFlow<ResultType<GoogleLogInResponse>> = _googleLogInData
+    private val _googleLogInData = MutableLiveData<ResultType<GoogleLogInResponse>>(ResultType.Loading)
+    val googleLogInData : MutableLiveData<ResultType<GoogleLogInResponse>> = _googleLogInData
 
     fun fetchGoogleLogInData(logintype: String, source: String, username: String, password: String, firstName: String, lastName: String, email: String, imgUrl: String){
         viewModelScope.launch {

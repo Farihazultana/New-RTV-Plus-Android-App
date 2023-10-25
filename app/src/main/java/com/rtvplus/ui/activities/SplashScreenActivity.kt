@@ -2,6 +2,7 @@ package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
@@ -23,6 +24,8 @@ class SplashScreenActivity : AppCompatActivity() {
         val splashDelay: Long = 2000
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         calendar = Calendar.getInstance()
         val year: Int = calendar.get(Calendar.YEAR)

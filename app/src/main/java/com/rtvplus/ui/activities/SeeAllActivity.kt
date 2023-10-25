@@ -21,7 +21,6 @@ import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -72,28 +71,26 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            logInViewModel.logInData.collect {
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data
 
-                        for (item in logInResult) {
-                            val result = item.play
-                            isPremiumUser = result
-                        }
-                    }
+        logInViewModel.logInData.observe(this) {
+            when (it) {
+                is ResultType.Success -> {
+                    val logInResult = it.data
 
-                    is ResultType.Error -> {
-
-                    }
-
-                    else -> {
-
+                    for (item in logInResult) {
+                        val result = item.play
+                        isPremiumUser = result
                     }
                 }
-            }
 
+                is ResultType.Error -> {
+
+                }
+
+                else -> {
+
+                }
+            }
         }
 
         if (catCode.isNotEmpty()) {
@@ -197,7 +194,6 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                             R.id.subscriptionContainerView,
                             subscriptionFragment
                         )
-                        fragmentTransaction.addToBackStack(null)
                         fragmentTransaction.commit()
                     } else {
                         val intent = Intent(this, PlayerActivity::class.java)
@@ -219,7 +215,6 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                             R.id.subscriptionContainerView,
                             subscriptionFragment
                         )
-                        fragmentTransaction.addToBackStack(null)
                         fragmentTransaction.commit()
 
                     } else {

@@ -92,7 +92,7 @@
                     android:drawablePadding="@dimen/_2sdp"
                     android:textCursorDrawable="@null"
                     android:hint="Password"
-                    android:inputType="textPassword"
+                    android:inputType="number"
                     android:ems="15"/>
             </com.google.android.material.textfield.TextInputLayout>
 
