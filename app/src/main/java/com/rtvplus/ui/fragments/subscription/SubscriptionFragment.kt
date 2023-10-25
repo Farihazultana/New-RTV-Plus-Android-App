@@ -83,11 +83,26 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getPhoneNumSP = SharedPreferencesUtil.getData(
+            requireContext(),
+            UsernameInputKey,
+            ""
+        ).toString()
 
         //btn click listener
         binding.btnContinuePayment.setOnClickListener {
             if (selectedPositions != -1) {
-                showBottomSheet()
+                if (getPhoneNumSP.isNotEmpty()) {
+                    binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
+                    selectedPositions = -1
+                    showBottomSheet()
+
+                } else {
+                    Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
+                    val intent = Intent(requireContext(), LoginActivity::class.java)
+                    startActivityForResult(intent, 1234)
+                }
+
             } else {
                 Toast.makeText(
                     requireActivity(),
@@ -112,23 +127,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     }
 
     private fun subscription() {
-
-        getPhoneNumSP = SharedPreferencesUtil.getData(
-            requireContext(),
-            UsernameInputKey,
-            ""
-        ).toString()
-
-        if (getPhoneNumSP.isNotEmpty()) {
-            binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
-            selectedPositions = -1
-            subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
-        } else {
-            Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            startActivityForResult(intent, 1234)
-        }
-
+        subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
     }
 
     private fun observeSubscription() {
