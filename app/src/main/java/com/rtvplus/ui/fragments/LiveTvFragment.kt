@@ -114,8 +114,8 @@ class LiveTvFragment : Fragment() {
         }
         var url = ""
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            logInViewModel.logInData.collect {
+
+            logInViewModel.logInData.observe(viewLifecycleOwner) {
                 url = when (it) {
                     is ResultType.Success -> {
                         it.data[0].liveurl
@@ -129,7 +129,7 @@ class LiveTvFragment : Fragment() {
                 }
             }
 
-        }
+
         return url
     }
 

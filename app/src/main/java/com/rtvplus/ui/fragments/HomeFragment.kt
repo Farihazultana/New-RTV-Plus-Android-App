@@ -116,8 +116,8 @@ class HomeFragment : Fragment() {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            logInViewModel.logInData.collect {
+
+            logInViewModel.logInData.observe(viewLifecycleOwner) {
                 when (it) {
                     is ResultType.Success -> {
                         val logInResult = it.data
@@ -136,7 +136,7 @@ class HomeFragment : Fragment() {
 
                     }
                 }
-            }
+
 
         }
 

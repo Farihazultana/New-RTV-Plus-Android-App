@@ -15,22 +15,25 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.api.ApiException
-import com.google.android.material.textfield.TextInputEditText
 import com.rtvplus.R
 import com.rtvplus.databinding.ActivityLoginBinding
 import com.rtvplus.ui.viewmodels.ForgetPasswordViewModel
 import com.rtvplus.ui.viewmodels.GoogleLogInViewModel
 import com.rtvplus.ui.viewmodels.LogInViewModel
-import com.rtvplus.utils.AppUtils.LogInKey
-import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.common.api.ApiException
+import com.google.android.material.textfield.TextInputEditText
+import com.rtvplus.data.models.logIn.LogInResponse
+import com.rtvplus.data.models.logIn.LogInResponseItem
+import com.rtvplus.utils.AppUtils.LogInKey
+import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -50,9 +53,14 @@ class LoginActivity : AppCompatActivity() {
     lateinit var enteredPhone: String
     lateinit var enteredPassword: String
 
+    @Inject
+    lateinit var loginInfo: LogInResponse
+
 
     companion object {
         var showOneTapUI = true
+        var packCode: String? = null
+        var packText: String? = null
     }
 
     @SuppressLint("CommitPrefEdits")
@@ -76,7 +84,6 @@ class LoginActivity : AppCompatActivity() {
             if (enteredPhone.isNotEmpty() && enteredPassword.isNotEmpty() && enteredPhone.length == 11) {
                 phoneText = "88$enteredPhone"
                 logInViewModel.fetchLogInData(phoneText!!, enteredPassword!!, "no", "1")
-                loginUsingPhoneNumber()
             } else {
                 if (enteredPhone.isEmpty() || enteredPassword.isEmpty()) {
                     Toast.makeText(
@@ -84,23 +91,18 @@ class LoginActivity : AppCompatActivity() {
                         "Phone number or Password must not be empty! Please input first.",
                         Toast.LENGTH_LONG
                     ).show()
-                    loginUsingPhoneNumber()
                 } else {
                     Toast.makeText(
                         this@LoginActivity,
                         "Phone number should be 11 digits",
                         Toast.LENGTH_LONG
                     ).show()
-                    loginUsingPhoneNumber()
                 }
 
             }
 
         }
-
-        //loginUsingPhoneNumber()
-
-
+        loginUsingPhoneNumber()
         forgetPassword()
 
         //Google Sign In
@@ -202,7 +204,7 @@ class LoginActivity : AppCompatActivity() {
                             "forget",
                         )
                         lifecycleScope.launch {
-                            forgetPasswordViewModel.forgetPasswordData.collect {
+                            forgetPasswordViewModel.forgetPasswordData.observe(this@LoginActivity) {
                                 when (it) {
                                     is ResultType.Success -> {
                                         val result = it.data
@@ -267,16 +269,21 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginUsingPhoneNumber() {
         lifecycleScope.launch {
-            logInViewModel.logInData.collect {
+            logInViewModel.logInData.observe(this@LoginActivity) {
+                var result = ""
                 when (it) {
                     is ResultType.Success -> {
-                        var result = it.data[0].result
+                        val logInResult = it.data[0]
+                        result = logInResult.result
+                        packCode = logInResult.packcode
+                        packText = logInResult.packtext
 
-                        Log.i("LogIN", "Log In result to be saved: $result")
+                        //storing login info
+                        //storeLoginInfo(logInResult)
+
                         SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
 
                         if (result == "success") {
-                            Log.i("TAGP", "LogIn: $result")
                             SharedPreferencesUtil.saveData(
                                 this@LoginActivity,
                                 UsernameInputKey,
@@ -285,14 +292,11 @@ class LoginActivity : AppCompatActivity() {
                             Toast.makeText(this@LoginActivity, result, Toast.LENGTH_SHORT).show()
                             finish()
                         } else {
-                            result = null.toString()
-                            Toast.makeText(this@LoginActivity, result, Toast.LENGTH_SHORT).show()
                             Toast.makeText(
                                 this@LoginActivity,
                                 "Username or Password incorrect. Try Again!",
-                                Toast.LENGTH_LONG
+                                Toast.LENGTH_SHORT
                             ).show()
-                            return@collect
                         }
 
                     }
@@ -300,18 +304,46 @@ class LoginActivity : AppCompatActivity() {
                     is ResultType.Error -> {
                         Toast.makeText(
                             this@LoginActivity,
-                            "Something is wrong, please try again!",
+                            "Username or Password incorrect. Try Again!",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
 
                     else -> {
-                        Log.i(TAG, "onActivityResult: Login data not available")
                     }
                 }
             }
         }
     }
+
+    /*private fun storeLoginInfo(logInResult: LogInResponseItem) {
+        loginInfo[0].audioad = logInResult.audioad
+        loginInfo[0].autorenew = logInResult.autorenew
+        loginInfo[0].concurrent = logInResult.concurrent
+        loginInfo[0].concurrenttext = logInResult.concurrenttext
+        loginInfo[0].consent = logInResult.consent
+        loginInfo[0].consenttext = logInResult.consenttext
+        loginInfo[0].consenturl = logInResult.consenturl
+        loginInfo[0].currentversion = logInResult.currentversion
+        loginInfo[0].currentversionios = logInResult.currentversionios
+        loginInfo[0].email = logInResult.email
+        loginInfo[0].enforce = logInResult.enforce
+        loginInfo[0].enforcetext = logInResult.enforcetext
+        loginInfo[0].extrainfo = logInResult.extrainfo
+        loginInfo[0].fullname = logInResult.fullname
+        loginInfo[0].liveurl = logInResult.liveurl
+        loginInfo[0].msisdn = logInResult.msisdn
+        loginInfo[0].packname = logInResult.packname
+        loginInfo[0].packtext = logInResult.packtext
+        loginInfo[0].packcode = logInResult.packcode
+        loginInfo[0].play = logInResult.play
+        loginInfo[0].result = logInResult.result
+        loginInfo[0].referral = logInResult.referral
+        loginInfo[0].referralimage = logInResult.referralimage
+        loginInfo[0].showad = logInResult.showad
+        loginInfo[0].token = logInResult.token
+        loginInfo[0].ugc = logInResult.ugc
+    }*/
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -355,7 +387,7 @@ class LoginActivity : AppCompatActivity() {
                                 imageUri.toString()
                             )
                             lifecycleScope.launch {
-                                googleLogInViewModel.googleLogInData.collect {
+                                googleLogInViewModel.googleLogInData.observe(this@LoginActivity) {
                                     when (it) {
                                         is ResultType.Success -> {
                                             val result = it.data
@@ -418,7 +450,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
-
     }
 
 }

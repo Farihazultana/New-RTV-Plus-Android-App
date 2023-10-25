@@ -1,5 +1,6 @@
 package com.rtvplus.ui.viewmodels
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rtvplus.data.models.forgetPassword.ForgetPasswordResponse
@@ -14,9 +15,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ForgetPasswordViewModel @Inject constructor(private val repository: ForgetPasswordRepository) : ViewModel() {
-    private val _forgetPasswordData = MutableStateFlow<ResultType<ForgetPasswordResponse>>(
+    private val _forgetPasswordData = MutableLiveData<ResultType<ForgetPasswordResponse>>(
         ResultType.Loading)
-    val forgetPasswordData: StateFlow<ResultType<ForgetPasswordResponse>> = _forgetPasswordData
+    val forgetPasswordData: MutableLiveData<ResultType<ForgetPasswordResponse>> = _forgetPasswordData
 
     fun fetchForgetPasswordData(msisdn: String, forget: String){
         viewModelScope.launch {

@@ -1,5 +1,6 @@
 package com.rtvplus.ui.viewmodels
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rtvplus.data.models.logIn.LogInResponse
@@ -13,9 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LogInViewModel @Inject constructor(private val repository: LogInRepository) : ViewModel() {
-    private val _logInData = MutableStateFlow<ResultType<LogInResponse>>(ResultType.Loading)
-    val logInData: StateFlow<ResultType<LogInResponse>> get() = _logInData
-    fun fetchLogInData(userName: String, password: String, haspin: String, tc:String,) {
+    private val _logInData = MutableLiveData<ResultType<LogInResponse>>(ResultType.Loading)
+    val logInData: MutableLiveData<ResultType<LogInResponse>> = _logInData
+    fun fetchLogInData(userName: String, password: String, haspin: String, tc:String) {
         viewModelScope.launch {
             try {
                 val result = repository.getLogInData(userName, password, haspin, tc)

@@ -21,7 +21,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -50,8 +49,6 @@ import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListener {
@@ -131,6 +128,12 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
             }
         }
 
+        if (isInList == 1) {
+            binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
+        } else {
+            binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
+        }
+
 
         handler = Handler()
         startTimer()
@@ -177,8 +180,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
     private fun checkIfPremiumUser(): Int {
         var isPremiumUser: Int? = 0
-        lifecycleScope.launch(Dispatchers.IO) {
-            logInViewModel.logInData.collect {
+
+            logInViewModel.logInData.observe(this) {
                 when (it) {
                     is ResultType.Success -> {
                         val logInResult = it.data
@@ -199,7 +202,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                     }
                 }
             }
-        }
+
         return isPremiumUser!!
     }
 
@@ -320,12 +323,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
                     isInList = content.mylist
 
-                    if (isInList == 1) {
-                        binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
-                    } else {
-                        binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
-                    }
-
 //                    binding.favouriteIcon.setImageResource(
 //                        if (isInList == 0) {
 //                            R.drawable.baseline_favorite_border_24
@@ -372,6 +369,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                             is ResultType.Loading -> {
                                 binding.progressbar.visibility = View.VISIBLE
                             }
+
                             is ResultType.Success<*> -> {
                                 val response = it.data as RemoveListResponse
                                 if (response.status == "success") {

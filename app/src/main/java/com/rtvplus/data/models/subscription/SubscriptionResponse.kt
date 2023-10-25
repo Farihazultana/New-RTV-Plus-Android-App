@@ -1,7 +1,7 @@
 package com.rtvplus.data.models.subscription
 
 data class SubscriptionResponse(
-	val subschemes: List<SubschemesItem>
+	val subschemes: ArrayList<SubschemesItem>
 )
 
 data class SubschemesItem(

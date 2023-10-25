@@ -1,6 +1,7 @@
 package com.rtvplus.ui.viewmodels
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rtvplus.data.models.local_payment.LocalPaymentResponse
@@ -14,8 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocalPaymentViewModel @Inject constructor(private val repository: LocalPaymentRepository):ViewModel() {
-    private val _localPaymentData = MutableStateFlow<ResultType<LocalPaymentResponse>>(ResultType.Loading)
-    val localPaymentData : StateFlow<ResultType<LocalPaymentResponse>> = _localPaymentData
+    private val _localPaymentData = MutableLiveData<ResultType<LocalPaymentResponse>>(ResultType.Loading)
+    val localPaymentData : MutableLiveData<ResultType<LocalPaymentResponse>> = _localPaymentData
 
     fun fetchLocalPaymentData(msisdn: String, d: String){
         viewModelScope.launch {

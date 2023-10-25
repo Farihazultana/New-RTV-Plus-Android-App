@@ -130,27 +130,27 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            logInViewModel.logInData.collect {
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data
 
-                        for (item in logInResult) {
-                            val result = item.play
-                            isPremiumUser = result
-                        }
-                    }
+        logInViewModel.logInData.observe(this) {
+            when (it) {
+                is ResultType.Success -> {
+                    val logInResult = it.data
 
-                    is ResultType.Error -> {
-
-                    }
-
-                    else -> {
-
+                    for (item in logInResult) {
+                        val result = item.play
+                        isPremiumUser = result
                     }
                 }
+
+                is ResultType.Error -> {
+
+                }
+
+                else -> {
+
+                }
             }
+
 
         }
 

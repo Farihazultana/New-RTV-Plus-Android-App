@@ -1,6 +1,7 @@
 package com.rtvplus.ui.viewmodels
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rtvplus.data.models.subscription.SubscriptionResponse
@@ -19,8 +20,8 @@ class SubscriptionViewModel @Inject constructor(private val subscriptionReposito
 
     //subscription viewModel
     private val _subscriptionData =
-        MutableStateFlow<ResultType<SubscriptionResponse>>(ResultType.Loading)
-    val subscriptionData: StateFlow<ResultType<SubscriptionResponse>> = _subscriptionData
+        MutableLiveData<ResultType<SubscriptionResponse>>(ResultType.Loading)
+    val subscriptionData: MutableLiveData<ResultType<SubscriptionResponse>> = _subscriptionData
     fun fetchSubscriptionData(msisdn: String) {
         viewModelScope.launch {
             try {

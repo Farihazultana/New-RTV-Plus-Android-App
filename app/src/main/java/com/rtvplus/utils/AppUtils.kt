@@ -21,7 +21,7 @@ object AppUtils {
    // const val LogInKey = "login_key_key_rtv"
 
     const val LogInKey = "LogIn_Result"
-    const val UsernameInputKey = "PhoneKey"
+    const val UsernameInputKey = "User"
     const val GoogleSignInKey = "Google"
     const val USER_GMAIL = "rtv_user_gmail_001"
 

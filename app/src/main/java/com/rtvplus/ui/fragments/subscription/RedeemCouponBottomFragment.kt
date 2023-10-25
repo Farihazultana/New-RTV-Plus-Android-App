@@ -49,13 +49,10 @@ class RedeemCouponBottomFragment : BottomSheetDialogFragment() {
                 redeemCouponViewModel.redeemCuoponPaymentData.observe(this@RedeemCouponBottomFragment){
                     when(it){
                         is ResultType.Success -> {
-                            val result = it.data
-                            for (item in result){
-                                val msg = item.error
-                                Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
-                                findNavController().navigate(R.id.SubscriptionFragment)
-                                dismiss()
-                            }
+                            val result = it.data.response
+                            Toast.makeText(requireContext(), result, Toast.LENGTH_LONG).show()
+                            findNavController().navigate(R.id.SubscriptionFragment)
+                            dismiss()
                         }
 
                         else -> {}

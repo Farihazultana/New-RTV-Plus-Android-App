@@ -1,13 +1,13 @@
 package com.rtvplus.data.repository
 
 import android.util.Log
-import com.rtvplus.data.models.coupon_payment.RedeemCouponPaymentResponse
+import com.rtvplus.data.models.coupon_payment.RedeemCuoponPaymentResponse
 import com.rtvplus.data.services.ApiServices
 import com.rtvplus.utils.ResultType
 import javax.inject.Inject
 
 class RedeemCouponRepository @Inject constructor(private val apiServices: ApiServices){
-    suspend fun getRedeemCouponPaymentData(msisdn: String, couponcode: String): ResultType<RedeemCouponPaymentResponse>{
+    suspend fun getRedeemCouponPaymentData(msisdn: String, couponcode: String): ResultType<RedeemCuoponPaymentResponse>{
         try {
             val response = apiServices.getRedeemCouponPaymentData(msisdn, couponcode)
             Log.i("Redeem", "getRedeemCouponPaymentData: successful Api call ${response.code()}")

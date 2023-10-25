@@ -37,6 +37,12 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
         args.putString("redeem_pack", selectedPackforRedeemCoupon)
 
         bottomBinding.rbLocal.isChecked = true
+        bottomBinding.cvLocalPayment.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.card_background_color
+            )
+        )
 
         bottomBinding.cvLocalPayment.setOnClickListener {
             bottomBinding.rbLocal.isChecked = true
@@ -62,7 +68,8 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             } else{
                 val intent = Intent(requireContext(), LocalPaymentActivity::class.java)
                 intent.putExtra("sub_pack", sub_packLocalPayment)
-                startActivity(intent)
+                //startActivity(intent)
+                startActivityForResult(intent,1234)
                 dismiss()
             }
         }
