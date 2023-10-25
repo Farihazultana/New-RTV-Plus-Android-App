@@ -468,16 +468,17 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     private fun startTimer() {
         handler.postDelayed(object : Runnable {
             override fun run() {
-                Log.e("elapsedTime", elapsedTime.toString())
                 if (player.isPlaying) {
-                    elapsedTime += SystemClock.elapsedRealtime()
+                    elapsedTime += 1000 // Add 1 second in milliseconds to elapsedTime
                 }
-                time += SystemClock.elapsedRealtime()
+                time += 1000 // Add 1 second in milliseconds to time
 
                 handler.postDelayed(this, 1000) // Update every second
             }
         }, 1000) // Initial delay of 1 second
     }
+
+
 
     @SuppressLint("NotifyDataSetChanged")
     private fun displaySimilarContent(content: SingleContentResponse) {
@@ -626,15 +627,19 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     override fun onBackPressed() {
         player.stop()
 
+
+        val elapsedTimeInSeconds = (elapsedTime) / 1000
+        val timeInSeconds = (time) / 1000
+
         savePlayTimeViewModel.savePlayTime(
-            time.toString(),
+            timeInSeconds.toString(),
             receivedValue,
             username,
-            elapsedTime.toString()
+            elapsedTimeInSeconds.toString()
         )
 
-        Log.e("elapsedTime", elapsedTime.toString())
-        Log.e("elapsedTime", time.toString())
+        Log.e("elapsedTime", elapsedTimeInSeconds.toString())
+        Log.e("elapsedTime", timeInSeconds.toString())
 
         val fragmentManager = supportFragmentManager
         val backStackEntryCount = fragmentManager.backStackEntryCount
