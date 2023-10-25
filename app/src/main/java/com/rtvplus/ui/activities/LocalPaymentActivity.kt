@@ -14,6 +14,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isNotEmpty
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.rtvplus.R
 import com.rtvplus.data.models.local_payment.SaveLocalPaymentResponse
 import com.rtvplus.databinding.ActivityLocalPaymentBinding
 import com.rtvplus.ui.viewmodels.LocalPaymentViewModel

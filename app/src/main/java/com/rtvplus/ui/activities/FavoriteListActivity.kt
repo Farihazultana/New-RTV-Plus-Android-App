@@ -2,6 +2,7 @@ package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -56,6 +57,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             title = "My Favourites"
+            titleColor = Color.MAGENTA
         }
         username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
 

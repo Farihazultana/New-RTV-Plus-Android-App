@@ -42,7 +42,7 @@ class PlayListAdapter(var episodeList: List<Episodelist>) :
         if (isSelectedAndPlaying) {
             holder.itemView.setBackgroundResource(R.color.sliderIndicatorColor)
         } else {
-            holder.itemView.setBackgroundResource(R.color.white)
+            holder.itemView.setBackgroundResource(R.color.appwhite)
         }
         holder.isPlaying.visibility = if (isSelectedAndPlaying) View.VISIBLE else View.GONE
 
