@@ -29,7 +29,6 @@ class ChildHomeAdapter(
     private var myContext: Context,
     private var contentData: List<Content>,
     private var contentViewType: String,
-    private val navController: NavController,
     var isPemiumUser: Int?,
     private val homeFragment: HomeFragment
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

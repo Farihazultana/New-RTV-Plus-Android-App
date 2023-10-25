@@ -44,7 +44,6 @@ import kotlin.random.Random
 class ParentHomeAdapter(
     private var myContext: Context,
     var homeData: List<Data>,
-    private val navController: NavController,
     var isPemiumUser: Int?,
     var lifecycle: Lifecycle,
     private val homeFragment: HomeFragment
@@ -93,7 +92,6 @@ class ParentHomeAdapter(
                             myContext,
                             currentItem.contents,
                             currentItem.contentviewtype,
-                            navController,
                             isPemiumUser,
                             homeFragment
                         )
