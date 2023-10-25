@@ -131,12 +131,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
             }
         }
 
-        if (isInList == 1) {
-            binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
-        } else {
-            binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
-        }
-
 
         handler = Handler()
         startTimer()
@@ -326,6 +320,12 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
                     isInList = content.mylist
 
+                    if (isInList == 1) {
+                        binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
+                    } else {
+                        binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
+                    }
+
 //                    binding.favouriteIcon.setImageResource(
 //                        if (isInList == 0) {
 //                            R.drawable.baseline_favorite_border_24
@@ -372,7 +372,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                             is ResultType.Loading -> {
                                 binding.progressbar.visibility = View.VISIBLE
                             }
-
                             is ResultType.Success<*> -> {
                                 val response = it.data as RemoveListResponse
                                 if (response.status == "success") {
