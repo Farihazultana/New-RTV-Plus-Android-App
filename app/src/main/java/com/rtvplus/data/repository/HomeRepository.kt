@@ -6,9 +6,9 @@ import com.rtvplus.utils.ResultType
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(private val apiServices: ApiServices) {
-    suspend fun getHomeData(msisdn : String, view: String): ResultType<HomeResponse> {
+    suspend fun getHomeData(msisdn : String, view: String, version: String, fromsrc: String, lng: String ): ResultType<HomeResponse> {
         try {
-            val response = apiServices.getHomeData(msisdn,view)
+            val response = apiServices.getHomeData(msisdn,view,version,fromsrc,lng)
             if (response.isSuccessful) {
                 val data = response.body()
                 if (data != null) {

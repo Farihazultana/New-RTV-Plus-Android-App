@@ -42,6 +42,7 @@ class HomeFragment : Fragment() {
     private val homeViewModel by viewModels<HomeViewModel>()
     private val logInViewModel by viewModels<LogInViewModel>()
     private var isPremiumUser: Int? = 0
+    var username : String ?= ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,13 +52,18 @@ class HomeFragment : Fragment() {
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
+
+        username =
+            SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
+                .toString()
+
         binding.searchIcon.setOnClickListener {
             val intent = Intent(requireContext(), SearchActivity::class.java)
             startActivity(intent)
         }
 
         binding.tryAgainBtn.setOnClickListener {
-            homeViewModel.fetchHomeData("", "home")
+            homeViewModel.fetchHomeData(username!!, "home","3", "app","en")
             val intent = Intent(requireContext(), MainActivity::class.java)
             startActivity(intent)
             requireActivity().finish()
@@ -81,7 +87,7 @@ class HomeFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeViewModel.fetchHomeData("", "home")
+        homeViewModel.fetchHomeData(username!!, "home","3", "app","en")
 
         parentHomeAdapter =
             ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null, lifecycle,this)
@@ -108,12 +114,10 @@ class HomeFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
 
-        val username =
-            SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
-                .toString()
 
-        if (username.isNotEmpty()) {
-            logInViewModel.fetchLogInData(username, "", "yes", "1")
+
+        if (username!!.isNotEmpty()) {
+            logInViewModel.fetchLogInData(username!!, "", "yes", "1")
         }
 
 
@@ -182,6 +186,11 @@ class HomeFragment : Fragment() {
         fragmentTransaction.replace(android.R.id.content, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        homeViewModel.fetchHomeData(username!!, "home","3", "app","en")
     }
 
 

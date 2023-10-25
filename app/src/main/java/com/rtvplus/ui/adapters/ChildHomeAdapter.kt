@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -144,7 +145,9 @@ class ChildHomeAdapter(
 
             is ContinueWatchingViewHolder -> {
 
-                holder.progressBar.progress = 60
+                holder.progressBar.max = currentItem.lengthinsec.toInt()
+
+                holder.progressBar.progress = currentItem.playposition.toInt()
 
 
                 if (currentItem.isfree == "0" && isPemiumUser == 0) {
@@ -210,11 +213,15 @@ class ChildHomeAdapter(
 
                             } else {
 
+                                val watchedTime = (currentItem.playposition.toInt()) * 1000
+
+                                Log.e("WatchedTimeInsideAdapter",watchedTime.toString())
+
                                 val intent =
                                     Intent(holder.itemView.context, PlayerActivity::class.java)
                                 intent.putExtra("id", currentItem.contentid)
                                 intent.putExtra("type", "single")
-                                intent.putExtra("isplayed", "630199")
+                                intent.putExtra("isplayed", watchedTime.toString())
                                 holder.itemView.context.startActivity(intent)
                             }
 
@@ -238,7 +245,7 @@ class ChildHomeAdapter(
     override fun getItemViewType(position: Int): Int {
         return if (contentViewType == "4") {
             TYPE_BANNER
-        } else if(contentViewType == "1")
+        } else if(contentViewType == "2")
         {
             TYPE_CONTINUE_WATCHING
         }
