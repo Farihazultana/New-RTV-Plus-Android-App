@@ -2,10 +2,7 @@ package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
@@ -57,6 +54,9 @@ class MainActivity : AppCompatActivity() {
         val sub = intent.getStringExtra("subscription")
         if (sub == "subscription"){
             navController.navigate(R.id.SubscriptionFragment)
+            val bottomNavigationView =
+                findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+            bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
         }
 
         val username = SharedPreferencesUtil.getData(
