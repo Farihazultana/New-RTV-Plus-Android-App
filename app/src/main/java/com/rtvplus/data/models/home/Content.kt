@@ -16,5 +16,11 @@ data class Content(
     val name: String,
     val size: Int,
     val type: String,
-    val url: String
+    val url: String,
+    val watched: String,
+    val playposition: String,
+    val showad : String,
+    val lengthinsec : String,
+
+
 )
