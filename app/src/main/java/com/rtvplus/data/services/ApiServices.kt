@@ -31,7 +31,10 @@ interface ApiServices {
     @POST("flix_json_app_data_v2.php")
     suspend fun getHomeData(
         @Field("msisdn") msisdn: String,
-        @Field("view") view: String
+        @Field("view") view: String,
+        @Field("version") version: String,
+        @Field("fromsrc") fromsrc: String,
+        @Field("lng") lng: String
     ): Response<HomeResponse>
 
     @FormUrlEncoded

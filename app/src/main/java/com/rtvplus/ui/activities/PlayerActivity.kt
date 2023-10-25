@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -181,27 +180,27 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     private fun checkIfPremiumUser(): Int {
         var isPremiumUser: Int? = 0
 
-            logInViewModel.logInData.observe(this) {
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data
+        logInViewModel.logInData.observe(this) {
+            when (it) {
+                is ResultType.Success -> {
+                    val logInResult = it.data
 
-                        for (item in logInResult) {
-                            val result = item.play
-                            isPremiumUser = result
-                            similarItemsAdapter.isPemiumUser = isPremiumUser
-                        }
-                    }
-
-                    is ResultType.Error -> {
-                        isPremiumUser = 0
-                    }
-
-                    else -> {
-                        isPremiumUser = 0
+                    for (item in logInResult) {
+                        val result = item.play
+                        isPremiumUser = result
+                        similarItemsAdapter.isPemiumUser = isPremiumUser
                     }
                 }
+
+                is ResultType.Error -> {
+                    isPremiumUser = 0
+                }
+
+                else -> {
+                    isPremiumUser = 0
+                }
             }
+        }
 
         return isPremiumUser!!
     }
@@ -468,16 +467,16 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     private fun startTimer() {
         handler.postDelayed(object : Runnable {
             override fun run() {
-                Log.e("elapsedTime", elapsedTime.toString())
                 if (player.isPlaying) {
-                    elapsedTime += SystemClock.elapsedRealtime()
+                    elapsedTime += 1000 // Add 1 second in milliseconds to elapsedTime
                 }
-                time += SystemClock.elapsedRealtime()
+                time += 1000 // Add 1 second in milliseconds to time
 
                 handler.postDelayed(this, 1000) // Update every second
             }
         }, 1000) // Initial delay of 1 second
     }
+
 
     @SuppressLint("NotifyDataSetChanged")
     private fun displaySimilarContent(content: SingleContentResponse) {
@@ -626,15 +625,21 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     override fun onBackPressed() {
         player.stop()
 
-        savePlayTimeViewModel.savePlayTime(
-            time.toString(),
-            receivedValue,
-            username,
-            elapsedTime.toString()
-        )
 
-        Log.e("elapsedTime", elapsedTime.toString())
-        Log.e("elapsedTime", time.toString())
+        val elapsedTimeInSeconds = (elapsedTime) / 1000
+        val timeInSeconds = player.currentPosition / 1000
+
+        if (timeInSeconds > 5) {
+            savePlayTimeViewModel.savePlayTime(
+                timeInSeconds.toString(),
+                receivedValue,
+                username,
+                elapsedTimeInSeconds.toString()
+            )
+        }
+
+        //  Log.e("elapsedTime", elapsedTimeInSeconds.toString())
+        Log.e("elapsedTime", timeInSeconds.toString())
 
         val fragmentManager = supportFragmentManager
         val backStackEntryCount = fragmentManager.backStackEntryCount
