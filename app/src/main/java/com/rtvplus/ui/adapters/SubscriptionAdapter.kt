@@ -7,12 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.rtvplus.R
+import com.rtvplus.data.models.logIn.LogInModule
 import com.rtvplus.data.models.subscription.SubschemesItem
 import java.util.Locale
+import javax.inject.Inject
 
 
 class SubscriptionAdapter(
@@ -22,6 +25,9 @@ class SubscriptionAdapter(
 
     private var selectedPositions = -1
     var subscriptionData: ArrayList<SubschemesItem> = ArrayList()
+
+    @Inject
+    lateinit var logInModule: LogInModule
 
     inner class SubscriptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val packageName: TextView = itemView.findViewById(R.id.tv_packName)
@@ -65,6 +71,8 @@ class SubscriptionAdapter(
             }
         }
 
+        //logInModule[0].packcode
+        //Log.i("sub", "Login Module onBindViewHolder: ${logInModule[0].packcode}")
 
         if(item?.userpack == item?.sub_pack || selectedPositions == position){
             if (item?.userpack == item?.sub_pack){

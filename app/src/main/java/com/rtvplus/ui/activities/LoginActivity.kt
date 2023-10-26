@@ -1,5 +1,6 @@
 package com.rtvplus.ui.activities
 
+import LogInUtil
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.ContentValues.TAG
@@ -14,6 +15,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import com.rtvplus.R
 import com.rtvplus.databinding.ActivityLoginBinding
@@ -27,7 +29,9 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.textfield.TextInputEditText
+import com.rtvplus.data.models.logIn.LogInModule
 import com.rtvplus.data.models.logIn.LogInResponse
+import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,7 +57,7 @@ class LoginActivity : AppCompatActivity() {
     lateinit var enteredPassword: String
 
     @Inject
-    lateinit var loginInfo: LogInResponse
+    lateinit var loginInfo: LogInModule
 
 
     companion object {
@@ -70,6 +74,7 @@ class LoginActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        var logInUtil  = LogInUtil()
 
         //Text Counter for Phone number 0/11
         textCounter()
@@ -82,7 +87,9 @@ class LoginActivity : AppCompatActivity() {
 
             if (enteredPhone.isNotEmpty() && enteredPassword.isNotEmpty() && enteredPhone.length == 11) {
                 phoneText = "88$enteredPhone"
-                logInViewModel.fetchLogInData(phoneText!!, enteredPassword!!, "no", "1")
+                //logInViewModel.fetchLogInData(phoneText!!, enteredPassword!!, "no", "1")
+                //MainActivity().fetchLogInData(phoneText!!, enteredPassword!!)
+                logInUtil.fetchLogInData(this,phoneText!!, enteredPassword)
             } else {
                 if (enteredPhone.isEmpty() || enteredPassword.isEmpty()) {
                     Toast.makeText(
@@ -101,7 +108,26 @@ class LoginActivity : AppCompatActivity() {
             }
 
         }
-        loginUsingPhoneNumber()
+        //loginUsingPhoneNumber()
+        var result = logInUtil.observeLoginData(this, this, this)
+        Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+        if (result == "success") {
+            SharedPreferencesUtil.saveData(
+                this,
+                UsernameInputKey,
+                phoneText!!
+            ).toString()
+            Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+            finish()
+        } else {
+            Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "Username or Password incorrect. Try Again!",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
         forgetPassword()
 
         //Google Sign In
@@ -197,17 +223,17 @@ class LoginActivity : AppCompatActivity() {
                 dialog.findViewById<TextInputEditText>(R.id.etUsername).text.toString()
             Log.i("Forget", "onCreate: $enteredUsername")
 
-            if (enteredUsername.isNotEmpty() && enteredUsername.length == 11){
+            if (enteredUsername.isNotEmpty() && enteredUsername.length == 11) {
                 val phoneText = "88$enteredUsername"
                 forgetPasswordApiCall(phoneText)
-            }else{
-                if (enteredUsername.isEmpty()){
+            } else {
+                if (enteredUsername.isEmpty()) {
                     Toast.makeText(
                         this@LoginActivity,
                         "Phone number can't be empty!",
                         Toast.LENGTH_LONG
                     ).show()
-                }else{
+                } else {
                     Toast.makeText(
                         this@LoginActivity,
                         "Please type valid mobile number",
@@ -268,7 +294,7 @@ class LoginActivity : AppCompatActivity() {
         dialog.window!!.attributes!!.windowAnimations = R.style.animation
     }
 
-    private fun loginUsingPhoneNumber() {
+    /*private fun loginUsingPhoneNumber() {
         lifecycleScope.launch {
             logInViewModel.logInData.observe(this@LoginActivity) {
                 var result = ""
@@ -315,7 +341,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+    }*/
 
     /*private fun storeLoginInfo(logInResult: LogInResponseItem) {
         loginInfo[0].audioad = logInResult.audioad

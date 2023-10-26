@@ -1,0 +1,30 @@
+package com.rtvplus.data.models.logIn
+
+data class LogInModuleItem(
+    var audioad: Boolean,
+    var autorenew: Any,
+    var concurrent: Int,
+    var concurrenttext: String,
+    var consent: Int,
+    var consenttext: String,
+    var consenturl: String,
+    var currentversion: Int,
+    var currentversionios: String,
+    var email: String,
+    var enforce: Int,
+    var enforcetext: String,
+    var extrainfo: String,
+    var fullname: Any,
+    var liveurl: String,
+    var msisdn: String,
+    var packcode: String,
+    var packname: String,
+    var packtext: String,
+    var play: Int,
+    var referral: Int,
+    var referralimage: String,
+    var result: String,
+    var showad: Int,
+    var token: String,
+    var ugc: Int
+)
