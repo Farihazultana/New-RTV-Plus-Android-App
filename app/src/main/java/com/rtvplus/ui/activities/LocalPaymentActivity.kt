@@ -14,6 +14,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isNotEmpty
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation.findNavController
+import com.rtvplus.R
 import com.rtvplus.data.models.local_payment.SaveLocalPaymentResponse
 import com.rtvplus.databinding.ActivityLocalPaymentBinding
 import com.rtvplus.ui.viewmodels.LocalPaymentViewModel
@@ -23,6 +25,7 @@ import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class LocalPaymentActivity : AppCompatActivity() {
@@ -210,6 +213,8 @@ class LocalPaymentActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("subscription", "subscription")
         startActivity(intent)
+
+
         super.finish()
     }
 

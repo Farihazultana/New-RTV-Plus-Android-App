@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/appwhite"
     tools:context="com.rtvplus.ui.activities.FeedBackActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -11,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/toolbar_background"
+        app:titleTextColor="@color/textBlack"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,6 +27,8 @@
         android:background="@color/card_background_color"
         android:gravity="top"
         android:hint="Type here..."
+        android:textColorHint="@color/textBlack"
+        android:textColor="@color/textBlack"
         android:maxLength="500"
         android:padding="@dimen/_10ssp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +57,7 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/rounded_background_green"
         android:text="Send"
-        android:textColor="@color/white"
+        android:textColor="@color/appwhite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

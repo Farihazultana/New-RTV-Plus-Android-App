@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/appwhite"
     tools:context="com.rtvplus.ui.activities.LoginActivity">
 
     <TextView
@@ -16,7 +17,7 @@
         android:padding="8dp"
         android:text="Watch Live TV, Drama, Movies, Music, &amp; Entertaintment show only on RtvPlus"
         android:textAlignment="center"
-        android:textColor="@color/grey"
+        android:textColor="@color/appgrey"
         android:textSize="@dimen/_12ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="@color/appwhite"
         app:cardCornerRadius="@dimen/_7sdp"
         app:cardElevation="@dimen/_6sdp"
         app:cardUseCompatPadding="true"
@@ -40,7 +41,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/appwhite">
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -65,6 +67,8 @@
                     android:drawablePadding="@dimen/_2sdp"
                     android:textCursorDrawable="@null"
                     android:hint="Phone"
+                    android:textColorHint="@color/appgrey"
+                    android:textColor="@color/textBlack"
                     android:maxLength="11"
                     android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -92,6 +96,8 @@
                     android:drawablePadding="@dimen/_2sdp"
                     android:textCursorDrawable="@null"
                     android:hint="Password"
+                    android:textColorHint="@color/appgrey"
+                    android:textColor="@color/textBlack"
                     android:inputType="number"
                     android:ems="15"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -101,7 +107,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0/11"
-                android:textColor="@color/grey"
+                android:textColor="@color/appgrey"
                 android:textSize="@dimen/_12ssp"
                 app:layout_constraintEnd_toEndOf="@+id/etPhone"
                 app:layout_constraintTop_toBottomOf="@+id/etPhone" />
@@ -115,7 +121,7 @@
                 android:layout_marginEnd="@dimen/_11sdp"
                 android:backgroundTint="@color/green"
                 android:text="Login"
-                android:textColor="@color/white"
+                android:textColor="@color/appwhite"
                 app:layout_constraintEnd_toEndOf="@+id/etPassword"
                 app:layout_constraintHorizontal_bias="0.322"
                 app:layout_constraintStart_toStartOf="@+id/etPassword"
@@ -136,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Or"
-                android:textColor="@color/grey"
+                android:textColor="@color/appgrey"
                 android:textSize="@dimen/_10ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -163,7 +169,7 @@
                 android:drawableStart="@drawable/ic_fb"
                 android:text=" Facebook"
                 android:textAlignment="center"
-                android:textColor="@color/white"
+                android:textColor="@color/appwhite"
                 app:backgroundTint="#0866FF"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btnGoogleSignIn"
@@ -178,8 +184,8 @@
                 android:drawableStart="@drawable/ic_google"
                 android:text=" Google"
                 android:textAlignment="center"
-                android:textColor="@color/grey"
-                app:backgroundTint="@color/white"
+                android:textColor="@color/appgrey"
+                app:backgroundTint="@color/appwhite"
                 app:layout_constraintBottom_toBottomOf="@+id/btnFacebookSignIn"
                 app:layout_constraintEnd_toEndOf="@+id/viewRight"
                 app:layout_constraintStart_toEndOf="@+id/btnFacebookSignIn"
@@ -215,6 +221,7 @@
         android:paddingTop="@dimen/_2sdp"
         android:paddingBottom="@dimen/_2sdp"
         android:text="Forgot Password?"
+        android:textColor="@color/textBlack"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView"
         app:layout_constraintStart_toStartOf="@+id/materialCardView"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView" />
@@ -228,24 +235,15 @@
         android:paddingStart="@dimen/_8sdp"
         android:paddingEnd="@dimen/_8sdp"
         android:paddingTop="@dimen/_2sdp"
-        android:text="Not Registered Yet? Click here"
+        android:text="@string/not_registered_yet_click_here"
         android:textAlignment="center"
-        android:textColor="@color/grey"
+        android:textColor="@color/appgrey"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView"
         app:layout_constraintStart_toStartOf="@+id/materialCardView"
         app:layout_constraintTop_toBottomOf="@+id/tvForgotPassword" />
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="@dimen/_1sdp"
-        android:backgroundTint="@color/grey"
-        android:orientation="horizontal"
-        android:background="@drawable/horizontal_line"
-        app:layout_constraintEnd_toEndOf="@+id/tvGoToRegistration"
-        app:layout_constraintStart_toStartOf="@+id/tvGoToRegistration"
-        app:layout_constraintTop_toBottomOf="@+id/tvGoToRegistration" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

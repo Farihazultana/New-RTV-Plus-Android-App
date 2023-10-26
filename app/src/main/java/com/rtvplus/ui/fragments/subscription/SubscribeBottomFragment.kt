@@ -96,7 +96,7 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             redeemCardView.setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.white
+                    R.color.appwhite
                 )
             )
         } else if (bottomBinding.rbRedeem.isChecked) {
@@ -109,7 +109,7 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             localCardView.setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.white
+                    R.color.appwhite
                 )
             )
         }

@@ -123,7 +123,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
         seeAllViewModel.fetchSeeAllData(currentPage.toString(), catCode, "0", "1")
 
         lifecycleScope.launch {
-            seeAllViewModel.seeAllData.collect {
+            seeAllViewModel.seeAllData.observe(this@SeeAllActivity) {
                 when (it) {
                     is ResultType.Loading -> {
                         binding.subscribeProgressBar.visibility = View.VISIBLE
@@ -215,6 +215,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                             R.id.subscriptionContainerView,
                             subscriptionFragment
                         )
+                        fragmentTransaction.addToBackStack(null)
                         fragmentTransaction.commit()
 
                     } else {

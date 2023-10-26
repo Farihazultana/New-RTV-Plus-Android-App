@@ -75,7 +75,7 @@ class SubscriptionAdapter(
             return
         }else{
             holder.checkedCard.visibility = View.GONE
-            holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.white))
+            holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.appwhite))
         }
 
     }

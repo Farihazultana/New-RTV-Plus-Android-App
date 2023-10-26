@@ -28,7 +28,6 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.textfield.TextInputEditText
 import com.rtvplus.data.models.logIn.LogInResponse
-import com.rtvplus.data.models.logIn.LogInResponseItem
 import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
@@ -186,72 +185,74 @@ class LoginActivity : AppCompatActivity() {
 
     private fun forgetPassword() {
         openDialog()
+        forgetPasswordObserve()
 
         val btnSendRequest = dialog.findViewById<Button>(R.id.btnSendRequest)
 
         binding.tvForgotPassword.setOnClickListener {
             dialog.show()
-            btnSendRequest?.setOnClickListener {
-                val enteredUsername =
-                    dialog.findViewById<TextInputEditText>(R.id.etUsername).text.toString()
-                Log.i("Forget", "onCreate: $enteredUsername")
+        }
+        btnSendRequest?.setOnClickListener {
+            val enteredUsername =
+                dialog.findViewById<TextInputEditText>(R.id.etUsername).text.toString()
+            Log.i("Forget", "onCreate: $enteredUsername")
 
-                if (enteredUsername.isNotEmpty()) {
-                    if (enteredUsername.length == 11) {
-                        val phoneText = "88$enteredUsername"
-                        forgetPasswordViewModel.fetchForgetPasswordData(
-                            phoneText,
-                            "forget",
-                        )
-                        lifecycleScope.launch {
-                            forgetPasswordViewModel.forgetPasswordData.observe(this@LoginActivity) {
-                                when (it) {
-                                    is ResultType.Success -> {
-                                        val result = it.data
-                                        Toast.makeText(
-                                            this@LoginActivity,
-                                            result.message,
-                                            Toast.LENGTH_LONG
-                                        )
-                                            .show()
-                                    }
-
-                                    is ResultType.Error -> {
-                                        Toast.makeText(
-                                            this@LoginActivity,
-                                            "Something is wrong!",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
-
-                                    else -> {
-
-                                    }
-                                }
-                            }
-                        }
-                    } else if (enteredUsername.length < 11) {
-                        Toast.makeText(
-                            this@LoginActivity,
-                            "Please type valid mobile number",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            this@LoginActivity,
-                            "Mobile number size is invalid - 13",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                } else {
+            if (enteredUsername.isNotEmpty() && enteredUsername.length == 11){
+                val phoneText = "88$enteredUsername"
+                forgetPasswordApiCall(phoneText)
+            }else{
+                if (enteredUsername.isEmpty()){
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Phone number can't be empty!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }else{
                     Toast.makeText(
                         this@LoginActivity,
                         "Please type valid mobile number",
                         Toast.LENGTH_LONG
                     ).show()
                 }
+            }
 
+        }
 
+    }
+
+    private fun forgetPasswordApiCall(phoneText: String) {
+        forgetPasswordViewModel.fetchForgetPasswordData(
+            phoneText,
+            "forget",
+        )
+    }
+
+    private fun forgetPasswordObserve() {
+        lifecycleScope.launch {
+            forgetPasswordViewModel.forgetPasswordData.observe(this@LoginActivity) {
+                when (it) {
+                    is ResultType.Success -> {
+                        val result = it.data
+                        Toast.makeText(
+                            this@LoginActivity,
+                            result.message,
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                    }
+
+                    is ResultType.Error -> {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Something is wrong!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+                    else -> {
+
+                    }
+                }
             }
         }
     }

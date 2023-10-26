@@ -61,7 +61,7 @@ class RegistrationActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            registrationViewModel.registrationData.collect {
+            registrationViewModel.registrationData.observe(this@RegistrationActivity) {
                 when (it) {
                     is ResultType.Success -> {
                         val registratResult = it.data
