@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/appwhite"
     tools:context="com.rtvplus.ui.activities.SeeAllActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -42,6 +43,7 @@
                 android:layout_marginStart="8dp"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:textColor="@color/textBlack"
                 app:layout_constraintBottom_toBottomOf="@+id/toolBar_back_icon_Subscribe"
                 app:layout_constraintStart_toEndOf="@+id/toolBar_back_icon_Subscribe"
                 app:layout_constraintTop_toTopOf="@+id/toolBar_back_icon_Subscribe" />

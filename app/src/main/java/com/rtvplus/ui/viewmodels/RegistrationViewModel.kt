@@ -1,5 +1,6 @@
 package com.rtvplus.ui.viewmodels
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rtvplus.data.models.registration.RegistrationResponse
@@ -14,8 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(private val repository: RegistrationRepository) : ViewModel(){
-    private val _registrationData = MutableStateFlow<ResultType<RegistrationResponse>>(ResultType.Loading)
-    val registrationData: StateFlow<ResultType<RegistrationResponse>> = _registrationData
+    private val _registrationData = MutableLiveData<ResultType<RegistrationResponse>>(ResultType.Loading)
+    val registrationData: MutableLiveData<ResultType<RegistrationResponse>> = _registrationData
 
     fun fetchRegistrationData(msisdn:String){
         viewModelScope.launch {

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/appwhite"
     tools:context="com.rtvplus.ui.activities.SplashScreenActivity">
 
     <ImageView
@@ -41,7 +42,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:text=""
-        android:textSize="15sp"
+        android:textSize="12sp"
+        android:textColor="@color/appgrey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/splashScreen_animator"
         app:layout_constraintStart_toStartOf="@+id/splashScreen_animator"

@@ -1,6 +1,8 @@
 package com.rtvplus.ui.activities
 
+import android.graphics.Color
 import android.os.Bundle
+import android.provider.CalendarContract.Colors
 import android.text.method.LinkMovementMethod
 import android.view.MenuItem
 import android.view.View
@@ -36,6 +38,7 @@ class InfoActivity : AppCompatActivity() {
             if (appInfo != null) {
                 title =
                     appInfo.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+                titleColor = Color.BLACK
             }
         }
 

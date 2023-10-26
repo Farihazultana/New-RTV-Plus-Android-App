@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/appwhite">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -10,7 +11,7 @@
         android:layout_height="@dimen/_48sdp"
         android:background="@color/green"
         app:title="Logout"
-        app:titleTextColor="@color/white"
+        app:titleTextColor="@color/appwhite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="Are you sure want to logout?"
+        android:textColor="@color/textBlack"
         android:textAlignment="center"
         android:textSize="@dimen/_12sdp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +44,7 @@
         android:paddingStart="@dimen/_30sdp"
         android:paddingEnd="@dimen/_30sdp"
         android:text="Logout"
-        android:textColor="@color/white"
+        android:textColor="@color/appwhite"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textInputLayout"
         app:layout_constraintStart_toEndOf="@+id/btnCancel"
@@ -58,6 +60,8 @@
         android:paddingStart="@dimen/_30sdp"
         android:paddingEnd="@dimen/_30sdp"
         android:text="Cancel"
+        android:textColor="@color/textBlack"
+        android:backgroundTint="@color/appwhite"
         app:layout_constraintBottom_toBottomOf="@+id/btnLogout"
         app:layout_constraintEnd_toStartOf="@+id/btnLogout"
         app:layout_constraintStart_toStartOf="@+id/textInputLayout"

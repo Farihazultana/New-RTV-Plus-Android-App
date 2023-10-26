@@ -2,6 +2,7 @@ package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -139,7 +140,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     private fun getFavoriteContent() {
         favoriteListViewModel.favoriteContent.observe(this) { result ->
             when (result) {
@@ -158,7 +159,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                         favoriteListAdapter.content = emptyList()
                         favoriteListAdapter.notifyDataSetChanged()
                         binding.emptyResultTv.visibility = View.VISIBLE
-                        binding.emptyResultTv.text = getString(R.string.no_favorite_item_available)
+                        binding.emptyResultTv.text = "No favorite item available"
                         binding.progressbar.visibility = View.GONE
                     }
                 }
@@ -252,7 +253,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                         favoriteListAdapter.content = emptyList()
                         favoriteListAdapter.notifyDataSetChanged()
                         binding.emptyResultTv.visibility = View.VISIBLE
-                        binding.emptyResultTv.text = R.string.no_favorite_item_available.toString()
+                        binding.emptyResultTv.text = "No favorite item available"
                         binding.progressbar.visibility = View.GONE
                     }
                 }

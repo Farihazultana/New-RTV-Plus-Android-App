@@ -22,7 +22,6 @@ import com.rtvplus.databinding.FragmentSubscribeBottomBinding
 import com.rtvplus.databinding.FragmentSubscriptionBinding
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.adapters.SubscriptionAdapter
-import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SubscriptionViewModel
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
@@ -114,8 +113,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         binding.btnContinuePayment.setOnClickListener {
             if (selectedPositions != -1) {
                 if (getPhoneNumSP.isNotEmpty()) {
-                    binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
-                    selectedPositions = -1
+                    //binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
+                    //selectedPositions = -1
                     showBottomSheet()
 
                 } else {
@@ -162,11 +161,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                     }
 
                     is ResultType.Success -> {
-
-                        /*binding.rvSubscriptionPacks.layoutManager =
-                            GridLayoutManager(requireContext(), 2)
-                        binding.rvSubscriptionPacks.adapter = subscriptionAdapter*/
-
                         val subscriptionData = result.data
                         subscriptionAdapter.setData(subscriptionData.subschemes)
                         binding.subscribeProgressBar.visibility = View.GONE
@@ -247,7 +241,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                 binding.btnContinuePayment.setBackgroundColor(
                     ContextCompat.getColor(
                         requireContext(),
-                        R.color.grey
+                        R.color.appgrey
                     )
                 )
             }

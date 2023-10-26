@@ -92,7 +92,7 @@ class HomeFragment : Fragment() {
         homeViewModel.fetchHomeData(username!!, "home","3", "app","en")
 
         parentHomeAdapter =
-            ParentHomeAdapter(requireContext(), emptyList(), findNavController(), null, lifecycle,this)
+            ParentHomeAdapter(requireContext(), emptyList(), null, lifecycle,this)
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
@@ -100,7 +100,7 @@ class HomeFragment : Fragment() {
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (backPressedTime + 3000 > System.currentTimeMillis()) {
+                if (backPressedTime + 2000 > System.currentTimeMillis()) {
                     requireActivity().finish()
                 } else {
                     Toast.makeText(
