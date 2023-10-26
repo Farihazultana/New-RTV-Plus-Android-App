@@ -193,7 +193,7 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
                 selectedItemId = previousFragmentTag?.toIntOrNull() ?: R.id.HomeFragment
-                binding.bottomNavigationBarId.selectedItemId = selectedItemId
+                binding.bottomNavigationBarId.selectedItemId = R.id.HomeFragment
             }
         }
     }

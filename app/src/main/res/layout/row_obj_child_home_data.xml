@@ -24,7 +24,7 @@
         android:background="@color/green"
         android:padding="2dp"
         android:text="Premium"
-        android:textColor="@color/appblack"
+        android:textColor="@color/appwhite"
         android:textSize="@dimen/_8ssp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"

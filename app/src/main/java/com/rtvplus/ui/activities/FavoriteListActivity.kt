@@ -57,7 +57,6 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             title = "My Favourites"
-            titleColor = Color.MAGENTA
         }
         username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
 
