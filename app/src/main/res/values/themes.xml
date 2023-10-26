@@ -6,7 +6,7 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:statusBarColor">@color/green</item>
         <item name="android:windowAnimationStyle">@style/animation</item>
-        <item name="android:windowIsTranslucent">true</item>
+
     </style>
 
     <style name="Theme.RTVPlusAndroidAppRevamp" parent="Base.Theme.RTVPlusAndroidAppRevamp" />
