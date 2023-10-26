@@ -14,10 +14,16 @@ import javax.inject.Inject
 class LogInUtil {
     @Inject
     lateinit var loginInfo: LogInModule
+    interface ObserverListener{
+        fun observerListener(result:String)
+    }
+
+    lateinit var observerListener : ObserverListener
     fun fetchLogInData(
         viewModelOwner: ViewModelStoreOwner,
         phoneText: String,
-        enteredPassword: String
+        enteredPassword: String,
+
     ) {
         val logInViewModel = ViewModelProvider(viewModelOwner).get(LogInViewModel::class.java)
         logInViewModel.fetchLogInData(phoneText, enteredPassword, "no", "1")
@@ -26,10 +32,12 @@ class LogInUtil {
     fun observeLoginData(
         context: Context,
         lifecycleOwner: LifecycleOwner,
-        viewModelOwner: ViewModelStoreOwner
-    ): String {
+        viewModelOwner: ViewModelStoreOwner,
+        listener: ObserverListener
+    ){
         val logInViewModel = ViewModelProvider(viewModelOwner).get(LogInViewModel::class.java)
         var result = ""
+        this.observerListener = listener
         logInViewModel.logInData.observe(lifecycleOwner) {
             when (it) {
                 is ResultType.Success -> {
@@ -37,7 +45,7 @@ class LogInUtil {
                     result = logInResult.result
                     storeLoginInfo(logInResult)
                     SharedPreferencesUtil.saveData(context, AppUtils.LogInKey, result)
-
+                    observerListener.observerListener(result)
                 }
 
                 is ResultType.Error -> {
@@ -51,8 +59,8 @@ class LogInUtil {
                 else -> {
                 }
             }
+
         }
-        return result
     }
 
     private fun storeLoginInfo(logInResult: LogInResponseItem) {

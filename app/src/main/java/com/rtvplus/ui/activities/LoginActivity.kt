@@ -40,7 +40,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
 
     private lateinit var binding: ActivityLoginBinding
     private val logInViewModel by viewModels<LogInViewModel>()
@@ -90,6 +90,7 @@ class LoginActivity : AppCompatActivity() {
                 //logInViewModel.fetchLogInData(phoneText!!, enteredPassword!!, "no", "1")
                 //MainActivity().fetchLogInData(phoneText!!, enteredPassword!!)
                 logInUtil.fetchLogInData(this,phoneText!!, enteredPassword)
+
             } else {
                 if (enteredPhone.isEmpty() || enteredPassword.isEmpty()) {
                     Toast.makeText(
@@ -108,25 +109,8 @@ class LoginActivity : AppCompatActivity() {
             }
 
         }
-        //loginUsingPhoneNumber()
-        var result = logInUtil.observeLoginData(this, this, this)
-        Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
-        if (result == "success") {
-            SharedPreferencesUtil.saveData(
-                this,
-                UsernameInputKey,
-                phoneText!!
-            ).toString()
-            Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
-            finish()
-        } else {
-            Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
-            Toast.makeText(
-                this,
-                "Username or Password incorrect. Try Again!",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+
+        logInUtil.observeLoginData(this, this, this, this)
 
         forgetPassword()
 
@@ -151,6 +135,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
 
     private fun textCounter() {
         binding.etPhoneText.addTextChangedListener(object : TextWatcher {
@@ -294,84 +279,6 @@ class LoginActivity : AppCompatActivity() {
         dialog.window!!.attributes!!.windowAnimations = R.style.animation
     }
 
-    /*private fun loginUsingPhoneNumber() {
-        lifecycleScope.launch {
-            logInViewModel.logInData.observe(this@LoginActivity) {
-                var result = ""
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data[0]
-                        result = logInResult.result
-                        packCode = logInResult.packcode
-                        packText = logInResult.packtext
-
-                        //storing login info
-                        //storeLoginInfo(logInResult)
-
-                        SharedPreferencesUtil.saveData(this@LoginActivity, LogInKey, result)
-
-                        if (result == "success") {
-                            SharedPreferencesUtil.saveData(
-                                this@LoginActivity,
-                                UsernameInputKey,
-                                phoneText!!
-                            ).toString()
-                            Toast.makeText(this@LoginActivity, result, Toast.LENGTH_SHORT).show()
-                            finish()
-                        } else {
-                            Toast.makeText(
-                                this@LoginActivity,
-                                "Username or Password incorrect. Try Again!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                    }
-
-                    is ResultType.Error -> {
-                        Toast.makeText(
-                            this@LoginActivity,
-                            "Username or Password incorrect. Try Again!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    else -> {
-                    }
-                }
-            }
-        }
-    }*/
-
-    /*private fun storeLoginInfo(logInResult: LogInResponseItem) {
-        loginInfo[0].audioad = logInResult.audioad
-        loginInfo[0].autorenew = logInResult.autorenew
-        loginInfo[0].concurrent = logInResult.concurrent
-        loginInfo[0].concurrenttext = logInResult.concurrenttext
-        loginInfo[0].consent = logInResult.consent
-        loginInfo[0].consenttext = logInResult.consenttext
-        loginInfo[0].consenturl = logInResult.consenturl
-        loginInfo[0].currentversion = logInResult.currentversion
-        loginInfo[0].currentversionios = logInResult.currentversionios
-        loginInfo[0].email = logInResult.email
-        loginInfo[0].enforce = logInResult.enforce
-        loginInfo[0].enforcetext = logInResult.enforcetext
-        loginInfo[0].extrainfo = logInResult.extrainfo
-        loginInfo[0].fullname = logInResult.fullname
-        loginInfo[0].liveurl = logInResult.liveurl
-        loginInfo[0].msisdn = logInResult.msisdn
-        loginInfo[0].packname = logInResult.packname
-        loginInfo[0].packtext = logInResult.packtext
-        loginInfo[0].packcode = logInResult.packcode
-        loginInfo[0].play = logInResult.play
-        loginInfo[0].result = logInResult.result
-        loginInfo[0].referral = logInResult.referral
-        loginInfo[0].referralimage = logInResult.referralimage
-        loginInfo[0].showad = logInResult.showad
-        loginInfo[0].token = logInResult.token
-        loginInfo[0].ugc = logInResult.ugc
-    }*/
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -464,6 +371,25 @@ class LoginActivity : AppCompatActivity() {
                     // ...
                 }
             }
+        }
+    }
+
+    override fun observerListener(result: String) {
+        if (result == "success") {
+            SharedPreferencesUtil.saveData(
+                this,
+                UsernameInputKey,
+                phoneText!!
+            ).toString()
+            Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+            finish()
+        } else {
+            Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "Username or Password incorrect. Try Again!",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
