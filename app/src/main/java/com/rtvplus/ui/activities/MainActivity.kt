@@ -53,10 +53,13 @@ class MainActivity : AppCompatActivity() {
 
         val sub = intent.getStringExtra("subscription")
         if (sub == "subscription"){
-            navController.navigate(R.id.SubscriptionFragment)
-            val bottomNavigationView =
-                findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-            bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
+
+            val bundle = Bundle()
+            bundle.putString("key", "value")
+            navController.navigate(R.id.SubscriptionFragment, bundle)
+
+            //navController.navigate(R.id.SubscriptionFragment)
+
         }
 
         val username = SharedPreferencesUtil.getData(
@@ -65,10 +68,10 @@ class MainActivity : AppCompatActivity() {
             ""
         ).toString()
 
-
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
       //  val navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
+
 
 //        binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
 //            val itemId = menuItem.itemId

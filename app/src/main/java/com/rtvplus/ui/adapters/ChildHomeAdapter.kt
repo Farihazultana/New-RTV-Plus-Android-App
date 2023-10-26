@@ -3,8 +3,6 @@ package com.rtvplus.ui.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -38,6 +36,7 @@ class ChildHomeAdapter(
         private const val TYPE_CONTENT = 1
         private const val TYPE_CONTINUE_WATCHING = 3
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_CONTENT -> {
@@ -45,6 +44,7 @@ class ChildHomeAdapter(
                     .inflate(R.layout.row_obj_child_home_data, parent, false)
                 ContentViewHolder(view)
             }
+
             TYPE_CONTINUE_WATCHING -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.row_obj_continue_watching_data, parent, false)
@@ -84,7 +84,7 @@ class ChildHomeAdapter(
 
                                 val bundle = Bundle()
                                 bundle.putString("nav_key", "from_child_fregment")
-                              //  navController.navigate(R.id.SubscriptionFragment, bundle)
+                                //  navController.navigate(R.id.SubscriptionFragment, bundle)
                                 val subscriptionFragment = SubscriptionFragment()
                                 homeFragment.bindFragment(subscriptionFragment)
 
@@ -98,7 +98,8 @@ class ChildHomeAdapter(
 
                         } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             holder.itemView.context.startActivity(intent)
                         }
                     }
@@ -122,7 +123,7 @@ class ChildHomeAdapter(
                                 val subscriptionFragment = SubscriptionFragment()
                                 homeFragment.bindFragment(subscriptionFragment)
 
-                               // navController.navigate(R.id.SubscriptionFragment, bundle)
+                                // navController.navigate(R.id.SubscriptionFragment, bundle)
 
                             } else {
                                 val intent =
@@ -134,7 +135,8 @@ class ChildHomeAdapter(
 
                         } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             holder.itemView.context.startActivity(intent)
                         }
                     }
@@ -173,7 +175,7 @@ class ChildHomeAdapter(
 
                                 val bundle = Bundle()
                                 bundle.putString("nav_key", "from_child_fregment")
-                               // navController.navigate(R.id.SubscriptionFragment, bundle)
+                                // navController.navigate(R.id.SubscriptionFragment, bundle)
                                 val subscriptionFragment = SubscriptionFragment()
                                 homeFragment.bindFragment(subscriptionFragment)
 
@@ -187,7 +189,8 @@ class ChildHomeAdapter(
 
                         } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             holder.itemView.context.startActivity(intent)
                         }
                     }
@@ -207,7 +210,7 @@ class ChildHomeAdapter(
                             if (isPemiumUser.toString() == "0" && currentItem.isfree == "0") {
                                 val bundle = Bundle()
                                 bundle.putString("nav_key", "from_child_fregment")
-                              //  navController.navigate(R.id.SubscriptionFragment, bundle)
+                                //  navController.navigate(R.id.SubscriptionFragment, bundle)
                                 val subscriptionFragment = SubscriptionFragment()
                                 homeFragment.bindFragment(subscriptionFragment)
 
@@ -215,7 +218,7 @@ class ChildHomeAdapter(
 
                                 val watchedTime = (currentItem.playposition.toInt()) * 1000
 
-                                Log.e("WatchedTimeInsideAdapter",watchedTime.toString())
+                                Log.e("WatchedTimeInsideAdapter", watchedTime.toString())
 
                                 val intent =
                                     Intent(holder.itemView.context, PlayerActivity::class.java)
@@ -227,7 +230,8 @@ class ChildHomeAdapter(
 
                         } else {
                             val intent = Intent(holder.itemView.context, LoginActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             holder.itemView.context.startActivity(intent)
                         }
                     }
@@ -245,11 +249,9 @@ class ChildHomeAdapter(
     override fun getItemViewType(position: Int): Int {
         return if (contentViewType == "4") {
             TYPE_BANNER
-        } else if(contentViewType == "2")
-        {
+        } else if (contentViewType == "2") {
             TYPE_CONTINUE_WATCHING
-        }
-            else {
+        } else {
             TYPE_CONTENT
         }
     }
@@ -260,12 +262,13 @@ class ChildHomeAdapter(
         val premiumTextView: TextView = itemView.findViewById(R.id.premiumTextView)
         val descriptionText: TextView = itemView.findViewById(R.id.descriptionTextView)
     }
+
     inner class ContinueWatchingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.image_view_id)
         val titleTextView: TextView = itemView.findViewById(R.id.title_textView)
         val premiumTextView: TextView = itemView.findViewById(R.id.premiumTextView)
         val descriptionText: TextView = itemView.findViewById(R.id.descriptionTextView)
-        val progressBar : ProgressBar = itemView.findViewById(R.id.progressBar)
+        val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
     }
 
 }

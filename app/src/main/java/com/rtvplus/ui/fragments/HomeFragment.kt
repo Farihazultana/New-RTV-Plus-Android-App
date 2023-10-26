@@ -53,6 +53,8 @@ class HomeFragment : Fragment() {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
 
+
+
         username =
             SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
                 .toString()
