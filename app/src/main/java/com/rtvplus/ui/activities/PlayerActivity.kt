@@ -116,6 +116,15 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
 
         binding.favouriteIcon.setOnClickListener {
+//            if (binding.favouriteIcon.tag == R.drawable.baseline_favorite_border_24) {
+//
+//                binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
+//            }
+//            else
+//            {
+//                binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
+//            }
+
             if (isInList == 1) {
                 if (username.isNotEmpty()) {
                     removeListViewModel.removeFavoriteContent(receivedValue, username)
@@ -126,13 +135,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 }
             }
         }
-
-        if (isInList == 1) {
-            binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
-        } else {
-            binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
-        }
-
 
         handler = Handler()
         startTimer()
@@ -322,6 +324,12 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
                     isInList = content.mylist
 
+                    if (isInList == 1) {
+                        binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
+                    } else {
+                        binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
+                    }
+
 //                    binding.favouriteIcon.setImageResource(
 //                        if (isInList == 0) {
 //                            R.drawable.baseline_favorite_border_24
@@ -367,6 +375,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                         when (it) {
                             is ResultType.Loading -> {
                                 binding.progressbar.visibility = View.VISIBLE
+
                             }
 
                             is ResultType.Success<*> -> {
@@ -381,6 +390,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
 
                                 } else {
+
+                                    binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
                                     Toast.makeText(
                                         this@PlayerActivity,
                                         response.status,
@@ -417,6 +428,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
 
                                 } else {
+                                    binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
                                     Toast.makeText(
                                         this@PlayerActivity,
                                         response.status,
