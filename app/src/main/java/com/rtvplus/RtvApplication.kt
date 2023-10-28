@@ -10,6 +10,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.rtvplus.data.models.device_info.DeviceInfo
+import com.rtvplus.data.models.logIn.LogInModuleItem
+import com.rtvplus.data.models.logIn.LogInResponseItem
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.emailRegex
 import com.rtvplus.utils.AppUtils.phoneRegex
@@ -22,6 +24,7 @@ class RtvApplication : Application() {
 
     @Inject
     lateinit var deviceInfo: DeviceInfo
+
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     override fun onCreate() {
@@ -62,5 +65,12 @@ class RtvApplication : Application() {
             -1
         }
     }
+
+//    fun storeLoginInfo(logInResult: LogInResponseItem) {
+//
+//        loginInfo.result  = logInResult.result
+//
+//    }
+
 
 }

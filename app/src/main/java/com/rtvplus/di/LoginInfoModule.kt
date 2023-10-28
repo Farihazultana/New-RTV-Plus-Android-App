@@ -1,6 +1,5 @@
 package com.rtvplus.di
 
-import com.rtvplus.data.models.logIn.LogInModule
 import com.rtvplus.data.models.logIn.LogInModuleItem
 import dagger.Module
 import dagger.Provides
@@ -13,7 +12,7 @@ import javax.inject.Singleton
 object LoginInfoModule {
     @Provides
     @Singleton
-    fun provideLoginInfo(): LogInModule {
-        return LogInModule()
+    fun provideLoginInfo(): LogInModuleItem {
+        return LogInModuleItem()
     }
 }

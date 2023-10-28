@@ -15,7 +15,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import com.rtvplus.R
 import com.rtvplus.databinding.ActivityLoginBinding
@@ -29,10 +28,7 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.textfield.TextInputEditText
-import com.rtvplus.data.models.logIn.LogInModule
-import com.rtvplus.data.models.logIn.LogInResponse
-import com.rtvplus.utils.AppUtils
-import com.rtvplus.utils.AppUtils.LogInKey
+import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -56,8 +52,8 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
     lateinit var enteredPhone: String
     lateinit var enteredPassword: String
 
-    @Inject
-    lateinit var loginInfo: LogInModule
+//    @Inject
+//    lateinit var loginInfo: LogInModule
 
 
     companion object {
@@ -84,6 +80,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
         binding.btnLogIn.setOnClickListener {
             enteredPhone = binding.etPhoneText.text.toString()
             enteredPassword = binding.etPasswordText.text.toString()
+            Log.i("Newton", "onCreate: LogIn Button clicked!")
 
             if (enteredPhone.isNotEmpty() && enteredPassword.isNotEmpty() && enteredPhone.length == 11) {
                 phoneText = "88$enteredPhone"
@@ -98,17 +95,21 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
                         "Phone number or Password must not be empty! Please input first.",
                         Toast.LENGTH_LONG
                     ).show()
+
                 } else {
                     Toast.makeText(
                         this@LoginActivity,
                         "Phone number should be 11 digits",
                         Toast.LENGTH_LONG
                     ).show()
+
                 }
 
             }
 
         }
+
+
 
         logInUtil.observeLoginData(this, this, this, this)
 
@@ -375,16 +376,17 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
     }
 
     override fun observerListener(result: String) {
+        Log.i("Newton", "observerListener: $result")
         if (result == "success") {
             SharedPreferencesUtil.saveData(
                 this,
                 UsernameInputKey,
                 phoneText!!
-            ).toString()
+            )
+            SharedPreferencesUtil.saveData(this, UserPasswordKey, enteredPassword)
             Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
             finish()
         } else {
-            Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
             Toast.makeText(
                 this,
                 "Username or Password incorrect. Try Again!",

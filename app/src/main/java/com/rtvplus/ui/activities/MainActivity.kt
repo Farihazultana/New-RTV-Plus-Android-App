@@ -3,30 +3,22 @@ package com.rtvplus.ui.activities
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
-import com.rtvplus.data.models.logIn.LogInModule
-import com.rtvplus.data.models.logIn.LogInModuleItem
-import com.rtvplus.data.models.logIn.LogInResponse
-import com.rtvplus.data.models.logIn.LogInResponseItem
 import com.rtvplus.databinding.ActivityMainBinding
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.isOnline
 import com.rtvplus.utils.AppUtils.showAlertDialog
-import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -66,14 +58,14 @@ class MainActivity : AppCompatActivity() {
 
         var bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
 
-        val sub = intent.getStringExtra("subscription")
+        /*val sub = intent.getStringExtra("subscription")
         if (sub == "subscription") {
             navController.navigate(R.id.SubscriptionFragment)
             val bottomNavigationView =
                 findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
             bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
             //bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
-        }
+        }*/
 
 
         val username = SharedPreferencesUtil.getData(

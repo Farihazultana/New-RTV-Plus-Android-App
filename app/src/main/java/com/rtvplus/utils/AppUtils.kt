@@ -22,8 +22,39 @@ object AppUtils {
 
     const val LogInKey = "LogIn_Result"
     const val UsernameInputKey = "User"
+    const val UserPasswordKey = "Password"
     const val GoogleSignInKey = "Google"
     const val USER_GMAIL = "rtv_user_gmail_001"
+    const val LogInModule = "result"
+
+
+    const val LogIn_audioad = "LogIn_audioad"
+    const val LogIn_autorenew = "LogIn_autorenew"
+    const val LogIn_concurrent = "LogIn_concurrent"
+    const val LogIn_concurrenttext = "LogIn_concurrenttext"
+    const val LogIn_consent = "LogIn_consent"
+    const val LogIn_consenttext = "LogIn_consenttext"
+    const val LogIn_consenturl = "LogIn_consenturl"
+    const val LogIn_currentversion = "LogIn_currentversion"
+    const val LogIn_currentversionios = "LogIn_currentversionios"
+    const val LogIn_email = "LogIn_email"
+    const val LogIn_enforce = "LogIn_enforce"
+    const val LogIn_enforcetext = "LogIn_enforcetext"
+    const val LogIn_extrainfo = "LogIn_extrainfo"
+    const val LogIn_fullname = "LogIn_fullname"
+    const val LogIn_liveurl = "LogIn_liveurl"
+    const val LogIn_msisdn = "LogIn_msisdn"
+    const val LogIn_packcode = "LogIn_packcode"
+    const val LogIn_packname = "LogIn_packname"
+    const val LogIn_packtext = "LogIn_packtext"
+    const val LogIn_play = "LogIn_play"
+    const val LogIn_referral = "LogIn_referral"
+    const val LogIn_referralimage = "LogIn_referralimage"
+    const val LogIn_result = "LogIn_result"
+    const val LogIn_showad = "LogIn_showad"
+    const val LogIn_token = "LogIn_token"
+    const val LogIn_ugc = "LogIn_ugc"
+
 
     val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
     val phoneRegex = Regex("^8801[3-9]\\d{8}$")

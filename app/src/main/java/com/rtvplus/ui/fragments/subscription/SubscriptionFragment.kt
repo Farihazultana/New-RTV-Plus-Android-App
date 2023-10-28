@@ -1,5 +1,6 @@
 package com.rtvplus.ui.fragments.subscription
 
+import LogInUtil
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -21,6 +22,7 @@ import com.rtvplus.databinding.FragmentSubscriptionBinding
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.adapters.SubscriptionAdapter
 import com.rtvplus.ui.viewmodels.SubscriptionViewModel
+import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -72,7 +74,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        subscriptionAdapter = SubscriptionAdapter(this)
+        subscriptionAdapter = SubscriptionAdapter(this, requireContext())
         binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvSubscriptionPacks.adapter = subscriptionAdapter
 
@@ -119,13 +121,16 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
     override fun onResume() {
         //loginApi call
         //logInViewModel.fetchLogInData("8801954953031", "115030", "no", "1")
+        val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+        val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
+        LogInUtil().fetchLogInData(this,user, password)
 
         subscription()
 
         super.onResume()
     }
 
-    private fun subscription() {
+    fun subscription() {
         subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
     }
 
@@ -177,14 +182,14 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1234 && resultCode == Activity.RESULT_OK) {
             subscription()
 
             //subscriptionAdapter.notifyDataSetChanged()
         }
-    }
+    }*/
 
     private fun showBottomSheet() {
         //val bottomSheetFragment = SubscribeBottomFragment()

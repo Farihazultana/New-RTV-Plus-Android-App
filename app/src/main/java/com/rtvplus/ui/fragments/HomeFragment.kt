@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +19,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
+import com.rtvplus.data.models.logIn.LogInModuleItem
 import com.rtvplus.databinding.FragmentHomeBinding
+import com.rtvplus.di.LoginInfoModule
 import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.ui.activities.SearchActivity
 import com.rtvplus.ui.adapters.ParentHomeAdapter
@@ -35,6 +38,7 @@ import javax.inject.Inject
 class HomeFragment : Fragment() {
     @Inject
     lateinit var deviceInfo: DeviceInfo
+
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var parentHomeAdapter: ParentHomeAdapter
@@ -68,6 +72,11 @@ class HomeFragment : Fragment() {
             startActivity(intent)
             requireActivity().finish()
         }
+
+
+        val loginDataStore = SharedPreferencesUtil.getData(requireContext(), AppUtils.LogIn_packcode, "")
+        Log.e("panda", loginDataStore.toString())
+
 
         val deviceId = deviceInfo.deviceId
         val softwareVersion = deviceInfo.softwareVersion
@@ -140,8 +149,6 @@ class HomeFragment : Fragment() {
 
                     }
                 }
-
-
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

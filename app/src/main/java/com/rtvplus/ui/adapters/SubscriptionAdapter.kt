@@ -1,33 +1,38 @@
 package com.rtvplus.ui.adapters
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.rtvplus.R
-import com.rtvplus.data.models.logIn.LogInModule
+import com.rtvplus.data.models.logIn.LogInModuleItem
 import com.rtvplus.data.models.subscription.SubschemesItem
+import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.LogInModule
+import com.rtvplus.utils.SharedPreferencesUtil
 import java.util.Locale
 import javax.inject.Inject
 
 
 class SubscriptionAdapter(
-    private val cardClickListener: CardClickListener
+    private val cardClickListener: CardClickListener,
+    private val context : Context
 
 ) : RecyclerView.Adapter<SubscriptionAdapter.SubscriptionViewHolder>() {
 
     private var selectedPositions = -1
     var subscriptionData: ArrayList<SubschemesItem> = ArrayList()
 
-    @Inject
-    lateinit var logInModule: LogInModule
+//    @Inject
+//    lateinit var logInModule: LogInModuleItem
 
     inner class SubscriptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val packageName: TextView = itemView.findViewById(R.id.tv_packName)
@@ -73,9 +78,17 @@ class SubscriptionAdapter(
 
         //logInModule[0].packcode
         //Log.i("sub", "Login Module onBindViewHolder: ${logInModule[0].packcode}")
+        val loginPackcode = SharedPreferencesUtil.getData(context, AppUtils.LogIn_packcode, "")
+        Log.i("SubLog", "onBindViewHolder: $loginPackcode")
 
-        if(item?.userpack == item?.sub_pack || selectedPositions == position){
-            if (item?.userpack == item?.sub_pack){
+        var loginDataStore = SharedPreferencesUtil.getData(context, AppUtils.LogIn_packcode, "")
+        Log.i("SubAdapLog", "onBindViewHolder: $loginDataStore")
+        Log.i("SubAdapLog", "onBindViewHolder item sub pack: ${item?.sub_pack}")
+
+
+        //var dummy = SharedPreferencesUtil.getData(context,LogInModule,"")
+        if(loginDataStore == item?.sub_pack || selectedPositions == position){
+            if (loginDataStore == item?.sub_pack){
                 holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.green_lite))
             }
             holder.checkedCard.visibility = View.VISIBLE

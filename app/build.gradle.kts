@@ -118,7 +118,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.0.0-beta4")
 
     //ViewModel , livedata
-    val lifecycle_version = "2.5.1"
+    val lifecycle_version = "2.6.2"
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
    // implementation ("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
