@@ -1,27 +1,20 @@
 package com.rtvplus.ui.fragments
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.FragmentHomeBinding
 import com.rtvplus.ui.activities.MainActivity
@@ -39,9 +32,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
-    @Inject
-    lateinit var deviceInfo: DeviceInfo
-
     private lateinit var binding: FragmentHomeBinding
     private lateinit var parentHomeAdapter: ParentHomeAdapter
     private var doubleBackPressedOnce = false
@@ -59,7 +49,7 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
         username =
             SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
@@ -76,17 +66,6 @@ class HomeFragment : Fragment() {
             startActivity(intent)
             requireActivity().finish()
         }
-
-        val deviceId = deviceInfo.deviceId
-        val softwareVersion = deviceInfo.softwareVersion
-        val brand = deviceInfo.brand
-        val model = deviceInfo.model
-        val release = deviceInfo.release
-        val sdkVersion = deviceInfo.sdkVersion
-        val versionCode = deviceInfo.versionCode
-        val simSerialNumber = deviceInfo.simSerialNumber
-        val simOperatorName = deviceInfo.operatorName
-
 
         return binding.root
     }
@@ -130,12 +109,7 @@ class HomeFragment : Fragment() {
                     val logInResult = it.data
 
                     for (item in logInResult) {
-                        currentversion = item.currentversion
-                        enforcetext = item.enforcetext
-                        enforce = item.enforce
                         isPremiumUser = item.play
-
-                        checkSoftwareVersion()
                     }
                 }
 
@@ -150,7 +124,7 @@ class HomeFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.homeData.collect { result ->
+            homeViewModel.homeData.observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is ResultType.Loading -> {
                         binding.tryAgainBtn.visibility = View.GONE
@@ -199,71 +173,6 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")
-    }
-
-    private fun checkSoftwareVersion() {
-
-        Log.e("softwareVersion", deviceInfo.versionCode.toString())
-        Log.e("softwareVersion", currentversion.toString())
-
-        if (deviceInfo.versionCode < currentversion!!.toInt()) {
-
-            displayVersionUpdateScreen()
-
-        }
-    }
-
-    private fun displayVersionUpdateScreen() {
-        Log.e("softwareVersion", "Display")
-        val inflater = LayoutInflater.from(requireActivity())
-        val customDialogView =
-            inflater.inflate(R.layout.custom_alert_dialog_version_check, null)
-
-
-        val alertDescription =
-            customDialogView.findViewById<TextView>(R.id.alertDescriptionText)
-        val updateNowButton =
-            customDialogView.findViewById<Button>(R.id.updateNow)
-        val notNowButton =
-            customDialogView.findViewById<Button>(R.id.notNow)
-
-        alertDescription.text = enforcetext
-
-        // Create the AlertDialog
-        val alertDialogBuilder = AlertDialog.Builder(requireActivity())
-        alertDialogBuilder.setView(customDialogView)
-        val alertDialog = alertDialogBuilder.create()
-
-        if (enforce == 1) {
-            notNowButton.visibility = View.GONE
-            alertDialog.setCancelable(false)
-        }
-
-        // Set a click listener for the Confirm button
-        updateNowButton.setOnClickListener {
-            goToPlayStore()
-        }
-
-        notNowButton.setOnClickListener {
-            alertDialog.dismiss()
-        }
-
-
-        alertDialog.show()
-    }
-
-    private fun goToPlayStore() {
-        val marketUri = Uri.parse("market://details?id=${AppUtils.PACKAGE_NAME}")
-        val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
-        try {
-            startActivity(marketIntent)
-        } catch (e: ActivityNotFoundException) {
-            // If Play Store app is not available, open the app link in a browser
-            val webUri =
-                Uri.parse("https://play.google.com/store/apps/details?id=${AppUtils.PACKAGE_NAME}")
-            val webIntent = Intent(Intent.ACTION_VIEW, webUri)
-            startActivity(webIntent)
-        }
     }
 
 

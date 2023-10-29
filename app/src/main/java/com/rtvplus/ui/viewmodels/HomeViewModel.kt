@@ -1,6 +1,8 @@
 package com.rtvplus.ui.viewmodels
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rtvplus.data.models.home.HomeResponse
@@ -14,8 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val homeRepository: HomeRepository) : ViewModel() {
-    private val _homeData = MutableStateFlow<ResultType<HomeResponse>>(ResultType.Loading)
-    val homeData: StateFlow<ResultType<HomeResponse>> get() = _homeData
+    private val _homeData = MutableLiveData<ResultType<HomeResponse>>(ResultType.Loading)
+    val homeData: LiveData<ResultType<HomeResponse>> get() = _homeData
 
     fun fetchHomeData(msisdn: String, view: String,version: String, fromsrc: String, lng: String) {
         viewModelScope.launch {
