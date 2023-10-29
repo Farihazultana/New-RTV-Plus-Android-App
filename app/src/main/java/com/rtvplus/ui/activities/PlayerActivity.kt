@@ -388,6 +388,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                         Toast.LENGTH_SHORT
                                     ).show()
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
+                                    isInList = 0
 
                                 } else {
 
@@ -426,6 +427,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                         Toast.LENGTH_SHORT
                                     ).show()
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
+                                    isInList = 1
 
                                 } else {
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)

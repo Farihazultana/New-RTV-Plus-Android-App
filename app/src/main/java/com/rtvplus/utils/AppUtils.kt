@@ -1,14 +1,18 @@
 package com.rtvplus.utils
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.startActivity
 import com.rtvplus.R
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import kotlinx.coroutines.CompletableDeferred
@@ -63,11 +67,5 @@ object AppUtils {
             alertDialog.dismiss()
         }
     }
-
-
-
-
-
-
 
 }

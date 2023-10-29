@@ -1,20 +1,25 @@
 package com.rtvplus.ui.fragments
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
@@ -42,7 +47,10 @@ class HomeFragment : Fragment() {
     private val homeViewModel by viewModels<HomeViewModel>()
     private val logInViewModel by viewModels<LogInViewModel>()
     private var isPremiumUser: Int? = 0
-    var username : String ?= ""
+    var username: String? = ""
+    var currentversion: Int? = 0
+    var enforcetext: String? = null
+    private var enforce: Int? = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,8 +59,6 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-
 
 
         username =
@@ -65,7 +71,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.tryAgainBtn.setOnClickListener {
-            homeViewModel.fetchHomeData(username!!, "home","3", "app","en")
+            homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")
             val intent = Intent(requireContext(), MainActivity::class.java)
             startActivity(intent)
             requireActivity().finish()
@@ -80,7 +86,6 @@ class HomeFragment : Fragment() {
         val versionCode = deviceInfo.versionCode
         val simSerialNumber = deviceInfo.simSerialNumber
         val simOperatorName = deviceInfo.operatorName
-        val simOperatorCode = deviceInfo.versionCode
 
 
         return binding.root
@@ -89,10 +94,10 @@ class HomeFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeViewModel.fetchHomeData(username!!, "home","3", "app","en")
+        homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")
 
         parentHomeAdapter =
-            ParentHomeAdapter(requireContext(), emptyList(), null, lifecycle,this)
+            ParentHomeAdapter(requireContext(), emptyList(), null, lifecycle, this)
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
@@ -115,35 +120,33 @@ class HomeFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-
-
-
         if (username!!.isNotEmpty()) {
             logInViewModel.fetchLogInData(username!!, "", "yes", "1")
         }
 
+        logInViewModel.logInData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ResultType.Success -> {
+                    val logInResult = it.data
 
-            logInViewModel.logInData.observe(viewLifecycleOwner) {
-                when (it) {
-                    is ResultType.Success -> {
-                        val logInResult = it.data
+                    for (item in logInResult) {
+                        currentversion = item.currentversion
+                        enforcetext = item.enforcetext
+                        enforce = item.enforce
+                        isPremiumUser = item.play
 
-                        for (item in logInResult) {
-                            val result = item.play
-                            isPremiumUser = result
-                        }
-                    }
-
-                    is ResultType.Error -> {
-
-                    }
-
-                    else -> {
-
+                        checkSoftwareVersion()
                     }
                 }
 
+                is ResultType.Error -> {
+                    isPremiumUser = 0
+                }
 
+                else -> {
+                    isPremiumUser = 0
+                }
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -181,6 +184,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
     // Function to bind a fragment to the FragmentContainerView
     fun bindFragment(fragment: Fragment) {
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
@@ -192,7 +196,72 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        homeViewModel.fetchHomeData(username!!, "home","3", "app","en")
+        homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")
+    }
+
+    private fun checkSoftwareVersion() {
+
+        Log.e("softwareVersion", deviceInfo.versionCode.toString())
+        Log.e("softwareVersion", currentversion.toString())
+
+        if (deviceInfo.versionCode < currentversion!!.toInt()) {
+
+            displayVersionUpdateScreen()
+
+        }
+    }
+
+    private fun displayVersionUpdateScreen() {
+        Log.e("softwareVersion", "Display")
+        val inflater = LayoutInflater.from(requireActivity())
+        val customDialogView =
+            inflater.inflate(R.layout.custom_alert_dialog_version_check, null)
+
+
+        val alertDescription =
+            customDialogView.findViewById<TextView>(R.id.alertDescriptionText)
+        val updateNowButton =
+            customDialogView.findViewById<Button>(R.id.updateNow)
+        val notNowButton =
+            customDialogView.findViewById<Button>(R.id.notNow)
+
+        alertDescription.text = enforcetext
+
+        // Create the AlertDialog
+        val alertDialogBuilder = AlertDialog.Builder(requireActivity())
+        alertDialogBuilder.setView(customDialogView)
+        val alertDialog = alertDialogBuilder.create()
+
+        if (enforce == 1) {
+            notNowButton.visibility = View.GONE
+            alertDialog.setCancelable(false)
+        }
+
+        // Set a click listener for the Confirm button
+        updateNowButton.setOnClickListener {
+            goToPlayStore()
+        }
+
+        notNowButton.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+
+        alertDialog.show()
+    }
+
+    private fun goToPlayStore() {
+        val marketUri = Uri.parse("market://details?id=${AppUtils.PACKAGE_NAME}")
+        val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
+        try {
+            startActivity(marketIntent)
+        } catch (e: ActivityNotFoundException) {
+            // If Play Store app is not available, open the app link in a browser
+            val webUri =
+                Uri.parse("https://play.google.com/store/apps/details?id=${AppUtils.PACKAGE_NAME}")
+            val webIntent = Intent(Intent.ACTION_VIEW, webUri)
+            startActivity(webIntent)
+        }
     }
 
 

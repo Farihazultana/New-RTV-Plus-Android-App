@@ -199,7 +199,7 @@ class ChildHomeAdapter(
                     holder.descriptionText.setCompoundDrawablesWithIntrinsicBounds(
                         drawableStart, 0, 0, 0
                     )
-                    holder.descriptionText.text = currentItem.length2
+                    holder.descriptionText.text = currentItem.duration
                     holder.itemView.setOnClickListener {
 
                         val username = SharedPreferencesUtil.getData(

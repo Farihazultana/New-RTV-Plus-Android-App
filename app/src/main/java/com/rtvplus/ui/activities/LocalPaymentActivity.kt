@@ -14,8 +14,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isNotEmpty
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation.findNavController
-import com.rtvplus.R
 import com.rtvplus.data.models.local_payment.SaveLocalPaymentResponse
 import com.rtvplus.databinding.ActivityLocalPaymentBinding
 import com.rtvplus.ui.viewmodels.LocalPaymentViewModel
@@ -52,10 +50,10 @@ class LocalPaymentActivity : AppCompatActivity() {
                 saveLocalPaymentViewModel
             )
 
-        getPhoneNumSP= SharedPreferencesUtil.getData(
-        this,
-        UsernameInputKey,
-        "defaultValue"
+        getPhoneNumSP = SharedPreferencesUtil.getData(
+            this,
+            UsernameInputKey,
+            "defaultValue"
         ).toString()
         val sub_pack = intent.getStringExtra("sub_pack")
 
@@ -154,6 +152,7 @@ class LocalPaymentActivity : AppCompatActivity() {
         private fun shouldOpenInApp(url: String?): Boolean {
             return true
         }
+
         private fun handleSavedLocalPaymentData(paymentId: String, orderId: String) {
             saveLocalPaymentViewModel.fetchSavedLocalPaymentData(
                 getPhoneNumSP,

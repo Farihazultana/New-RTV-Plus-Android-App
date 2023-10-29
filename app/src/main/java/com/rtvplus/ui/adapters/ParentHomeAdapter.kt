@@ -141,7 +141,7 @@ class ParentHomeAdapter(
                         val currentBinding = binding as ItemCustomFixedSizeLayout3Binding
 
                         currentBinding.imageView.apply {
-                            scaleType = ImageView.ScaleType.CENTER_CROP
+                            scaleType = ImageView.ScaleType.FIT_XY
 
                             setImage(item, R.drawable.ic_wb_cloudy_with_padding)
                         }
@@ -187,12 +187,8 @@ class ParentHomeAdapter(
                         )
                     )
                 }
-
-
                 holder.carousel4.setData(listFour)
                 holder.carousel4.setIndicator(holder.custom_indicator)
-
-
 
 //                holder.carouselView.apply {
 //                    size = homeData.size

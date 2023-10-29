@@ -19,7 +19,7 @@ android {
         applicationId = "com.rtvplus"
         minSdk = 24
         targetSdk = 33
-        versionCode = 12
+        versionCode = 10
         versionName = "1.2.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

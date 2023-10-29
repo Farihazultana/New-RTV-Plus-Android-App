@@ -40,6 +40,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
     private var currentPage = 1
     private var isLoading = false
     private var isLastpage = false
+    var isPremiumUser : Int = 0
     private val logInViewModel by viewModels<LogInViewModel>()
     lateinit var username: String
 
@@ -52,6 +53,8 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
 
         val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
+
+        isPremiumUser = checkIfPremiumUser()
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -154,6 +157,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                         binding.progressbar.visibility = View.GONE
                         binding.emptyResultTv.visibility = View.GONE
                         favoriteListAdapter.content = content.contents
+                        favoriteListAdapter.isPemiumUser = isPremiumUser
                         favoriteListAdapter.notifyDataSetChanged()
                     } else {
                         favoriteListAdapter.content = emptyList()
@@ -243,6 +247,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                             if (!favoriteListAdapter.content?.containsAll(content.contents)!!) {
                                 favoriteListAdapter.content =
                                     favoriteListAdapter.content?.plus(content.contents)
+                                favoriteListAdapter.isPemiumUser = isPremiumUser
                             }
                         }
                         binding.progressbar.visibility = View.GONE

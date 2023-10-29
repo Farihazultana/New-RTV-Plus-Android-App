@@ -34,7 +34,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
@@ -70,10 +69,8 @@ class LoginActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-
         //Text Counter for Phone number 0/11
         textCounter()
-
 
         //LogIn with phone
         binding.btnLogIn.setOnClickListener {

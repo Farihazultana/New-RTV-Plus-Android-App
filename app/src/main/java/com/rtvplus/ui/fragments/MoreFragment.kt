@@ -110,17 +110,7 @@ class MoreFragment : Fragment() {
         }
 
         binding.rate.setOnClickListener {
-            val marketUri = Uri.parse("market://details?id=$PACKAGE_NAME")
-            val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
-            try {
-                startActivity(marketIntent)
-            } catch (e: ActivityNotFoundException) {
-                // If Play Store app is not available, open the app link in a browser
-                val webUri =
-                    Uri.parse("https://play.google.com/store/apps/details?id=$PACKAGE_NAME")
-                val webIntent = Intent(Intent.ACTION_VIEW, webUri)
-                startActivity(webIntent)
-            }
+            goToPlayStore()
         }
 
         if (username.isNotEmpty()) {
@@ -145,6 +135,20 @@ class MoreFragment : Fragment() {
             handleLogoutClick(username)
         }
         return binding.root
+    }
+
+    private fun goToPlayStore() {
+        val marketUri = Uri.parse("market://details?id=$PACKAGE_NAME")
+        val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
+        try {
+            startActivity(marketIntent)
+        } catch (e: ActivityNotFoundException) {
+            // If Play Store app is not available, open the app link in a browser
+            val webUri =
+                Uri.parse("https://play.google.com/store/apps/details?id=$PACKAGE_NAME")
+            val webIntent = Intent(Intent.ACTION_VIEW, webUri)
+            startActivity(webIntent)
+        }
     }
 
     private fun handleLogoutClick(username: String) {
