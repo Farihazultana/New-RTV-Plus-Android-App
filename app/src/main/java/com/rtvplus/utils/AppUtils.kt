@@ -26,6 +26,11 @@ object AppUtils {
     const val GoogleSignInKey = "Google"
     const val USER_GMAIL = "rtv_user_gmail_001"
     const val LogInModule = "result"
+    const val SignInType = "SignedInWith"
+    const val GoogleSignIn_IdToken = "ID token"
+    const val GoogleSignIn_FirstName = "firstname"
+    const val GoogleSignIn_LastName = "lastname"
+    const val GoogleSignIn_ImgUri = "ImageUri"
 
 
     const val LogIn_audioad = "LogIn_audioad"

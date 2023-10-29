@@ -22,16 +22,21 @@ import com.rtvplus.databinding.FragmentSubscriptionBinding
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.adapters.SubscriptionAdapter
 import com.rtvplus.ui.viewmodels.SubscriptionViewModel
+import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.GoogleSignIn_FirstName
+import com.rtvplus.utils.AppUtils.GoogleSignIn_IdToken
+import com.rtvplus.utils.AppUtils.GoogleSignIn_LastName
 import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
+import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, LogInUtil.ObserverListener {
+class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, LogInUtil.ObserverListener, SocialmediaLoginUtil.ObserverListenerSocial {
     private lateinit var binding: FragmentSubscriptionBinding
     private lateinit var bottomBinding: FragmentSubscribeBottomBinding
     private val bottomSheetFragment = SubscribeBottomFragment()
@@ -78,7 +83,10 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
         binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvSubscriptionPacks.adapter = subscriptionAdapter
 
+        subscription()
+
         LogInUtil().observeLoginData(requireActivity(), this, this, this)
+        SocialmediaLoginUtil().observeGoogleLogInData(requireActivity(),this,this,this)
 
         return binding.root
     }
@@ -122,9 +130,21 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
     override fun onResume() {
         //loginApi call
         //logInViewModel.fetchLogInData("8801954953031", "115030", "no", "1")
-        val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
-        val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
-        LogInUtil().fetchLogInData(this,user, password)
+        val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
+        Toast.makeText(requireActivity(),signInType.toString(),Toast.LENGTH_SHORT).show()
+        if (signInType == "Phone"){
+            val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
+            LogInUtil().fetchLogInData(this,user, password)
+        }else{
+            val username = SharedPreferencesUtil.getData(requireContext(),GoogleSignIn_IdToken, "").toString()
+            val email = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            val firstname = SharedPreferencesUtil.getData(requireContext(),GoogleSignIn_FirstName,"").toString()
+            val lastname = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_LastName,"").toString()
+            val imgUri = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri,"").toString()
+            SocialmediaLoginUtil().fetchGoogleLogInData(this, username, firstname, lastname, email, imgUri)
+        }
+
 
         //subscription()
 
@@ -237,6 +257,10 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
     }
 
     override fun observerListener(result: String) {
+        subscription()
+    }
+
+    override fun observerListenerSocial(result: String) {
         subscription()
     }
 

@@ -82,7 +82,7 @@ class SubscriptionAdapter(
         Log.i("SubLog", "onBindViewHolder: $loginPackcode")
 
         val loginDataStore = SharedPreferencesUtil.getData(context, AppUtils.LogIn_packcode, "")
-        Log.i("SubAdapLog", "onBindViewHolder: $loginDataStore")
+        Log.i("SubAdapLog", "onBindViewHolder login packcode: $loginDataStore")
         Log.i("SubAdapLog", "onBindViewHolder item sub pack: ${item?.sub_pack}")
 
 

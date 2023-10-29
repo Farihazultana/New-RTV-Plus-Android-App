@@ -28,15 +28,21 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.textfield.TextInputEditText
+import com.rtvplus.utils.AppUtils.GoogleSignIn_FirstName
+import com.rtvplus.utils.AppUtils.GoogleSignIn_IdToken
+import com.rtvplus.utils.AppUtils.GoogleSignIn_ImgUri
+import com.rtvplus.utils.AppUtils.GoogleSignIn_LastName
+import com.rtvplus.utils.AppUtils.SignInType
 import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
+class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, SocialmediaLoginUtil.ObserverListenerSocial{
 
     private lateinit var binding: ActivityLoginBinding
     private val logInViewModel by viewModels<LogInViewModel>()
@@ -87,7 +93,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
                 //logInViewModel.fetchLogInData(phoneText!!, enteredPassword!!, "no", "1")
                 //MainActivity().fetchLogInData(phoneText!!, enteredPassword!!)
                 logInUtil.fetchLogInData(this,phoneText!!, enteredPassword)
-
+                SharedPreferencesUtil.saveData(this, SignInType,"Phone")
             } else {
                 if (enteredPhone.isEmpty() || enteredPassword.isEmpty()) {
                     Toast.makeText(
@@ -117,6 +123,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
 
         //Google Sign In
         binding.btnGoogleSignIn.setOnClickListener {
+            SharedPreferencesUtil.saveData(this, SignInType,"Google")
             showOneTapUI = true
             if (showOneTapUI) {
                 googleLogIn()
@@ -311,7 +318,13 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
                                 UsernameInputKey,
                                 username
                             )
-                            googleLogInViewModel.fetchGoogleLogInData(
+
+                            SharedPreferencesUtil.saveData(this, GoogleSignIn_IdToken, idToken ?: "")
+                            SharedPreferencesUtil.saveData(this, GoogleSignIn_FirstName, givenName ?: "")
+                            SharedPreferencesUtil.saveData(this, GoogleSignIn_LastName, familyName ?: "")
+                            SharedPreferencesUtil.saveData(this, UsernameInputKey, username ?: "")
+                            SharedPreferencesUtil.saveData(this, GoogleSignIn_ImgUri, imageUri?.toString() ?: "")
+                            /*googleLogInViewModel.fetchGoogleLogInData(
                                 "social",
                                 "google",
                                 idToken,
@@ -351,8 +364,11 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
                                         }
                                     }
                                 }
-                            }
-                            finish()
+                            }*/
+
+                            SocialmediaLoginUtil().fetchGoogleLogInData(this, idToken,givenName!!, familyName!!, username, imageUri.toString())
+                            SocialmediaLoginUtil().observeGoogleLogInData(this,this,this, this)
+                            //finish()
 
 
                         }
@@ -395,6 +411,13 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
         }
     }
 
+    override fun observerListenerSocial(result: String) {
+        if (result == "success"){
+            finish()
+        }
+
+    }
+
     override fun finish() {
         super.finish()
         val intent = Intent(this@LoginActivity, MainActivity::class.java)
@@ -406,5 +429,8 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener {
         super.onBackPressed()
         finish()
     }
+
+
+
 
 }
