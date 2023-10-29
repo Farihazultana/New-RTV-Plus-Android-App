@@ -36,6 +36,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     @Inject
@@ -59,7 +60,6 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
 
         username =
             SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
@@ -153,8 +153,9 @@ class HomeFragment : Fragment() {
             homeViewModel.homeData.collect { result ->
                 when (result) {
                     is ResultType.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
                         binding.tryAgainBtn.visibility = View.GONE
+                        binding.shimmerFrameLayout.startShimmer()
+                        binding.shimmerFrameLayout.visibility = View.VISIBLE
                     }
 
                     is ResultType.Success -> {
@@ -162,10 +163,12 @@ class HomeFragment : Fragment() {
                             val homeData = result.data
                             parentHomeAdapter.homeData = homeData.data
                             parentHomeAdapter.isPemiumUser = isPremiumUser
-                            binding.progressBar.visibility = View.GONE
                             binding.tryAgainBtn.visibility = View.GONE
                             binding.parentRecyclerview.visibility = View.VISIBLE
                             parentHomeAdapter.notifyDataSetChanged()
+                            binding.shimmerFrameLayout.stopShimmer()
+                            binding.shimmerFrameLayout.visibility = View.GONE
+
                         }
 
                     }
@@ -176,7 +179,6 @@ class HomeFragment : Fragment() {
                             "Something is wrong. Please try again",
                             Toast.LENGTH_SHORT
                         ).show()
-                        binding.progressBar.visibility = View.GONE
                         binding.tryAgainBtn.visibility = View.VISIBLE
 
                     }
