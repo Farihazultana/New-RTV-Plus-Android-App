@@ -106,7 +106,8 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                     if (newText.length > 2) {
                         handler.postDelayed({
                             searchViewModel.fetchSearchData("app", newText.toString())
-                            binding.progressbar.visibility = View.VISIBLE
+                            binding.shimmerFrameLayout.visibility = View.VISIBLE
+                            binding.shimmerFrameLayout.startShimmer()
                         }, 1000)
                     }
                     binding.searchVoiceBtn.visibility = View.GONE
@@ -164,7 +165,8 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                     val content = result.data as SearchResponse
                     if (content.contents.isNotEmpty()) {
                         if (isPremiumUser.toString().isNotEmpty()) {
-                            binding.progressbar.visibility = View.GONE
+                            binding.shimmerFrameLayout.stopShimmer()
+                            binding.shimmerFrameLayout.visibility = View.GONE
                             binding.emptyResultTv.visibility = View.GONE
                             searchListAdapter.content = content.contents
                             searchListAdapter.isPemiumUser = isPremiumUser
@@ -177,7 +179,8 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                             binding.emptyResultTv.text = "No result found for: $searchQuery"
                             searchQuery = null
                         }
-                        binding.progressbar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                         searchListAdapter.content = content.contents
                         searchListAdapter.notifyDataSetChanged()
                     }

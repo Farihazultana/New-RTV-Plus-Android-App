@@ -126,7 +126,8 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
             seeAllViewModel.seeAllData.observe(this@SeeAllActivity) {
                 when (it) {
                     is ResultType.Loading -> {
-                        binding.subscribeProgressBar.visibility = View.VISIBLE
+                        binding.shimmerFrameLayout.startShimmer()
+                        binding.shimmerFrameLayout.visibility = View.VISIBLE
                     }
 
                     is ResultType.Success -> {
@@ -144,7 +145,9 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
                             }
                         }
 
-                        binding.subscribeProgressBar.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
+                        binding.shimmerFrameLayout.visibility = View.GONE
+
                         seeAllAdapter.notifyDataSetChanged()
                         isLoading = false
 

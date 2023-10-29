@@ -49,14 +49,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include layout="@layout/row_object_child_home_data_shimer" />
-
-        </LinearLayout>
+        <include layout="@layout/row_object_child_home_data_shimer" />
 
     </com.facebook.shimmer.ShimmerFrameLayout>
 
