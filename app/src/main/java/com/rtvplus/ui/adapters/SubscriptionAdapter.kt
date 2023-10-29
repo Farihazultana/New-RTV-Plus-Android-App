@@ -81,7 +81,7 @@ class SubscriptionAdapter(
         val loginPackcode = SharedPreferencesUtil.getData(context, AppUtils.LogIn_packcode, "")
         Log.i("SubLog", "onBindViewHolder: $loginPackcode")
 
-        var loginDataStore = SharedPreferencesUtil.getData(context, AppUtils.LogIn_packcode, "")
+        val loginDataStore = SharedPreferencesUtil.getData(context, AppUtils.LogIn_packcode, "")
         Log.i("SubAdapLog", "onBindViewHolder: $loginDataStore")
         Log.i("SubAdapLog", "onBindViewHolder item sub pack: ${item?.sub_pack}")
 
@@ -101,12 +101,12 @@ class SubscriptionAdapter(
 
     }
 
-    fun setData(subschemes: ArrayList<SubschemesItem>) {
+    fun setData(subschemes: ArrayList<SubschemesItem>, selectedPositions: Int) {
         if (subscriptionData.isNotEmpty()){
             subscriptionData.clear()
         }
         this.subscriptionData = subschemes
-        selectedPositions = -1
+        this.selectedPositions = selectedPositions
         notifyDataSetChanged()
 
     }

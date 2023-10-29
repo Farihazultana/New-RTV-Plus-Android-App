@@ -66,18 +66,18 @@ class LogInUtil {
                     SharedPreferencesUtil.saveData(context,AppUtils.LogIn_packname,logInResult.packname)
                     SharedPreferencesUtil.saveData(context,AppUtils.LogIn_packtext,logInResult.packtext)
 
-                    SubscriptionFragment().subscription()
+                    //SubscriptionFragment().subscription()
 
-                   // SharedPreferencesUtil.saveData(context,AppUtils.LogIn_audioad,logInResult.audioad)
+                    // SharedPreferencesUtil.saveData(context,AppUtils.LogIn_audioad,logInResult.audioad)
 
                     //logInViewModel.logInData.postValue(null)
 
 
-                   // SharedPreferencesUtil.saveData(context,AppUtils.LogInModule, result)
+                    // SharedPreferencesUtil.saveData(context,AppUtils.LogInModule, result)
 
 
-                  //  SharedPreferencesUtil.saveData(context,AppUtils.LogIn_autorenew,logInResult.autorenew)
-                  //  SharedPreferencesUtil.saveData(context,AppUtils.LogIn_concurrent,logInResult.concurrent.toString())
+                    //  SharedPreferencesUtil.saveData(context,AppUtils.LogIn_autorenew,logInResult.autorenew)
+                    //  SharedPreferencesUtil.saveData(context,AppUtils.LogIn_concurrent,logInResult.concurrent.toString())
 //                    SharedPreferencesUtil.saveData(context,AppUtils.LogIn_concurrenttext,logInResult.concurrenttext)
 //                    SharedPreferencesUtil.saveData(context,AppUtils.LogIn_consent,logInResult.consent)
 //                    SharedPreferencesUtil.saveData(context,AppUtils.LogIn_consenttext,logInResult.consenttext)
@@ -130,37 +130,37 @@ class LogInUtil {
 
     }
 
-   /* private fun storeLoginInfo(logInResult: LogInResponseItem) {
-        Log.i("Panda", "storeLoginInfo: $logInResult")
-        loginInfo = LogInModuleItem(
-            audioad = logInResult.audioad,
-            autorenew = logInResult.autorenew,
-            concurrent = logInResult.concurrent,
-            concurrenttext = logInResult.concurrenttext,
-            consent = logInResult.consent,
-            consenttext = logInResult.consenttext,
-            consenturl = logInResult.consenturl,
-            currentversion = logInResult.currentversion,
-            currentversionios = logInResult.currentversionios,
-            email = logInResult.email,
-            enforce = logInResult.enforce,
-            enforcetext = logInResult.enforcetext,
-            extrainfo = logInResult.extrainfo,
-            fullname = logInResult.fullname,
-            liveurl = logInResult.liveurl,
-            msisdn = logInResult.msisdn,
-            packcode = logInResult.packcode,
-            packname = logInResult.packname,
-            packtext = logInResult.packtext,
-            play = logInResult.play,
-            referral = logInResult.referral,
-            referralimage = logInResult.referralimage,
-            result = logInResult.result,
-            showad = logInResult.showad,
-            token = logInResult.token,
-            ugc = logInResult.ugc
-        )
-    }*/
+    /* private fun storeLoginInfo(logInResult: LogInResponseItem) {
+         Log.i("Panda", "storeLoginInfo: $logInResult")
+         loginInfo = LogInModuleItem(
+             audioad = logInResult.audioad,
+             autorenew = logInResult.autorenew,
+             concurrent = logInResult.concurrent,
+             concurrenttext = logInResult.concurrenttext,
+             consent = logInResult.consent,
+             consenttext = logInResult.consenttext,
+             consenturl = logInResult.consenturl,
+             currentversion = logInResult.currentversion,
+             currentversionios = logInResult.currentversionios,
+             email = logInResult.email,
+             enforce = logInResult.enforce,
+             enforcetext = logInResult.enforcetext,
+             extrainfo = logInResult.extrainfo,
+             fullname = logInResult.fullname,
+             liveurl = logInResult.liveurl,
+             msisdn = logInResult.msisdn,
+             packcode = logInResult.packcode,
+             packname = logInResult.packname,
+             packtext = logInResult.packtext,
+             play = logInResult.play,
+             referral = logInResult.referral,
+             referralimage = logInResult.referralimage,
+             result = logInResult.result,
+             showad = logInResult.showad,
+             token = logInResult.token,
+             ugc = logInResult.ugc
+         )
+     }*/
 
 }
 

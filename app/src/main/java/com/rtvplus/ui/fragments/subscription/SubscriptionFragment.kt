@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
+class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, LogInUtil.ObserverListener {
     private lateinit var binding: FragmentSubscriptionBinding
     private lateinit var bottomBinding: FragmentSubscribeBottomBinding
     private val bottomSheetFragment = SubscribeBottomFragment()
@@ -78,6 +78,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvSubscriptionPacks.adapter = subscriptionAdapter
 
+        LogInUtil().observeLoginData(requireActivity(), this, this, this)
 
         return binding.root
     }
@@ -125,7 +126,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
         val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
         LogInUtil().fetchLogInData(this,user, password)
 
-        subscription()
+        //subscription()
 
         super.onResume()
     }
@@ -146,7 +147,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
 
                     is ResultType.Success -> {
                         val subscriptionData = result.data
-                        subscriptionAdapter.setData(subscriptionData.subschemes)
+                        subscriptionAdapter.setData(subscriptionData.subschemes, selectedPositions)
                         binding.subscribeProgressBar.visibility = View.GONE
                         binding.textView.visibility = View.VISIBLE
                         //binding.textView.text = LoginActivity.packText
@@ -167,7 +168,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                                 binding.btnContinuePayment.visibility = View.VISIBLE
                             }
                         }
-                         subscriptionAdapter.notifyDataSetChanged()//------***
+                        subscriptionAdapter.notifyDataSetChanged()//------***
                     }
 
                     is ResultType.Error -> {
@@ -233,6 +234,10 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
             this.selectedPositions = -1
         }
         subscriptionAdapter.notifyDataSetChanged()
+    }
+
+    override fun observerListener(result: String) {
+        subscription()
     }
 
 }
