@@ -23,8 +23,6 @@
         android:layout_height="15dp"
         android:layout_marginTop="8dp"
         android:background="@color/lite_gray"
-        android:maxLength="18"
-        android:textSize="@dimen/_10ssp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_view_id" />
 
@@ -35,7 +33,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="@dimen/_8sdp"
         android:background="@color/lite_gray"
-        android:textSize="@dimen/_8ssp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_textView" />

@@ -221,13 +221,15 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         playListViewModel.content.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
-                    binding.progressbar.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.startShimmer()
                     binding.nastedScrollView.visibility = View.GONE
                 }
 
                 is ResultType.Success<*> -> {
                     val content = result.data as PlayListResponse
-                    binding.progressbar.visibility = View.GONE
+                    binding.shimmerFrameLayout.visibility = View.GONE
+                    binding.shimmerFrameLayout.stopShimmer()
                     binding.nastedScrollView.visibility = View.VISIBLE
                     binding.suggestionTitle.text = content.dramaname
 
@@ -256,7 +258,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                             displayCommentScreen()
                         }
                         playListAdapter.episodeList = content.episodelist
-                        binding.progressBar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                         similarItemsAdapter.notifyDataSetChanged()
                     } else {
                         Log.d("checkEmpty", "item empty")
@@ -300,14 +303,16 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         singleContentViewModel.content.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
-                    binding.progressbar.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.startShimmer()
                     binding.nastedScrollView.visibility = View.GONE
                     // Handle loading state if needed
                 }
 
                 is ResultType.Success<*> -> {
                     val content = result.data as SingleContentResponse
-                    binding.progressbar.visibility = View.GONE
+                    binding.shimmerFrameLayout.visibility = View.GONE
+                    binding.shimmerFrameLayout.stopShimmer()
                     binding.nastedScrollView.visibility = View.VISIBLE
 
                     Glide.with(binding.imageView.context).load(content.image_location)
@@ -374,14 +379,16 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                     removeListViewModel.removeContentResponse.observe(this) {
                         when (it) {
                             is ResultType.Loading -> {
-                                binding.progressbar.visibility = View.VISIBLE
+                                binding.shimmerFrameLayout.visibility = View.VISIBLE
+                                binding.shimmerFrameLayout.startShimmer()
 
                             }
 
                             is ResultType.Success<*> -> {
                                 val response = it.data as RemoveListResponse
                                 if (response.status == "success") {
-                                    binding.progressbar.visibility = View.GONE
+                                    binding.shimmerFrameLayout.visibility = View.GONE
+                                    binding.shimmerFrameLayout.stopShimmer()
                                     Toast.makeText(
                                         this@PlayerActivity,
                                         response.status,
@@ -398,7 +405,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                         response.status,
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    binding.progressbar.visibility = View.GONE
+                                    binding.shimmerFrameLayout.visibility = View.GONE
+                                    binding.shimmerFrameLayout.stopShimmer()
                                 }
                             }
 
@@ -414,13 +422,15 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                     addListViewModel.addContentResponse.observe(this) { it ->
                         when (it) {
                             is ResultType.Loading -> {
-                                binding.progressbar.visibility = View.VISIBLE
+                                binding.shimmerFrameLayout.visibility = View.VISIBLE
+                                binding.shimmerFrameLayout.startShimmer()
                             }
 
                             is ResultType.Success<*> -> {
                                 val response = it.data as AddListResponse
                                 if (response.status == "success") {
-                                    binding.progressbar.visibility = View.GONE
+                                    binding.shimmerFrameLayout.visibility = View.GONE
+                                    binding.shimmerFrameLayout.stopShimmer()
                                     Toast.makeText(
                                         this@PlayerActivity,
                                         response.status,
@@ -436,7 +446,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                         response.status,
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    binding.progressbar.visibility = View.GONE
+                                    binding.shimmerFrameLayout.visibility = View.GONE
+                                    binding.shimmerFrameLayout.stopShimmer()
                                 }
                             }
 
@@ -498,7 +509,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         similarItemsAdapter.similarContentList =
             content.similar[0].similarcontents
         similarItemsAdapter.isPemiumUser = checkIfPremiumUser()
-        binding.progressBar.visibility = View.GONE
+        binding.shimmerFrameLayout.visibility = View.GONE
+        binding.shimmerFrameLayout.stopShimmer()
         similarItemsAdapter.notifyDataSetChanged()
     }
 
@@ -532,7 +544,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         commentViewModel.saveCommentResponse.observe(this) { it ->
             when (it) {
                 is ResultType.Loading -> {
-                    binding.progressbar.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.startShimmer()
                 }
 
                 is ResultType.Success<*> -> {
@@ -540,7 +553,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                     if (response.status == "success") {
                         Toast.makeText(this@PlayerActivity, response.status, Toast.LENGTH_SHORT)
                             .show()
-                        binding.progressbar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                     }
                 }
 
@@ -550,7 +564,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                         R.string.error_response_msg,
                         Toast.LENGTH_SHORT
                     ).show()
-                    binding.progressbar.visibility = View.GONE
+                    binding.shimmerFrameLayout.visibility = View.GONE
+                    binding.shimmerFrameLayout.stopShimmer()
                 }
             }
         }
