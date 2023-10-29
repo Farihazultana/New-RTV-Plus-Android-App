@@ -154,6 +154,8 @@ class HomeFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
                         binding.tryAgainBtn.visibility = View.VISIBLE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
 
                     }
                 }
