@@ -57,6 +57,8 @@ class HomeFragment : Fragment() {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
 
+
+
         username =
             SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
                 .toString()
@@ -107,7 +109,7 @@ class HomeFragment : Fragment() {
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (backPressedTime + 3000 > System.currentTimeMillis()) {
+                if (backPressedTime + 2000 > System.currentTimeMillis()) {
                     requireActivity().finish()
                 } else {
                     Toast.makeText(

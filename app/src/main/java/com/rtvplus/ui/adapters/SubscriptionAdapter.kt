@@ -86,7 +86,6 @@ class SubscriptionAdapter(
         Log.i("SubAdapLog", "onBindViewHolder item sub pack: ${item?.sub_pack}")
 
 
-        //var dummy = SharedPreferencesUtil.getData(context,LogInModule,"")
         if(loginDataStore == item?.sub_pack || selectedPositions == position){
             if (loginDataStore == item?.sub_pack){
                 holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.green_lite))
