@@ -23,6 +23,7 @@ import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.adapters.SubscriptionAdapter
 import com.rtvplus.ui.viewmodels.SubscriptionViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.GoogleSignIn_Email
 import com.rtvplus.utils.AppUtils.GoogleSignIn_FirstName
 import com.rtvplus.utils.AppUtils.GoogleSignIn_IdToken
 import com.rtvplus.utils.AppUtils.GoogleSignIn_LastName
@@ -137,12 +138,13 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
             val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this,user, password)
         }else{
-            val username = SharedPreferencesUtil.getData(requireContext(),GoogleSignIn_IdToken, "").toString()
-            val email = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            val user = SharedPreferencesUtil.getData(requireContext(),UsernameInputKey, "").toString()
+            val email = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_Email, "").toString()
             val firstname = SharedPreferencesUtil.getData(requireContext(),GoogleSignIn_FirstName,"").toString()
             val lastname = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_LastName,"").toString()
             val imgUri = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri,"").toString()
-            SocialmediaLoginUtil().fetchGoogleLogInData(this, username, firstname, lastname, email, imgUri)
+            Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
+            SocialmediaLoginUtil().fetchGoogleLogInData(this, user, firstname, lastname, email, imgUri)
         }
 
 

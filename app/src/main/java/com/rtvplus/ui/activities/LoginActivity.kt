@@ -28,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.textfield.TextInputEditText
+import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.SignInType
 import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
@@ -274,7 +275,6 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
                     if (acct != null) {
                         val personName = acct.displayName
                         val personEmail = acct.email
-                        val authId = acct.idToken
                         val firstname = acct.givenName
                         val lastname = acct.familyName
                         val imageUri = acct.photoUrl
@@ -282,23 +282,17 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
                         Log.i(
                             "SignIn",
-                            "onActivityResult: $personEmail, $authId, $firstname, $lastname, $imageUri"
+                            "onActivityResult: $personEmail, $userID, $firstname, $lastname, $imageUri"
                         )
 
-                        SharedPreferencesUtil.saveData(
-                            this@LoginActivity,
-                            UsernameInputKey,
-                            userID!!
-                        )
+                        SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, userID ?: "")
+                        SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_Email, personEmail ?: "")
+                        SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_FirstName, firstname ?: "")
+                        SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_LastName, lastname ?: "")
+                        SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_ImgUri, imageUri?.toString() ?: "")
 
-                        SocialmediaLoginUtil().fetchGoogleLogInData(
-                            this,
-                            userID!!,
-                            firstname!!,
-                            lastname!!,
-                            personEmail!!,
-                            imageUri.toString()
-                        )
+
+                        SocialmediaLoginUtil().fetchGoogleLogInData(this, userID!!, firstname!!, lastname!!, personEmail!!, imageUri.toString())
                         SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
 
                     }
