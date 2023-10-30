@@ -16,8 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val homeRepository: HomeRepository) : ViewModel() {
-    private val _homeData = MutableLiveData<ResultType<HomeResponse>>(ResultType.Loading)
-    val homeData: LiveData<ResultType<HomeResponse>> get() = _homeData
+    private val _homeData = MutableStateFlow<ResultType<HomeResponse>>(ResultType.Loading)
+    val homeData: StateFlow<ResultType<HomeResponse>> get() = _homeData
 
     fun fetchHomeData(msisdn: String, view: String,version: String, fromsrc: String, lng: String) {
         viewModelScope.launch {

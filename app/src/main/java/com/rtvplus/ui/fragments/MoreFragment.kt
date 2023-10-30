@@ -27,6 +27,7 @@ import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.utils.AppUtils.PACKAGE_NAME
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.AppUtils.phoneRegex
 import com.rtvplus.utils.SharedPreferencesUtil
 
 class MoreFragment : Fragment() {
@@ -66,6 +67,7 @@ class MoreFragment : Fragment() {
             UsernameInputKey,
             ""
         ).toString()
+
 
         binding.favourite.setOnClickListener {
             if (username.isNotEmpty()) {

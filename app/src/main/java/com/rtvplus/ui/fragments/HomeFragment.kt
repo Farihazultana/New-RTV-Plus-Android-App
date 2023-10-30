@@ -124,7 +124,7 @@ class HomeFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.homeData.observe(viewLifecycleOwner) { result ->
+            homeViewModel.homeData.collect() { result ->
                 when (result) {
                     is ResultType.Loading -> {
                         binding.tryAgainBtn.visibility = View.GONE
@@ -144,7 +144,6 @@ class HomeFragment : Fragment() {
                             binding.shimmerFrameLayout.visibility = View.GONE
 
                         }
-
                     }
 
                     is ResultType.Error -> {
@@ -171,11 +170,9 @@ class HomeFragment : Fragment() {
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
-
     override fun onResume() {
         super.onResume()
         homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")
     }
-
 
 }

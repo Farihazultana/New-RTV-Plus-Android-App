@@ -74,12 +74,12 @@ dependencies {
     //Glide
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     //Image Slider
-    implementation ("com.github.smarteist:autoimageslider:1.4.0")
+ //   implementation ("com.github.smarteist:autoimageslider:1.4.0")
     // shimmer
     implementation ("com.facebook.shimmer:shimmer:0.5.0")
 
 
-    implementation("com.synnapps:carouselview:0.1.5")
+ //   implementation("com.synnapps:carouselview:0.1.5")
 
    // implementation project(path: ':carouselview')
     //implementation (project(path, ":carouselview"))
@@ -127,7 +127,7 @@ dependencies {
     //Glide
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     //Image Slider
-    implementation ("com.github.smarteist:autoimageslider:1.4.0")
+    //implementation ("com.github.smarteist:autoimageslider:1.4.0")
 
     // shimmer
     implementation ("com.facebook.shimmer:shimmer:0.5.0")

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -115,10 +116,8 @@ class ParentHomeAdapter(
 
             is BannerViewHolder -> {
 
-                holder.carousel4.registerLifecycle(lifecycle)
                 holder.carousel4.infiniteCarousel = true
                 holder.carousel4.autoPlay = true
-
                 // Custom view
                 holder.carousel4.carouselListener = object : CarouselListener {
 
@@ -143,41 +142,10 @@ class ParentHomeAdapter(
                         currentBinding.imageView.apply {
                             scaleType = ImageView.ScaleType.FIT_XY
 
-                            setImage(item, R.drawable.ic_wb_cloudy_with_padding)
+                            setImage(item, R.drawable.no_img)
                         }
                     }
                 }
-
-
-
-//                holder.carousel4.carouselListener = object : CarouselListener {
-//                    override fun onCreateViewHolder(
-//                        layoutInflater: LayoutInflater,
-//                        parent: ViewGroup
-//                    ): ViewBinding {
-//                        return ItemCustomFixedSizeLayout3Binding.inflate(
-//                            layoutInflater,
-//                            parent,
-//                            false
-//                        )
-//                    }
-//
-//                    override fun onBindViewHolder(
-//                        binding: ViewBinding,
-//                        item: CarouselItem,
-//                        position: Int
-//                    ) {
-//                        val currentBinding = binding as ItemCustomFixedSizeLayout3Binding
-//
-//                        currentBinding.imageView.apply {
-//                            scaleType = ImageView.ScaleType.CENTER_CROP
-//
-//                            setImage(item, R.drawable.ic_wb_cloudy_with_padding)
-//                        }
-//                    }
-//                }
-
-
                 val listFour = mutableListOf<CarouselItem>()
 
                 for (item in currentItem.contents) {
@@ -189,40 +157,7 @@ class ParentHomeAdapter(
                 }
                 holder.carousel4.setData(listFour)
                 holder.carousel4.setIndicator(holder.custom_indicator)
-
-//                holder.carouselView.apply {
-//                    size = homeData.size
-//                    resource = R.layout.row_obj_slider_view
-//                    autoPlay = true
-//                    indicatorAnimationType = IndicatorAnimationType.THIN_WORM
-//                    carouselOffset = OffsetType.CENTER
-//                    setCarouselViewListener { view, position ->
-//                        val imageView = view.findViewById<ImageView>(R.id.myimage)
-//                        Glide.with(imageView).load(currentItem.contents[position].image_location)
-//                            .placeholder(R.drawable.no_img).into(imageView)
-//
-//                        imageView.setOnClickListener {
-//
-//                            val username = SharedPreferencesUtil.getData(
-//                                myContext,
-//                                UsernameInputKey,
-//                                ""
-//                            )
-//                            if (username.toString().isNotEmpty()) {
-//                                val intent =
-//                                    Intent(holder.itemView.context, PlayerActivity::class.java)
-//                                intent.putExtra("id", currentItem.contents[position].contentid)
-//                                intent.putExtra("type", "single")
-//                                holder.itemView.context.startActivity(intent)
-//                            } else {
-//                                val intent =
-//                                    Intent(holder.itemView.context, LoginActivity::class.java)
-//                                holder.itemView.context.startActivity(intent)
-//                            }
-//                        }
-//                    }
-//                    show()
-//                }
+                Log.e("bind-indicator","bind")
             }
 
             is ThumbnailViewHolder -> {
@@ -316,11 +251,9 @@ class ParentHomeAdapter(
         val seeAll: TextView = itemView.findViewById(R.id.seeAll)
     }
 
-
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val carousel4: ImageCarousel = itemView.findViewById(R.id.carousel4)
         val custom_indicator : CircleIndicator2 = itemView.findViewById(R.id.custom_indicator)
-        //  val carouselView : CarouselView = itemView.findViewById(R.id.carouselViewId)
     }
 
     inner class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
