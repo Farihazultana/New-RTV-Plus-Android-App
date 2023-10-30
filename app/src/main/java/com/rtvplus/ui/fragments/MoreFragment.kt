@@ -12,11 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation.findNavController
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -187,7 +185,6 @@ class MoreFragment : Fragment() {
             binding.logInAs.text = null
 
             if (username.isNotEmpty()) {
-                LoginActivity.showOneTapUI = false
                 oneTapClient.signOut().addOnFailureListener {
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                 }.addOnCompleteListener {

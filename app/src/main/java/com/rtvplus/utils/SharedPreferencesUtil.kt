@@ -27,11 +27,11 @@ object SharedPreferencesUtil {
     fun getData(context: Context, key: String, defaultValue: Any): Any {
         val sharedPreferences = getSharedPreferences(context)
         return when (defaultValue) {
-            is String -> sharedPreferences.getString(key, defaultValue) ?: defaultValue
-            is Int -> sharedPreferences.getInt(key, defaultValue)
+            is String -> sharedPreferences.getString(key, defaultValue.toString()) ?: defaultValue
+            is Int -> sharedPreferences.getInt(key, defaultValue.toInt())
             is Boolean -> sharedPreferences.getBoolean(key, defaultValue)
-            is Float -> sharedPreferences.getFloat(key, defaultValue)
-            is Long -> sharedPreferences.getLong(key, defaultValue)
+            is Float -> sharedPreferences.getFloat(key, defaultValue.toFloat())
+            is Long -> sharedPreferences.getLong(key, defaultValue.toLong())
             else -> throw IllegalArgumentException("Unsupported data type")
         }
     }

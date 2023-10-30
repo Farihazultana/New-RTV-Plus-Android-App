@@ -1,7 +1,6 @@
 package com.rtvplus.ui.fragments.subscription
 
-import LogInUtil
-import android.app.Activity
+import com.rtvplus.utils.LogInUtil
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -25,7 +24,6 @@ import com.rtvplus.ui.viewmodels.SubscriptionViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.GoogleSignIn_Email
 import com.rtvplus.utils.AppUtils.GoogleSignIn_FirstName
-import com.rtvplus.utils.AppUtils.GoogleSignIn_IdToken
 import com.rtvplus.utils.AppUtils.GoogleSignIn_LastName
 import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
@@ -126,13 +124,11 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
 
         observeSubscription()
 
+
     }
 
     override fun onResume() {
-        //loginApi call
-        //logInViewModel.fetchLogInData("8801954953031", "115030", "no", "1")
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
-        Toast.makeText(requireActivity(),signInType.toString(),Toast.LENGTH_SHORT).show()
         if (signInType == "Phone"){
             val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
             val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
@@ -146,9 +142,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
             Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
             SocialmediaLoginUtil().fetchGoogleLogInData(this, user, firstname, lastname, email, imgUri)
         }
-
-
-        //subscription()
 
         super.onResume()
     }
@@ -205,15 +198,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
         }
     }
 
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1234 && resultCode == Activity.RESULT_OK) {
-            subscription()
-
-            //subscriptionAdapter.notifyDataSetChanged()
-        }
-    }*/
-
     private fun showBottomSheet() {
         //val bottomSheetFragment = SubscribeBottomFragment()
 
@@ -232,8 +216,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
     override fun onCardClickListener(position: Int, item: SubschemesItem?) {
         if (item?.userpack == "nopack") {
             this.selectedPositions = position
-            //binding.btnContinuePayment.isEnabled = selectedPositions != -1
-            //showBottomSheet(item?.sub_text)
             args.putString("packageText", item.sub_text)
             args.putString("sub_pack", item.sub_pack)
             args.putString("pack_name", item.pack_name)

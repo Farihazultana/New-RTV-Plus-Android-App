@@ -1,6 +1,6 @@
 package com.rtvplus.ui.activities
 
-import LogInUtil
+import com.rtvplus.utils.LogInUtil
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -15,8 +15,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isNotEmpty
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation.findNavController
-import com.rtvplus.R
 import com.rtvplus.data.models.local_payment.SaveLocalPaymentResponse
 import com.rtvplus.databinding.ActivityLocalPaymentBinding
 import com.rtvplus.ui.viewmodels.LocalPaymentViewModel

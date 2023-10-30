@@ -7,18 +7,15 @@ import android.net.NetworkCapabilities
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.rtvplus.R
-import com.rtvplus.ui.viewmodels.LogInViewModel
-import kotlinx.coroutines.CompletableDeferred
 
 object AppUtils {
     const val BASE_URL = "https://api-v200.rtvplus.tv/"
     const val PACKAGE_NAME = "com.rtvplus"
     const val PhoneInputKey = "phone_input_key_rtv"
     //const val GoogleSignInKey = "google_key"
-   // const val LogInKey = "login_key_key_rtv"
+    // const val LogInKey = "login_key_key_rtv"
 
     const val LogInKey = "LogIn_Result"
     const val UsernameInputKey = "User"
@@ -33,7 +30,7 @@ object AppUtils {
     const val GoogleSignIn_ImgUri = "ImageUri"
     const val GoogleSignIn_Email = "Email"
 
-
+    //Phone Login
     const val LogIn_audioad = "LogIn_audioad"
     const val LogIn_autorenew = "LogIn_autorenew"
     const val LogIn_concurrent = "LogIn_concurrent"
@@ -60,6 +57,35 @@ object AppUtils {
     const val LogIn_showad = "LogIn_showad"
     const val LogIn_token = "LogIn_token"
     const val LogIn_ugc = "LogIn_ugc"
+
+
+    //Google login
+    const val SocialLogIn_audioad = "SocialLogIn_audioad"
+    const val SocialLogIn_concurrent = "SocialLogIn_concurrent"
+    const val SocialLogIn_concurrenttext = "SocialLogIn_concurrenttext"
+    const val SocialLogIn_consent = "SocialLogIn_consent"
+    const val SocialLogIn_consenttext = "SocialLogIn_consenttext"
+    const val SocialLogIn_consenturl = "SocialLogIn_consenturl"
+    const val SocialLogIn_currentversion = "SocialLogIn_currentversion"
+    const val SocialLogIn_currentversionios = "SocialLogIn_currentversionios"
+    const val SocialLogIn_email = "SocialLogIn_email"
+    const val SocialLogIn_enforce = "SocialLogIn_enforce"
+    const val SocialLogIn_enforcetext = "SocialLogIn_enforcetext"
+    const val SocialLogIn_extrainfo = "SocialLogIn_extrainfo"
+    const val SocialLogIn_fullname = "SocialLogIn_fullname"
+    const val SocialLogIn_liveurl = "SocialLogIn_liveurl"
+    const val SocialLogIn_loginsrc = "loginsrc"
+    const val SocialLogIn_msisdn = "SocialLogIn_msisdn"
+    const val SocialLogIn_packcode = "SocialLogIn_packcode"
+    const val SocialLogIn_packname = "SocialLogIn_packname"
+    const val SocialLogIn_packtext = "SocialLogIn_packtext"
+    const val SocialLogIn_play = "SocialLogIn_play"
+    const val SocialLogIn_referral = "SocialLogIn_referral"
+    const val SocialLogIn_referralimage = "SocialLogIn_referralimage"
+    const val SocialLogIn_response = "response"
+    const val SocialLogIn_result = "SocialLogIn_result"
+    const val SocialLogIn_showad = "SocialLogIn_showad"
+    const val SocialLogIn_token = "SocialLogIn_token"
 
 
     val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
@@ -100,11 +126,6 @@ object AppUtils {
             alertDialog.dismiss()
         }
     }
-
-
-
-
-
 
 
 }

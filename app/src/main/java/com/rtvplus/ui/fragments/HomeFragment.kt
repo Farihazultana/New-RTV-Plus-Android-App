@@ -124,7 +124,6 @@ class HomeFragment : Fragment() {
 
 
 
-
         if (username!!.isNotEmpty()) {
             logInViewModel.fetchLogInData(username!!, "", "yes", "1")
         }

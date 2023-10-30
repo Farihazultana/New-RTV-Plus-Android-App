@@ -2,7 +2,7 @@ package com.rtvplus.data.models.logIn
 
 data class LogInResponseItem(
     val audioad: Boolean,
-    val autorenew: Any,
+    val autorenew: String,
     val concurrent: Int,
     val concurrenttext: String,
     val consent: Int,
@@ -14,7 +14,7 @@ data class LogInResponseItem(
     val enforce: Int,
     val enforcetext: String,
     val extrainfo: String,
-    val fullname: Any,
+    val fullname: String,
     val liveurl: String,
     val msisdn: String,
     val packcode: String,
