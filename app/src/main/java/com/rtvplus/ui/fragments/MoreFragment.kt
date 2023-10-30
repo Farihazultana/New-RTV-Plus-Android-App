@@ -116,7 +116,8 @@ class MoreFragment : Fragment() {
         }
 
         if (username.isNotEmpty()) {
-            binding.logInAs.text = "Logged in as: ${username.toString()}"
+            val modifiyedPhoneNumber = removeFirstTwoCharacters(username)
+            binding.logInAs.text = "Logged in as: ${modifiyedPhoneNumber.toString()}"
             binding.notLoginText.visibility = View.GONE
             binding.logInBtn.visibility = View.GONE
             binding.logout.visibility = View.VISIBLE
@@ -212,6 +213,14 @@ class MoreFragment : Fragment() {
             return oneTapClient != null
         } catch (e: UninitializedPropertyAccessException) {
             false
+        }
+    }
+
+    fun removeFirstTwoCharacters(inputString: String): String {
+        if (inputString.length >= 2) {
+            return inputString.substring(2)
+        } else {
+            return ""
         }
     }
 }

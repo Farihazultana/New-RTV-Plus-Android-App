@@ -106,13 +106,15 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         removeListViewModel.removeContentResponse.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
-                    binding.progressbar.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.startShimmer()
                 }
 
                 is ResultType.Success<*> -> {
                     val response = result.data as RemoveListResponse
                     if (response.status == "success") {
-                        binding.progressbar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                         Toast.makeText(
                             this@FavoriteListActivity,
                             "remove list ${response.status}",
@@ -128,7 +130,8 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                             response.status,
                             Toast.LENGTH_SHORT
                         ).show()
-                        binding.progressbar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                     }
                 }
 
@@ -148,13 +151,15 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         favoriteListViewModel.favoriteContent.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
-                    binding.progressbar.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.startShimmer()
                 }
 
                 is ResultType.Success<*> -> {
                     val content = result.data as FavoriteResponse
                     if (content.contents.isNotEmpty()) {
-                        binding.progressbar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                         binding.emptyResultTv.visibility = View.GONE
                         favoriteListAdapter.content = content.contents
                         favoriteListAdapter.isPemiumUser = isPremiumUser
@@ -164,7 +169,8 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                         favoriteListAdapter.notifyDataSetChanged()
                         binding.emptyResultTv.visibility = View.VISIBLE
                         binding.emptyResultTv.text = "No favorite item available"
-                        binding.progressbar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                     }
                 }
 
@@ -234,7 +240,8 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         favoriteListViewModel.favoriteContent.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
-                    binding.progressbar.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.startShimmer()
                 }
 
                 is ResultType.Success<*> -> {
@@ -250,7 +257,8 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                                 favoriteListAdapter.isPemiumUser = isPremiumUser
                             }
                         }
-                        binding.progressbar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                         binding.emptyResultTv.visibility = View.GONE
                         //  favoriteListAdapter.content = content.contents
                         favoriteListAdapter.notifyDataSetChanged()
@@ -259,7 +267,8 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                         favoriteListAdapter.notifyDataSetChanged()
                         binding.emptyResultTv.visibility = View.VISIBLE
                         binding.emptyResultTv.text = "No favorite item available"
-                        binding.progressbar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                     }
                 }
 

@@ -268,6 +268,7 @@ class ImageCarousel(
             initIndicator()
         }
 
+
     @Dimension(unit = Dimension.PX)
     var indicatorMargin: Int = 0
         set(value) {
@@ -909,7 +910,7 @@ class ImageCarousel(
                 this.layoutParams = indicatorMarginParams
 
                 // Indicator visibility
-                this.visibility = if (showIndicator) View.VISIBLE else View.GONE
+                this.visibility = if (showIndicator) View.VISIBLE else View.VISIBLE
             }
 
             this.createIndicators(dataSize, currentVirtualPosition)
@@ -1086,7 +1087,7 @@ class ImageCarousel(
     fun setIndicator(newIndicator: CircleIndicator2) {
         indicator?.apply {
             // if we remove it form the view, then the caption textView constraint won't work.
-            this.visibility = View.GONE
+            this.visibility = View.VISIBLE
 
             isBuiltInIndicator = false
         }

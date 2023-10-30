@@ -12,8 +12,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -86,40 +86,22 @@ class ParentHomeAdapter(
         val currentItem = homeData[position]
 
         when (holder) {
-            is ContentViewHolder -> {
-                if (currentItem.contents.isNotEmpty()) {
-                    holder.childListAdapter =
-                        ChildHomeAdapter(
-                            myContext,
-                            currentItem.contents,
-                            currentItem.contentviewtype,
-                            isPemiumUser,
-                            homeFragment
-                        )
-                    holder.recyclerView.layoutManager = LinearLayoutManager(
-                        holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false
-                    )
-                    holder.textView.text = currentItem.catname
-                    holder.recyclerView.adapter = holder.childListAdapter
-                    holder.seeAll.setOnClickListener {
-                        val intent = Intent(holder.itemView.context, SeeAllActivity::class.java)
-                        intent.putExtra("catcode", currentItem.catcode)
-                        intent.putExtra("catname", currentItem.catname)
-                        holder.itemView.context.startActivity(intent)
-                    }
-                } else {
-                    holder.textView.visibility = View.GONE
-                    holder.recyclerView.visibility = View.GONE
-                    holder.seeAll.visibility = View.GONE
-                }
-            }
-
             is BannerViewHolder -> {
 
                 holder.carousel4.infiniteCarousel = true
                 holder.carousel4.autoPlay = true
                 // Custom view
                 holder.carousel4.carouselListener = object : CarouselListener {
+
+                    override fun onClick(position: Int, carouselItem: CarouselItem) {
+                        super.onClick(position, carouselItem)
+                      //  Toast.makeText(myContext, carouselItem.contentId, Toast.LENGTH_SHORT).show()
+                        val intent =
+                            Intent(holder.itemView.context, PlayerActivity::class.java)
+                        intent.putExtra("id", carouselItem.contentId)
+                        intent.putExtra("type", "single")
+                        holder.itemView.context.startActivity(intent)
+                    }
 
                     override fun onCreateViewHolder(
                         layoutInflater: LayoutInflater,
@@ -151,14 +133,47 @@ class ParentHomeAdapter(
                 for (item in currentItem.contents) {
                     listFour.add(
                         CarouselItem(
+                            contentId = item.contentid,
                             imageUrl = item.image_location
                         )
                     )
                 }
-                holder.carousel4.setData(listFour)
                 holder.carousel4.setIndicator(holder.custom_indicator)
-                Log.e("bind-indicator","bind")
+                holder.carousel4.setData(listFour)
+
+
+                Log.e("bind-indicator", "bind")
             }
+
+
+            is ContentViewHolder -> {
+                if (currentItem.contents.isNotEmpty()) {
+                    holder.childListAdapter =
+                        ChildHomeAdapter(
+                            myContext,
+                            currentItem.contents,
+                            currentItem.contentviewtype,
+                            isPemiumUser,
+                            homeFragment
+                        )
+                    holder.recyclerView.layoutManager = LinearLayoutManager(
+                        holder.recyclerView.context, LinearLayoutManager.HORIZONTAL, false
+                    )
+                    holder.textView.text = currentItem.catname
+                    holder.recyclerView.adapter = holder.childListAdapter
+                    holder.seeAll.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, SeeAllActivity::class.java)
+                        intent.putExtra("catcode", currentItem.catcode)
+                        intent.putExtra("catname", currentItem.catname)
+                        holder.itemView.context.startActivity(intent)
+                    }
+                } else {
+                    holder.textView.visibility = View.GONE
+                    holder.recyclerView.visibility = View.GONE
+                    holder.seeAll.visibility = View.GONE
+                }
+            }
+
 
             is ThumbnailViewHolder -> {
 
@@ -253,7 +268,7 @@ class ParentHomeAdapter(
 
     inner class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val carousel4: ImageCarousel = itemView.findViewById(R.id.carousel4)
-        val custom_indicator : CircleIndicator2 = itemView.findViewById(R.id.custom_indicator)
+        val custom_indicator: CircleIndicator2 = itemView.findViewById(R.id.custom_indicator)
     }
 
     inner class ThumbnailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

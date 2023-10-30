@@ -80,6 +80,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         val view = binding.root
         setContentView(view)
 
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+
         username = SharedPreferencesUtil.getData(
             this,
             AppUtils.UsernameInputKey,
@@ -578,6 +580,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     fun setFullscreen(fullscreen: Boolean) {
         val playerView = binding.playerView
         val fullScreenbutton: ImageView = findViewById(R.id.fullscreen)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
         if (fullscreen) {
             makeFullScreen(fullScreenbutton, playerView)

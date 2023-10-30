@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.FragmentHomeBinding
 import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.ui.activities.SearchActivity
@@ -27,21 +26,15 @@ import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var parentHomeAdapter: ParentHomeAdapter
-    private var doubleBackPressedOnce = false
     private val homeViewModel by viewModels<HomeViewModel>()
     private val logInViewModel by viewModels<LogInViewModel>()
     private var isPremiumUser: Int? = 0
     var username: String? = ""
-    var currentversion: Int? = 0
-    var enforcetext: String? = null
-    private var enforce: Int? = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -124,7 +117,7 @@ class HomeFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.homeData.collect() { result ->
+            homeViewModel.homeData.collect{ result ->
                 when (result) {
                     is ResultType.Loading -> {
                         binding.tryAgainBtn.visibility = View.GONE
@@ -170,6 +163,7 @@ class HomeFragment : Fragment() {
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
+
     override fun onResume() {
         super.onResume()
         homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")

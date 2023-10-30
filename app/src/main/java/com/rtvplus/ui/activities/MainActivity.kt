@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
@@ -69,55 +69,15 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
 
-        var bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
 
-        val sub = intent.getStringExtra("subscription")
-        if (sub == "subscription") {
-            navController.navigate(R.id.SubscriptionFragment)
-            val bottomNavigationView =
-                findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-            bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
-            //bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
-        }
-
-
-        val username = SharedPreferencesUtil.getData(
-            this,
-            AppUtils.UsernameInputKey,
-            ""
-        ).toString()
+        val username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
 
         if (username!!.isNotEmpty()) {
             logInViewModel.fetchLogInData(username!!, "", "yes", "1")
         }
+        setupWithNavController(bottomNavigationView, navController)
 
-
-        bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-        //  val navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
-        NavigationUI.setupWithNavController(bottomNavigationView, navController)
-
-//        binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
-//            val itemId = menuItem.itemId
-//            if (selectedItemId != itemId) {
-//                when (itemId) {
-//                    R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
-//                    R.id.LiveTvFragment -> {
-//                        if (username.isNotEmpty()) {
-//                            navController.navigate(R.id.LiveTvFragment)
-//                        } else {
-//                            val intent = Intent(this, LoginActivity::class.java)
-//                            startActivity(intent)
-//                            selectedItemId = R.id.HomeFragment
-//                        }
-//                    }
-//
-//                    R.id.SubscriptionFragment -> navController.navigate(R.id.SubscriptionFragment)
-//                    R.id.MoreFragment -> navController.navigate(R.id.MoreFragment)
-//                }
-//                selectedItemId = itemId
-//            }
-//            true
-//        }
         binding.bottomNavigationBarId.setItemIconTintList(
             ContextCompat.getColorStateList(
                 this,
@@ -187,7 +147,6 @@ class MainActivity : AppCompatActivity() {
         val inflater = LayoutInflater.from(this)
         val customDialogView =
             inflater.inflate(R.layout.custom_alert_dialog_version_check, null)
-
 
         val alertDescription =
             customDialogView.findViewById<TextView>(R.id.alertDescriptionText)
