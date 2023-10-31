@@ -30,6 +30,10 @@ class FeedBackActivity : AppCompatActivity() {
         binding = ActivityFeedBackBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if (!AppUtils.isOnline(this)) {
+            AppUtils.showAlertDialog(this)
+        }
+
         val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
 

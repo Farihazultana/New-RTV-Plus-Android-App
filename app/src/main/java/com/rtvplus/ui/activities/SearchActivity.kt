@@ -12,7 +12,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.rtvplus.R
 import com.rtvplus.data.models.search.Content
@@ -27,8 +26,6 @@ import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener {
@@ -46,6 +43,10 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
+
+        if (!AppUtils.isOnline(this)) {
+            AppUtils.showAlertDialog(this)
+        }
 
         binding.arrowBack.setOnClickListener {
             onBackPressed()
@@ -101,6 +102,10 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+
+                if (!AppUtils.isOnline(this@SearchActivity)) {
+                    AppUtils.showAlertDialog(this@SearchActivity)
+                }
                 if (!newText.isNullOrEmpty()) {
                     searchQuery = newText
                     if (newText.length > 2) {
@@ -189,7 +194,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                 is ResultType.Error -> {
                     Toast.makeText(
                         this@SearchActivity,
-                        "Something is wrong. Please try again",
+                        R.string.error_response_msg,
                         Toast.LENGTH_SHORT
                     ).show()
                 }

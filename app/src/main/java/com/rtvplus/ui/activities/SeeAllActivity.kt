@@ -17,6 +17,7 @@ import com.rtvplus.ui.adapters.SeeAllAdapter
 import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SeeAllViewModel
+import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -45,6 +46,10 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!AppUtils.isOnline(this)) {
+            AppUtils.showAlertDialog(this)
+        }
 
         binding = ActivitySeeAllBinding.inflate(layoutInflater)
         val view = binding.root

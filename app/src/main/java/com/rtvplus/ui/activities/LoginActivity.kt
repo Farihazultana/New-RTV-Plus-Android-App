@@ -28,6 +28,7 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.textfield.TextInputEditText
 import com.rtvplus.data.models.logIn.LogInResponse
+import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.LogInKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,6 +68,11 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         val view = binding.root
+
+        if (!AppUtils.isOnline(this)) {
+            AppUtils.showAlertDialog(this)
+        }
+
         setContentView(view)
 
         //Text Counter for Phone number 0/11

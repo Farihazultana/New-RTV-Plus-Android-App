@@ -82,6 +82,10 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
+        if (!AppUtils.isOnline(this)) {
+            AppUtils.showAlertDialog(this)
+        }
+
         username = SharedPreferencesUtil.getData(
             this,
             AppUtils.UsernameInputKey,
@@ -456,7 +460,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                             is ResultType.Error -> {
                                 Toast.makeText(
                                     this@PlayerActivity,
-                                    "Something is wrong. Please try again",
+                                    R.string.error_response_msg,
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
@@ -474,7 +478,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 is ResultType.Error -> {
                     Toast.makeText(
                         this@PlayerActivity,
-                        "Something is wrong. Please try again",
+                        R.string.error_response_msg,
                         Toast.LENGTH_SHORT
                     ).show()
                 }

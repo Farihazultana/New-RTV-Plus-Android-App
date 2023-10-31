@@ -22,6 +22,7 @@ import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.ui.viewmodels.FavoriteListViewModel
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.RemoveFavoriteListViewModel
+import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -50,6 +51,10 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         binding = ActivityFavoriteListBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        if (!AppUtils.isOnline(this)) {
+            AppUtils.showAlertDialog(this)
+        }
 
         val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -275,7 +280,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                 is ResultType.Error -> {
                     Toast.makeText(
                         this@FavoriteListActivity,
-                        "Something is wrong. Please try again",
+                        R.string.error_response_msg,
                         Toast.LENGTH_SHORT
                     ).show()
                 }

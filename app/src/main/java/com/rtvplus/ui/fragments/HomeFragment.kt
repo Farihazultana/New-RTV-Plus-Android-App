@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.rtvplus.R
 import com.rtvplus.databinding.FragmentHomeBinding
 import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.ui.activities.SearchActivity
@@ -43,6 +44,10 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+
+        if (!AppUtils.isOnline(requireContext())) {
+            AppUtils.showAlertDialog(requireContext())
+        }
 
         username =
             SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
@@ -142,7 +147,7 @@ class HomeFragment : Fragment() {
                     is ResultType.Error -> {
                         Toast.makeText(
                             requireContext(),
-                            "Something is wrong. Please try again",
+                            R.string.error_response_msg,
                             Toast.LENGTH_SHORT
                         ).show()
                         binding.tryAgainBtn.visibility = View.VISIBLE
