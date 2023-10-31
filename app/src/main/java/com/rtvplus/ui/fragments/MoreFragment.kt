@@ -160,7 +160,9 @@ class MoreFragment : Fragment() {
         val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
 
         dialog.show()
-        btnLogout.setOnClickListener { logout(username) }
+        btnLogout.setOnClickListener { logout(username)
+            dialog.dismiss()
+        }
         btnCancel.setOnClickListener { dialog.dismiss() }
     }
 
@@ -203,6 +205,7 @@ class MoreFragment : Fragment() {
 
     private fun navigateToHomeFragment() {
         val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
 

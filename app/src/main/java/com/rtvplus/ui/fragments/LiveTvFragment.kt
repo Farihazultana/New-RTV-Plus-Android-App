@@ -118,7 +118,6 @@ class LiveTvFragment : Fragment() {
         }
         var url = ""
 
-
             logInViewModel.logInData.observe(viewLifecycleOwner) {
                 url = when (it) {
                     is ResultType.Success -> {
