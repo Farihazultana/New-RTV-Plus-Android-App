@@ -131,25 +131,18 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
         }
         )
     }
-    private fun openDialog() {
-        dialog = Dialog(this)
-        dialog.setContentView(R.layout.dialog_forget_password)
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog.setCancelable(true)
-        dialog.window!!.attributes!!.windowAnimations = R.style.animation
-    }
+
     private fun forgetPassword() {
-        openDialog()
+        setDialog()
         forgetPasswordObserve()
-
         val btnSendRequest = dialog.findViewById<Button>(R.id.btnSendRequest)
-
         binding.tvForgotPassword.setOnClickListener {
-            dialog.show()
+            forgetAction(btnSendRequest)
         }
-        btnSendRequest?.setOnClickListener {
-            val enteredUsername =
-                dialog.findViewById<TextInputEditText>(R.id.etUsername).text.toString()
+    }
+    private fun forgetAction(button : Button) {
+        button.setOnClickListener {
+            val enteredUsername = dialog.findViewById<TextInputEditText>(R.id.etUsername).text.toString()
             Log.i("Forget", "onCreate: $enteredUsername")
 
             if (enteredUsername.isNotEmpty() && enteredUsername.length == 11) {
@@ -165,7 +158,21 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
         }
 
+        dialog.show()
     }
+
+
+    private fun setDialog() {
+        dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_forget_password)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.setCancelable(true)
+        dialog.window!!.attributes!!.windowAnimations = R.style.animation
+    }
+
     private fun forgetPasswordApiCall(phoneText: String) {
         forgetPasswordViewModel.fetchForgetPasswordData(phoneText, "forget")
     }

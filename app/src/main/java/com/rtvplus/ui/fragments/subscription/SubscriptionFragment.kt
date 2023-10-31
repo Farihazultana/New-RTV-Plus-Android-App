@@ -13,9 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.subscription.SubschemesItem
 import com.rtvplus.databinding.FragmentSubscribeBottomBinding
@@ -61,22 +59,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
         val fragmentManager = requireActivity().supportFragmentManager
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
 
-
-        val receivedData = arguments?.getString("key")
-
-        if (receivedData != null) {
-            // Rebind the BottomNavigationView to the SubscriptionFragment
-            val bottomNavigationView =
-                requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-            bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
-
-            // Set the start destination of the NavGraph to SubscriptionFragment
-            val navController = findNavController()
-            val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
-            navGraph.setStartDestination(R.id.SubscriptionFragment)
-
-            navController.graph = navGraph
-        }
 
         getPhoneNumSP = SharedPreferencesUtil.getData(
             requireContext(),

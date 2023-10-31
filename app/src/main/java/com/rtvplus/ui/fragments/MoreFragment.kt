@@ -34,10 +34,7 @@ import com.rtvplus.utils.SharedPreferencesUtil
 class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
     private lateinit var dialog: Dialog
-
-    companion object {
-        lateinit var oneTapClient: SignInClient
-    }
+    private lateinit var oneTapClient: SignInClient
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -161,6 +158,8 @@ class MoreFragment : Fragment() {
             startActivity(intent)
         }
 
+        //Logout
+        setDialog()
         binding.logout.setOnClickListener {
             handleLogoutClick(username)
         }
@@ -168,12 +167,15 @@ class MoreFragment : Fragment() {
     }
 
     private fun handleLogoutClick(username: String) {
-        openDialog()
+
         val btnLogout = dialog.findViewById<Button>(R.id.btnLogout)
         val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
 
         dialog.show()
-        btnLogout.setOnClickListener { logout(username) }
+        btnLogout.setOnClickListener {
+            logout(username)
+            dialog.dismiss()
+        }
         btnCancel.setOnClickListener { dialog.dismiss() }
     }
 
@@ -202,15 +204,21 @@ class MoreFragment : Fragment() {
         }
     }
 
-    private fun openDialog() {
+    private fun setDialog() {
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.logout_dialog)
-        dialog.window?.setLayout(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+        dialog.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.setCancelable(true)
         dialog.window!!.attributes!!.windowAnimations = R.style.animation
+    }
+
+    private fun isOneTapClientInitialized(): Boolean {
+        return try {
+            oneTapClient = Identity.getSignInClient(requireActivity())
+            return true
+        } catch (e: UninitializedPropertyAccessException) {
+            false
+        }
     }
 
     private fun navigateToHomeFragment() {
@@ -218,13 +226,4 @@ class MoreFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun isOneTapClientInitialized(): Boolean {
-        return try {
-            //LoginActivity.oneTapClient != null
-            oneTapClient = Identity.getSignInClient(requireActivity())
-            return oneTapClient != null
-        } catch (e: UninitializedPropertyAccessException) {
-            false
-        }
-    }
 }
