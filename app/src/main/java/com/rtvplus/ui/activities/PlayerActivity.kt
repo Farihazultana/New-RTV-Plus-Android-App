@@ -124,14 +124,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
 
         binding.favouriteIcon.setOnClickListener {
-//            if (binding.favouriteIcon.tag == R.drawable.baseline_favorite_border_24) {
-//
-//                binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
-//            }
-//            else
-//            {
-//                binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
-//            }
 
             if (isInList == 1) {
                 if (username.isNotEmpty()) {
@@ -593,7 +585,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     fun setFullscreen(fullscreen: Boolean) {
         val playerView = binding.playerView
         val fullScreenbutton: ImageView = findViewById(R.id.fullscreen)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
         if (fullscreen) {
             makeFullScreen(fullScreenbutton, playerView)
@@ -617,6 +608,9 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         fullScreenbutton: ImageView,
         playerView: PlayerView
     ) {
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
         // Set the activity orientation to landscape
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_exit_24)

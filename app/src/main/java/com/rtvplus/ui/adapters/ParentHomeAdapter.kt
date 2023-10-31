@@ -95,11 +95,20 @@ class ParentHomeAdapter(
                     override fun onClick(position: Int, carouselItem: CarouselItem) {
                         super.onClick(position, carouselItem)
                         //  Toast.makeText(myContext, carouselItem.contentId, Toast.LENGTH_SHORT).show()
-                        val intent =
-                            Intent(holder.itemView.context, PlayerActivity::class.java)
-                        intent.putExtra("id", carouselItem.contentId)
-                        intent.putExtra("type", "single")
-                        holder.itemView.context.startActivity(intent)
+
+                        val username =
+                            SharedPreferencesUtil.getData(myContext, UsernameInputKey, "")
+                        if (username.toString().isNotEmpty()) {
+                            val intent =
+                                Intent(holder.itemView.context, PlayerActivity::class.java)
+                            intent.putExtra("id", carouselItem.contentId)
+                            intent.putExtra("type", "single")
+                            holder.itemView.context.startActivity(intent)
+                        } else {
+                            val intent =
+                                Intent(holder.itemView.context, LoginActivity::class.java)
+                            holder.itemView.context.startActivity(intent)
+                        }
                     }
 
                     override fun onCreateViewHolder(
@@ -205,11 +214,8 @@ class ParentHomeAdapter(
                             val randNum = Random.nextInt(1, currentItem.contents.size)
                             val imageUrl = currentItem.contents[randNum].image_location
                             holder.thumbnailImage.setOnClickListener {
-                                val username = SharedPreferencesUtil.getData(
-                                    myContext,
-                                    UsernameInputKey,
-                                    ""
-                                )
+                                val username =
+                                    SharedPreferencesUtil.getData(myContext, UsernameInputKey, "")
                                 if (username.toString().isNotEmpty()) {
                                     val intent =
                                         Intent(holder.itemView.context, PlayerActivity::class.java)
