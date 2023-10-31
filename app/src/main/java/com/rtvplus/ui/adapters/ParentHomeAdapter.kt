@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -95,7 +94,7 @@ class ParentHomeAdapter(
 
                     override fun onClick(position: Int, carouselItem: CarouselItem) {
                         super.onClick(position, carouselItem)
-                      //  Toast.makeText(myContext, carouselItem.contentId, Toast.LENGTH_SHORT).show()
+                        //  Toast.makeText(myContext, carouselItem.contentId, Toast.LENGTH_SHORT).show()
                         val intent =
                             Intent(holder.itemView.context, PlayerActivity::class.java)
                         intent.putExtra("id", carouselItem.contentId)
@@ -161,12 +160,19 @@ class ParentHomeAdapter(
                     )
                     holder.textView.text = currentItem.catname
                     holder.recyclerView.adapter = holder.childListAdapter
-                    holder.seeAll.setOnClickListener {
-                        val intent = Intent(holder.itemView.context, SeeAllActivity::class.java)
-                        intent.putExtra("catcode", currentItem.catcode)
-                        intent.putExtra("catname", currentItem.catname)
-                        holder.itemView.context.startActivity(intent)
+                    if (currentItem.catcode == "cwt") {
+                        holder.seeAll.visibility = View.GONE
+                    } else {
+
+                        holder.seeAll.setOnClickListener {
+                            val intent = Intent(holder.itemView.context, SeeAllActivity::class.java)
+                            intent.putExtra("catcode", currentItem.catcode)
+                            intent.putExtra("catname", currentItem.catname)
+                            holder.itemView.context.startActivity(intent)
+                        }
+
                     }
+
                 } else {
                     holder.textView.visibility = View.GONE
                     holder.recyclerView.visibility = View.GONE

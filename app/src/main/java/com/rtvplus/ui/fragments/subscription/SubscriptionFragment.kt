@@ -155,7 +155,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
             subscriptionViewModel.subscriptionData.observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is ResultType.Loading -> {
-                        binding.subscribeProgressBar.visibility = View.VISIBLE
+                        binding.shimmerFrameLayout.visibility = View.VISIBLE
+                        binding.shimmerFrameLayout.startShimmer()
                         binding.textView.visibility = View.GONE
                         binding.btnContinuePayment.visibility = View.GONE
                     }
@@ -163,7 +164,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener {
                     is ResultType.Success -> {
                         val subscriptionData = result.data
                         subscriptionAdapter.setData(subscriptionData.subschemes)
-                        binding.subscribeProgressBar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                         binding.textView.visibility = View.VISIBLE
                         //binding.textView.text = LoginActivity.packText
                         binding.btnContinuePayment.visibility = View.VISIBLE
