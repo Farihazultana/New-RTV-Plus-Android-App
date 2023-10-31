@@ -63,11 +63,4 @@ class RtvApplication : Application() {
         }
     }
 
-//    fun storeLoginInfo(logInResult: LogInResponseItem) {
-//
-//        loginInfo.result  = logInResult.result
-//
-//    }
-
-
 }
