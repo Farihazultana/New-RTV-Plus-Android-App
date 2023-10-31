@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,19 +24,20 @@ import com.rtvplus.ui.adapters.ParentHomeAdapter
 import com.rtvplus.ui.viewmodels.HomeViewModel
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
+import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.ObserverListenerSocial {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var parentHomeAdapter: ParentHomeAdapter
     private val homeViewModel by viewModels<HomeViewModel>()
-    private val logInViewModel by viewModels<LogInViewModel>()
-    private var isPremiumUser: Int? = 0
     var username: String? = ""
+    private lateinit var signInType: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +46,14 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+
+        signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "").toString()
+        if (signInType == "Phone") {
+            LogInUtil().observeLoginData(requireActivity(),this,this,this)
+        } else {
+            SocialmediaLoginUtil().observeGoogleLogInData(requireActivity(),this,this,this)
+        }
+
 
         if (!AppUtils.isOnline(requireContext())) {
             AppUtils.showAlertDialog(requireContext())
@@ -65,6 +75,7 @@ class HomeFragment : Fragment() {
             requireActivity().finish()
         }
 
+
         return binding.root
     }
 
@@ -74,7 +85,7 @@ class HomeFragment : Fragment() {
         homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")
 
         parentHomeAdapter =
-            ParentHomeAdapter(requireContext(), emptyList(), null, lifecycle, this)
+            ParentHomeAdapter(requireContext(), emptyList(), lifecycle, this)
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
@@ -97,32 +108,8 @@ class HomeFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        if (username!!.isNotEmpty()) {
-            logInViewModel.fetchLogInData(username!!, "", "yes", "1")
-        }
-
-        logInViewModel.logInData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ResultType.Success -> {
-                    val logInResult = it.data
-
-                    for (item in logInResult) {
-                        isPremiumUser = item.play
-                    }
-                }
-
-                is ResultType.Error -> {
-                    isPremiumUser = 0
-                }
-
-                else -> {
-                    isPremiumUser = 0
-                }
-            }
-        }
-
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.homeData.collect{ result ->
+            homeViewModel.homeData.collect { result ->
                 when (result) {
                     is ResultType.Loading -> {
                         binding.tryAgainBtn.visibility = View.GONE
@@ -131,17 +118,13 @@ class HomeFragment : Fragment() {
                     }
 
                     is ResultType.Success -> {
-                        if (isPremiumUser.toString().isNotEmpty()) {
-                            val homeData = result.data
-                            parentHomeAdapter.homeData = homeData.data
-                            parentHomeAdapter.isPemiumUser = isPremiumUser
-                            binding.tryAgainBtn.visibility = View.GONE
-                            binding.parentRecyclerview.visibility = View.VISIBLE
-                            parentHomeAdapter.notifyDataSetChanged()
-                            binding.shimmerFrameLayout.stopShimmer()
-                            binding.shimmerFrameLayout.visibility = View.GONE
-
-                        }
+                        val homeData = result.data
+                        parentHomeAdapter.homeData = homeData.data
+                        binding.tryAgainBtn.visibility = View.GONE
+                        binding.parentRecyclerview.visibility = View.VISIBLE
+                        parentHomeAdapter.notifyDataSetChanged()
+                        binding.shimmerFrameLayout.stopShimmer()
+                        binding.shimmerFrameLayout.visibility = View.GONE
                     }
 
                     is ResultType.Error -> {
@@ -170,8 +153,52 @@ class HomeFragment : Fragment() {
     }
 
     override fun onResume() {
+        if (signInType == "Phone") {
+            val user =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
+            val password =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.UserPasswordKey, "").toString()
+            LogInUtil().fetchLogInData(this, user, password)
+        } else {
+            val user =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
+            val email =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "").toString()
+            val firstname =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_FirstName, "")
+                    .toString()
+            val lastname =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_LastName, "")
+                    .toString()
+            val imgUri =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
+                    .toString()
+            Log.i(
+                "OneTap",
+                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
+            )
+            SocialmediaLoginUtil().fetchGoogleLogInData(
+                this,
+                user,
+                firstname,
+                lastname,
+                email,
+                imgUri
+            )
+        }
+
+
+
         super.onResume()
         homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")
+    }
+
+    override fun observerListener(result: String) {
+
+    }
+
+    override fun observerListenerSocial(result: String) {
+
     }
 
 }

@@ -87,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
                 android:layout_marginStart="@dimen/_11sdp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="@dimen/_11sdp"
                 android:layout_marginBottom="95dp"
                 android:backgroundTint="@color/green"
@@ -97,7 +97,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/editText"
                 app:layout_constraintHorizontal_bias="0.516"
                 app:layout_constraintStart_toStartOf="@+id/editText"
-                app:layout_constraintTop_toBottomOf="@+id/editText" />
+                app:layout_constraintTop_toBottomOf="@+id/tvInputCounter" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

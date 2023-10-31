@@ -44,7 +44,6 @@ import kotlin.random.Random
 class ParentHomeAdapter(
     private var myContext: Context,
     var homeData: List<Data>,
-    var isPemiumUser: Int?,
     var lifecycle: Lifecycle,
     private val homeFragment: HomeFragment
 ) :
@@ -161,7 +160,6 @@ class ParentHomeAdapter(
                             myContext,
                             currentItem.contents,
                             currentItem.contentviewtype,
-                            isPemiumUser,
                             homeFragment
                         )
                     holder.recyclerView.layoutManager = LinearLayoutManager(

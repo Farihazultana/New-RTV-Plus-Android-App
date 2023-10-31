@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -24,15 +25,17 @@ import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.RemoveFavoriteListViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
+import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveItemClickListener,
-    FavoriteListAdapter.itemClickListener {
+    FavoriteListAdapter.itemClickListener,  LogInUtil.ObserverListener, SocialmediaLoginUtil.ObserverListenerSocial {
     lateinit var binding: ActivityFavoriteListBinding
     private val favoriteListViewModel by viewModels<FavoriteListViewModel>()
     private val removeListViewModel by viewModels<RemoveFavoriteListViewModel>()
@@ -44,6 +47,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
     var isPremiumUser : Int = 0
     private val logInViewModel by viewModels<LogInViewModel>()
     lateinit var username: String
+    private lateinit var signInType: String
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +63,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
 
-        isPremiumUser = checkIfPremiumUser()
+        isPremiumUser = SharedPreferencesUtil.getSavedLogInData(this)?.play ?: 0
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -68,11 +72,19 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         }
         username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
 
+
+        signInType = SharedPreferencesUtil.getData(this, AppUtils.SignInType, "").toString()
+        if (signInType == "Phone") {
+            LogInUtil().observeLoginData(this, this, this, this)
+        } else {
+            SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+        }
+
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
 
-        favoriteListAdapter = FavoriteListAdapter(null, this, this, checkIfPremiumUser())
+        favoriteListAdapter = FavoriteListAdapter(null, this, this, isPremiumUser)
         binding.favouriteListRecyclerview.layoutManager = GridLayoutManager(this, 2)
         binding.favouriteListRecyclerview.adapter = favoriteListAdapter
 
@@ -190,33 +202,6 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         }
     }
 
-    private fun checkIfPremiumUser(): Int {
-        var isPremiumUser: Int? = 0
-
-        logInViewModel.logInData.observe(this) {
-            when (it) {
-                is ResultType.Success -> {
-                    val logInResult = it.data
-
-                    for (item in logInResult) {
-                        val result = item.play
-                        isPremiumUser = result
-                    }
-                }
-
-                is ResultType.Error -> {
-                    isPremiumUser = 0
-                }
-
-                else -> {
-                    isPremiumUser = 0
-                }
-            }
-        }
-
-        return isPremiumUser!!
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -293,7 +278,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "")
 
         if (username.toString().isNotEmpty()) {
-            if (checkIfPremiumUser() == 0 && item?.isfree == "0") {
+            if (isPremiumUser == 0 && item?.isfree == "0") {
                 val fragmentTransaction = this.supportFragmentManager.beginTransaction()
                 val subscriptionFragment = SubscriptionFragment()
                 fragmentTransaction.replace(
@@ -327,6 +312,52 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
             // If the back stack is empty, navigate back or exit the activity
             super.onBackPressed()
         }
+    }
+
+    override fun onResume() {
+        if (signInType == "Phone") {
+            val user =
+                SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+            val password =
+                SharedPreferencesUtil.getData(this, AppUtils.UserPasswordKey, "").toString()
+            LogInUtil().fetchLogInData(this, user, password)
+        } else {
+            val user =
+                SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+            val email =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_Email, "").toString()
+            val firstname =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_FirstName, "")
+                    .toString()
+            val lastname =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_LastName, "")
+                    .toString()
+            val imgUri =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_ImgUri, "")
+                    .toString()
+            Log.i(
+                "OneTap",
+                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
+            )
+            SocialmediaLoginUtil().fetchGoogleLogInData(
+                this,
+                user,
+                firstname,
+                lastname,
+                email,
+                imgUri
+            )
+        }
+
+        super.onResume()
+    }
+
+    override fun observerListener(result: String) {
+
+    }
+
+    override fun observerListenerSocial(result: String) {
+
     }
 
 }

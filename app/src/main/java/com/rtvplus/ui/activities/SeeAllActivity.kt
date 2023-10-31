@@ -3,6 +3,7 @@ package com.rtvplus.ui.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -19,15 +20,17 @@ import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SeeAllViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
+import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
-
+class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
+    LogInUtil.ObserverListener, SocialmediaLoginUtil.ObserverListenerSocial {
     private lateinit var binding: ActivitySeeAllBinding
     private lateinit var seeAllAdapter: SeeAllAdapter
     private val seeAllViewModel by viewModels<SeeAllViewModel>()
@@ -35,9 +38,10 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
     private var currentPage = 1
     private var isLoading = false
     private var isLastpage = false
-    private var isPremiumUser: Int? = 0
     private val logInViewModel by viewModels<LogInViewModel>()
     lateinit var username: String
+    private lateinit var signInType: String
+    private var isPremiumUser: Int? = 0
 
     companion object {
         lateinit var catCode: String
@@ -65,37 +69,24 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
             ""
         ).toString()
 
+        signInType = SharedPreferencesUtil.getData(this, AppUtils.SignInType, "").toString()
+        if (signInType == "Phone") {
+            LogInUtil().observeLoginData(this, this, this, this)
+        } else {
+            SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+        }
+
+        isPremiumUser = SharedPreferencesUtil.getSavedLogInData(this)?.play ?: 0
+
         catCode = intent.getStringExtra("catcode").toString()
         catName = intent.getStringExtra("catname").toString()
 
-        seeAllAdapter = SeeAllAdapter(this, emptyList(), this, null)
+        seeAllAdapter = SeeAllAdapter(this, emptyList(), this, isPremiumUser)
         binding.rvSeeAll.layoutManager = layoutManager
         binding.rvSeeAll.adapter = seeAllAdapter
 
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
-        }
-
-
-        logInViewModel.logInData.observe(this) {
-            when (it) {
-                is ResultType.Success -> {
-                    val logInResult = it.data
-
-                    for (item in logInResult) {
-                        val result = item.play
-                        isPremiumUser = result
-                    }
-                }
-
-                is ResultType.Error -> {
-
-                }
-
-                else -> {
-
-                }
-            }
         }
 
         if (catCode.isNotEmpty()) {
@@ -137,8 +128,6 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
 
                     is ResultType.Success -> {
                         val seeAllData = it.data
-
-                        seeAllAdapter.isPemiumUser = isPremiumUser
 
                         if (currentPage == 1) {
                             seeAllAdapter.seeAllData = seeAllData.contents
@@ -241,5 +230,50 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener {
 
 
         }
+    }
+
+    override fun onResume() {
+        if (signInType == "Phone") {
+            val user =
+                SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+            val password =
+                SharedPreferencesUtil.getData(this, AppUtils.UserPasswordKey, "").toString()
+            LogInUtil().fetchLogInData(this, user, password)
+        } else {
+            val user =
+                SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+            val email =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_Email, "").toString()
+            val firstname =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_FirstName, "")
+                    .toString()
+            val lastname =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_LastName, "")
+                    .toString()
+            val imgUri =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_ImgUri, "")
+                    .toString()
+            Log.i(
+                "OneTap",
+                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
+            )
+            SocialmediaLoginUtil().fetchGoogleLogInData(
+                this,
+                user,
+                firstname,
+                lastname,
+                email,
+                imgUri
+            )
+        }
+        super.onResume()
+    }
+
+    override fun observerListener(result: String) {
+
+    }
+
+    override fun observerListenerSocial(result: String) {
+
     }
 }

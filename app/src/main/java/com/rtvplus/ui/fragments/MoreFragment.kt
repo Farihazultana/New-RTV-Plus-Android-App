@@ -12,9 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -25,9 +26,9 @@ import com.rtvplus.ui.activities.FeedBackActivity
 import com.rtvplus.ui.activities.InfoActivity
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.MainActivity
+import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.PACKAGE_NAME
 import com.rtvplus.utils.AppUtils.UsernameInputKey
-import com.rtvplus.utils.AppUtils.phoneRegex
 import com.rtvplus.utils.SharedPreferencesUtil
 
 class MoreFragment : Fragment() {
@@ -62,12 +63,28 @@ class MoreFragment : Fragment() {
 //        }
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        val username = SharedPreferencesUtil.getData(
+        var username = SharedPreferencesUtil.getData(
             requireContext(),
             UsernameInputKey,
             ""
         ).toString()
 
+        //To check if signed in with google
+        val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
+        val email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "")
+            .toString()
+        if (signInType == "Google") {
+            username = email
+            binding.imgSocialLoginProfile.visibility = View.VISIBLE
+            val imgUri =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
+                    .toString()
+            Glide.with(requireActivity()).load(imgUri)
+                .placeholder(R.drawable.no_img)
+                .fitCenter().transform(RoundedCorners(50))
+                .error(R.drawable.no_img)
+                .into(binding.imgSocialLoginProfile)
+        }
 
         binding.favourite.setOnClickListener {
             if (username.isNotEmpty()) {
@@ -112,12 +129,25 @@ class MoreFragment : Fragment() {
         }
 
         binding.rate.setOnClickListener {
-            goToPlayStore()
+            val marketUri = Uri.parse("market://details?id=$PACKAGE_NAME")
+            val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
+            try {
+                startActivity(marketIntent)
+            } catch (e: ActivityNotFoundException) {
+                // If Play Store app is not available, open the app link in a browser
+                val webUri =
+                    Uri.parse("https://play.google.com/store/apps/details?id=$PACKAGE_NAME")
+                val webIntent = Intent(Intent.ACTION_VIEW, webUri)
+                startActivity(webIntent)
+            }
         }
 
         if (username.isNotEmpty()) {
-            val modifiyedPhoneNumber = removeFirstTwoCharacters(username)
-            binding.logInAs.text = "Logged in as: ${modifiyedPhoneNumber.toString()}"
+            if (username == email) {
+                binding.logInAs.text = username
+            } else {
+                binding.logInAs.text = "Logged in as: $username"
+            }
             binding.notLoginText.visibility = View.GONE
             binding.logInBtn.visibility = View.GONE
             binding.logout.visibility = View.VISIBLE
@@ -140,27 +170,14 @@ class MoreFragment : Fragment() {
         return binding.root
     }
 
-    private fun goToPlayStore() {
-        val marketUri = Uri.parse("market://details?id=$PACKAGE_NAME")
-        val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
-        try {
-            startActivity(marketIntent)
-        } catch (e: ActivityNotFoundException) {
-            // If Play Store app is not available, open the app link in a browser
-            val webUri =
-                Uri.parse("https://play.google.com/store/apps/details?id=$PACKAGE_NAME")
-            val webIntent = Intent(Intent.ACTION_VIEW, webUri)
-            startActivity(webIntent)
-        }
-    }
-
     private fun handleLogoutClick(username: String) {
         openDialog()
         val btnLogout = dialog.findViewById<Button>(R.id.btnLogout)
         val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
 
         dialog.show()
-        btnLogout.setOnClickListener { logout(username)
+        btnLogout.setOnClickListener {
+            logout(username)
             dialog.dismiss()
         }
         btnCancel.setOnClickListener { dialog.dismiss() }
@@ -174,7 +191,6 @@ class MoreFragment : Fragment() {
             binding.logInAs.text = null
 
             if (username.isNotEmpty()) {
-                LoginActivity.showOneTapUI = false
                 oneTapClient.signOut().addOnFailureListener {
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                 }.addOnCompleteListener {
@@ -216,14 +232,6 @@ class MoreFragment : Fragment() {
             return oneTapClient != null
         } catch (e: UninitializedPropertyAccessException) {
             false
-        }
-    }
-
-    fun removeFirstTwoCharacters(inputString: String): String {
-        if (inputString.length >= 2) {
-            return inputString.substring(2)
-        } else {
-            return ""
         }
     }
 }

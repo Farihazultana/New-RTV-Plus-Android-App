@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.rtvplus.R
@@ -27,9 +26,11 @@ class ChildHomeAdapter(
     private var myContext: Context,
     private var contentData: List<Content>,
     private var contentViewType: String,
-    var isPemiumUser: Int?,
     private val homeFragment: HomeFragment
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var isPemiumUser: Int = SharedPreferencesUtil.getSavedLogInData(myContext)?.play ?: 0
+
     companion object {
         private const val TYPE_BANNER = 0
         private const val TYPE_CONTENT = 1
@@ -57,8 +58,9 @@ class ChildHomeAdapter(
     @SuppressLint("SetTextI18n", "ResourceAsColor")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentItem = contentData[position]
-        when (holder) {
+        Log.e("isPemiumUser",isPemiumUser.toString())
 
+        when (holder) {
             is ContentViewHolder -> {
                 if (currentItem.isfree == "0" && isPemiumUser == 0) {
                     holder.premiumTextView.visibility = View.VISIBLE

@@ -1,33 +1,40 @@
 package com.rtvplus.utils
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat.startActivity
 import com.rtvplus.R
-import com.rtvplus.ui.viewmodels.LogInViewModel
-import kotlinx.coroutines.CompletableDeferred
 
 object AppUtils {
     const val BASE_URL = "https://api-v200.rtvplus.tv/"
     const val PACKAGE_NAME = "com.rtvplus"
     const val PhoneInputKey = "phone_input_key_rtv"
     //const val GoogleSignInKey = "google_key"
-   // const val LogInKey = "login_key_key_rtv"
+    // const val LogInKey = "login_key_key_rtv"
 
     const val LogInKey = "LogIn_Result"
     const val UsernameInputKey = "User"
+    const val UserPasswordKey = "Password"
     const val GoogleSignInKey = "Google"
     const val USER_GMAIL = "rtv_user_gmail_001"
+    const val LogInModule = "result"
+    const val SignInType = "SignedInWith"
+    const val GoogleSignIn_IdToken = "ID token"
+    const val GoogleSignIn_FirstName = "firstname"
+    const val GoogleSignIn_LastName = "lastname"
+    const val GoogleSignIn_ImgUri = "ImageUri"
+    const val GoogleSignIn_Email = "Email"
+
+
+
+    //loginResponse save key as obj
+    const val LogInObj = "LogInResponseItem"
+
 
     val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
     val phoneRegex = Regex("^8801[3-9]\\d{8}$")
@@ -67,5 +74,6 @@ object AppUtils {
             alertDialog.dismiss()
         }
     }
+
 
 }

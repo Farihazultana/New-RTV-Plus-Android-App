@@ -1,5 +1,6 @@
 package com.rtvplus.ui.activities
 
+import com.rtvplus.utils.LogInUtil
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -18,6 +19,8 @@ import com.rtvplus.data.models.local_payment.SaveLocalPaymentResponse
 import com.rtvplus.databinding.ActivityLocalPaymentBinding
 import com.rtvplus.ui.viewmodels.LocalPaymentViewModel
 import com.rtvplus.ui.viewmodels.SaveLocalPaymentViewModel
+import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.LogInModule
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -50,10 +53,10 @@ class LocalPaymentActivity : AppCompatActivity() {
                 saveLocalPaymentViewModel
             )
 
-        getPhoneNumSP = SharedPreferencesUtil.getData(
-            this,
-            UsernameInputKey,
-            "defaultValue"
+        getPhoneNumSP= SharedPreferencesUtil.getData(
+        this,
+        UsernameInputKey,
+        "defaultValue"
         ).toString()
         val sub_pack = intent.getStringExtra("sub_pack")
 
@@ -152,7 +155,6 @@ class LocalPaymentActivity : AppCompatActivity() {
         private fun shouldOpenInApp(url: String?): Boolean {
             return true
         }
-
         private fun handleSavedLocalPaymentData(paymentId: String, orderId: String) {
             saveLocalPaymentViewModel.fetchSavedLocalPaymentData(
                 getPhoneNumSP,
@@ -209,11 +211,15 @@ class LocalPaymentActivity : AppCompatActivity() {
             //localPaymentView = null
         }
 
-        val intent = Intent(this, MainActivity::class.java)
+        /*val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("subscription", "subscription")
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
+        startActivity(intent)*/
+        val user = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
+        val password = SharedPreferencesUtil.getData(this, AppUtils.UserPasswordKey, "").toString()
+        LogInUtil().fetchLogInData(this,user, password)
 
+        //dummy for test
+        SharedPreferencesUtil.saveData(this, LogInModule, "start180")
 
         super.finish()
     }
