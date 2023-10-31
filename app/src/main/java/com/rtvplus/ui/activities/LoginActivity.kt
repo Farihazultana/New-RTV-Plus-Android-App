@@ -208,65 +208,70 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
         when (requestCode) {
             _requestCodeSignIn -> {
+                if (resultCode != RESULT_OK) {
+                    // User canceled the sign-in.
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Google Sign-In was canceled by the user",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return
+                }
+
                 val task = gsc!!.silentSignIn()
-                if (task.isSuccessful) {
-                    // There's an immediate result available.
-                    updateViewWithAccount()
-                } else {
-                    task.addOnCompleteListener { task ->
-                        try {
-                            if (task.isSuccessful) {
-                                // Successful sign-in
-                                updateViewWithAccount()
-                            } else {
-                                // Handle other cases or show an error message to the user.
-                                val exception = task.exception
-                                if (exception is ApiException) {
-                                    val statusCode = exception.statusCode
-                                    when (statusCode) {
-                                        GoogleSignInStatusCodes.SIGN_IN_CANCELLED -> {
-                                            // User canceled the sign-in.
-                                            Toast.makeText(
-                                                this@LoginActivity,
-                                                "Google Sign-In was canceled by the user",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                        }
-                                        GoogleSignInStatusCodes.SIGN_IN_FAILED -> {
-                                            // Sign-in failed for some reason.
-                                            // Update UI accordingly or show an error message.
-                                            Toast.makeText(
-                                                this@LoginActivity,
-                                                "Google Sign-In failed. Please try again later.",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                        }
-                                        // Handle other error codes here...
-                                        else -> {
-                                            // Handle unknown errors or show a generic error message.
-                                            Toast.makeText(
-                                                this@LoginActivity,
-                                                "Google Sign-In encountered an error. Please try again later.",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                        }
+                task.addOnCompleteListener { task ->
+                    try {
+                        if (task.isSuccessful) {
+                            // Successful sign-in
+                            updateViewWithAccount()
+                        } else {
+                            // Handle other cases or show an error message to the user.
+                            val exception = task.exception
+                            if (exception is ApiException) {
+                                val statusCode = exception.statusCode
+                                when (statusCode) {
+                                    GoogleSignInStatusCodes.SIGN_IN_CANCELLED -> {
+                                        // User canceled the sign-in.
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            "Google Sign-In was canceled by the user",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                    GoogleSignInStatusCodes.SIGN_IN_FAILED -> {
+                                        // Sign-in failed for some reason.
+                                        // Update UI accordingly or show an error message.
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            "Google Sign-In failed. Please try again later.",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+
+                                    else -> {
+                                        // Handle unknown errors or show a generic error message.
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            "Google Sign-In encountered an error. Please try again later.",
+                                            Toast.LENGTH_LONG
+                                        ).show()
                                     }
                                 }
                             }
-                        } catch (apiException: ApiException) {
-                            // Handle exceptions and update UI based on the error code.
-                            // You can handle specific exceptions here, if needed.
-                            Toast.makeText(
-                                this@LoginActivity,
-                                "An error occurred during Google Sign-In. Please try again.",
-                                Toast.LENGTH_LONG
-                            ).show()
                         }
+                    } catch (apiException: ApiException) {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "An error occurred during Google Sign-In. Please try again.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             }
         }
     }
+
+
 
 
     private fun updateViewWithAccount() {
