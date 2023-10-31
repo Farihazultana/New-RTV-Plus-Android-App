@@ -29,7 +29,7 @@ class RegistrationActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        binding.etPhoneText.addTextChangedListener(object : TextWatcher {
+        /*binding.etPhoneText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -44,7 +44,7 @@ class RegistrationActivity : AppCompatActivity() {
 
             }
         }
-        )
+        )*/
 
         binding.btnRegistration.setOnClickListener {
             val enteredPhone = binding.etPhoneText.text.toString()

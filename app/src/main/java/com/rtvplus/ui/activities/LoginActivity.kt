@@ -64,7 +64,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
         val logInUtil = LogInUtil()
 
         //Text Counter for Phone number 0/11
-        textCounter()
+        //textCounter()
 
 
         //LogIn with phone
@@ -113,7 +113,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
     }
 
 
-    private fun textCounter() {
+    /*private fun textCounter() {
         binding.etPhoneText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -130,7 +130,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
             }
         }
         )
-    }
+    }*/
 
     private fun forgetPassword() {
         setDialog()
