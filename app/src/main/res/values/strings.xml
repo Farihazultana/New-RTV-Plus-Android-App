@@ -21,4 +21,6 @@
     <string name="signed_out_toast">You are Signed out</string>
     <string name="not_registered_yet_click_here"><u>Not Registered Yet? Click here</u></string>
     <string name="already_have_an_account_click_here"><u>Already Have an Account? Click here</u></string>
+    <string name="no_internet_description">The device you\'re trying to connect to is not currently online. Please check your internet connection.</string>
+    <string name="no_internet_title">No internet Connection</string>
 </resources>
