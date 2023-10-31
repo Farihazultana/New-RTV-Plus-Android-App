@@ -26,5 +26,8 @@ data class LogInResponseItem(
     val result: String,
     val showad: Int,
     val token: String,
-    val ugc: Int
+    val ugc: Int,
+    val loginsrc: Any,
+    val response: String,
+
 )

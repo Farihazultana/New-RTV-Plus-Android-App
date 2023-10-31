@@ -1,11 +1,9 @@
 package com.rtvplus.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rtvplus.data.models.logIn.LogInModuleItem
 import com.rtvplus.data.models.logIn.LogInResponse
 import com.rtvplus.data.repository.LogInRepository
 import com.rtvplus.utils.ResultType
@@ -18,17 +16,14 @@ class LogInViewModel @Inject constructor(private val repository: LogInRepository
     private var _logInData = MutableLiveData<ResultType<LogInResponse>>(ResultType.Loading)
     val logInData: LiveData<ResultType<LogInResponse>> = _logInData
 
-    private lateinit var loginInfo: LogInModuleItem
     fun fetchLogInData(userName: String, password: String, haspin: String, tc:String) {
         viewModelScope.launch {
             try {
                 val result = repository.getLogInData(userName, password, haspin, tc)
-                Log.i("Newton2", "fetchLogInData ViewModelScope2: ${_logInData.value}")
                 _logInData.value = result
 
             } catch (e: Exception) {
                 _logInData.value = ResultType.Error(e)
-                Log.i("Newton2", "fetchLogInData ViewModelScope error: ${e.toString()}")
             }
         }
     }

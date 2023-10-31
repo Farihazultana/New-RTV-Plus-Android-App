@@ -18,7 +18,6 @@ import com.rtvplus.data.models.search.SearchResponse
 import com.rtvplus.data.models.seeAll.SeeAllResponse
 import com.rtvplus.data.models.single_content.playlist.PlayListResponse
 import com.rtvplus.data.models.single_content.single.SingleContentResponse
-import com.rtvplus.data.models.socialmedia_login.google.GoogleLogInResponse
 import com.rtvplus.data.models.subscription.SubscriptionResponse
 import com.rtvplus.data.models.tv_shows.TvShowsResponse
 import retrofit2.Response
@@ -84,12 +83,6 @@ interface ApiServices {
     ): Response<RemoveListResponse>
 
     @FormUrlEncoded
-    @POST("flix_subschemes.php")
-    suspend fun getSubscriptionData(
-        @Field("msisdn") msisdn: String
-    ): Response<SubscriptionResponse>
-
-    @FormUrlEncoded
     @POST("flixlist_json_app.php")
     suspend fun getSeeAllData(
         @Field("page") page: String,
@@ -99,12 +92,31 @@ interface ApiServices {
     ): Response<SeeAllResponse>
 
     @FormUrlEncoded
+    @POST("flix_subschemes.php")
+    suspend fun getSubscriptionData(
+        @Field("msisdn") msisdn: String
+    ): Response<SubscriptionResponse>
+
+    @FormUrlEncoded
     @POST("flix_makemylogingettoken.php")
     suspend fun getLogInData(
         @Field("username") username: String,
         @Field("password") password: String,
         @Field("haspin") haspin: String,
         @Field("tc") tc: String,
+    ): Response<LogInResponse>
+
+    @FormUrlEncoded
+    @POST("flix_social_login.php")
+    suspend fun getGoogleLogInData(
+        @Field("logintype") logintype: String,
+        @Field("source") source: String,
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("first_name") first_name: String,
+        @Field("last_name") last_namez: String,
+        @Field("email") email: String,
+        @Field("imgurl") imgurl: String
     ): Response<LogInResponse>
 
     @FormUrlEncoded
@@ -120,25 +132,6 @@ interface ApiServices {
         @Field("forget") forget: String
     ): Response<ForgetPasswordResponse>
 
-    @FormUrlEncoded
-    @POST("flix_social_login.php")
-    suspend fun getGoogleLogInData(
-        @Field("logintype") logintype: String,
-        @Field("source") source: String,
-        @Field("username") username: String,
-        @Field("password") password: String,
-        @Field("first_name") first_name: String,
-        @Field("last_name") last_namez: String,
-        @Field("email") email: String,
-        @Field("imgurl") imgurl: String
-    ): Response<GoogleLogInResponse>
-
-    @FormUrlEncoded
-    @POST("flix_appinfo.php")
-    suspend fun getInfoData(
-        @Field("msisdn") msisdn: String,
-        @Field("appinfo") appinfo: String,
-    ): Response<InfoResponse>
 
     @FormUrlEncoded
     @POST("flix_subscription_status_check_portpos.php")
@@ -162,6 +155,12 @@ interface ApiServices {
         @Field("couponcode") couponcode: String
     ): Response<RedeemCuoponPaymentResponse>
 
+    @FormUrlEncoded
+    @POST("flix_appinfo.php")
+    suspend fun getInfoData(
+        @Field("msisdn") msisdn: String,
+        @Field("appinfo") appinfo: String,
+    ): Response<InfoResponse>
     @FormUrlEncoded
     @POST("flix_postfeedback.php")
     suspend fun saveComment(

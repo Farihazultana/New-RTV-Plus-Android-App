@@ -10,10 +10,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.rtvplus.R
-import com.rtvplus.data.models.comment.CommentResponse
 import com.rtvplus.data.models.feedback.FeedbackResponse
 import com.rtvplus.databinding.ActivityFeedBackBinding
-import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SaveFeedbackViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.ResultType

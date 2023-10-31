@@ -15,13 +15,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
-import com.rtvplus.data.models.logIn.LogInModuleItem
 import com.rtvplus.databinding.FragmentHomeBinding
-import com.rtvplus.di.LoginInfoModule
 import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.ui.activities.SearchActivity
 import com.rtvplus.ui.adapters.ParentHomeAdapter
@@ -76,8 +72,6 @@ class HomeFragment : Fragment() {
         }
 
 
-        val loginDataStore = SharedPreferencesUtil.getData(requireContext(), AppUtils.LogIn_packcode, "")
-        Log.e("panda", loginDataStore.toString())
 
 
         val deviceId = deviceInfo.deviceId
@@ -100,8 +94,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         homeViewModel.fetchHomeData(username!!, "home","3", "app","en")
 
-        parentHomeAdapter =
-            ParentHomeAdapter(requireContext(), emptyList(), null, lifecycle,this)
+        parentHomeAdapter = ParentHomeAdapter(requireContext(), emptyList(), null, lifecycle,this)
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
