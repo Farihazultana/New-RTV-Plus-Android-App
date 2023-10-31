@@ -108,6 +108,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
         handleFullScreen()
 
+        checkResponse()
+
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
@@ -539,28 +541,35 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         // Set a click listener for the Confirm button
         confirmButton.setOnClickListener {
             val userInput = editText.text.toString()
-            commentViewModel.saveComment(username, userInput)
-            checkResponse()
-            alertDialog.dismiss()
+            if (userInput.isNotEmpty())
+            {
+                commentViewModel.saveComment(username, userInput)
+
+                alertDialog.dismiss()
+            }
+            else
+            {
+                alertDialog.dismiss()
+            }
+
+
         }
         alertDialog.show()
     }
 
     private fun checkResponse() {
+
         commentViewModel.saveCommentResponse.observe(this) { it ->
             when (it) {
                 is ResultType.Loading -> {
-                    binding.shimmerFrameLayout.visibility = View.VISIBLE
-                    binding.shimmerFrameLayout.startShimmer()
+                    binding.progressbar.visibility = View.VISIBLE
                 }
-
                 is ResultType.Success<*> -> {
                     val response = it.data as CommentResponse
                     if (response.status == "success") {
                         Toast.makeText(this@PlayerActivity, response.status, Toast.LENGTH_SHORT)
                             .show()
-                        binding.shimmerFrameLayout.visibility = View.GONE
-                        binding.shimmerFrameLayout.stopShimmer()
+                        binding.progressbar.visibility = View.GONE
                     }
                 }
 
@@ -570,10 +579,10 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                         R.string.error_response_msg,
                         Toast.LENGTH_SHORT
                     ).show()
-                    binding.shimmerFrameLayout.visibility = View.GONE
-                    binding.shimmerFrameLayout.stopShimmer()
+                    binding.progressbar.visibility = View.GONE
                 }
             }
+            binding.progressbar.visibility = View.GONE
         }
     }
 

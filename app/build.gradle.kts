@@ -18,7 +18,7 @@ android {
     defaultConfig {
         applicationId = "com.rtvplus"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 12
         versionName = "1.2.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
