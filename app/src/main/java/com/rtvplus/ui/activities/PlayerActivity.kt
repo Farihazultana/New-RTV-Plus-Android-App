@@ -146,6 +146,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
+
             )
         } else {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -608,8 +609,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         fullScreenbutton: ImageView,
         playerView: PlayerView
     ) {
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
         // Set the activity orientation to landscape
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
