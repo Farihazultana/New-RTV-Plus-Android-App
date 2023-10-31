@@ -10,6 +10,7 @@ class LogInRepository @Inject constructor(private val apiServices: ApiServices){
     suspend fun getLogInData(userName: String, password: String, haspin: String, tc:String): ResultType<LogInResponse> {
         try {
             val response = apiServices.getLogInData(userName,password,haspin, tc)
+            Log.i("Newton", "successful api call: ${response}")
             Log.i("TAGS", "successful api call: ${response.code()}")
             if (response.isSuccessful) {
                 val data = response.body()

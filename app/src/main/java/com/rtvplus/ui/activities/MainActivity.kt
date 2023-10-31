@@ -3,8 +3,8 @@ package com.rtvplus.ui.activities
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -13,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
 import com.rtvplus.databinding.ActivityMainBinding
+import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.isOnline
 import com.rtvplus.utils.AppUtils.showAlertDialog
@@ -31,6 +32,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var navHostFragment: NavHostFragment
     var backPressedTime: Long = 0
     var doubleBackToExitPressedOnce = false
+    private val logInViewModel by viewModels<LogInViewModel>()
+
+
 
     companion object {
         const val PERMISSION_REQUEST_CODE = 123
@@ -43,8 +47,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
 
         if (!isOnline(this)) {
             showAlertDialog(this)
@@ -56,14 +58,14 @@ class MainActivity : AppCompatActivity() {
 
         var bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
 
-        val sub = intent.getStringExtra("subscription")
+        /*val sub = intent.getStringExtra("subscription")
         if (sub == "subscription") {
             navController.navigate(R.id.SubscriptionFragment)
             val bottomNavigationView =
                 findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
             bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
             //bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
-        }
+        }*/
 
 
         val username = SharedPreferencesUtil.getData(
@@ -72,8 +74,10 @@ class MainActivity : AppCompatActivity() {
             ""
         ).toString()
 
+        //fetchLogInData("", "")
 
-        bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+
+        //bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
         //  val navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
@@ -107,6 +111,8 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+
+
     fun showBottomNavigationBar() {
         binding.bottomNavigationBarId.visibility = View.VISIBLE
     }
@@ -114,6 +120,8 @@ class MainActivity : AppCompatActivity() {
     fun hideBottomNavigationBar() {
         binding.bottomNavigationBarId.visibility = View.GONE
     }
+
+
 
     override fun onBackPressed() {
         super.onBackPressed()
@@ -125,4 +133,5 @@ class MainActivity : AppCompatActivity() {
 //        }
 //        backPressedTime = System.currentTimeMillis()
     }
+
 }
