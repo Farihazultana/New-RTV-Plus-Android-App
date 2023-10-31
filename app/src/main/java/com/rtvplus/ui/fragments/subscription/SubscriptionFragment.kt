@@ -62,8 +62,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
 
 
-
-
         val receivedData = arguments?.getString("key")
 
         if (receivedData != null) {

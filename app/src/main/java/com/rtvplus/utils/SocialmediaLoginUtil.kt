@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import com.rtvplus.data.models.socialmedia_login.google.GoogleLogInResponse
 import com.rtvplus.ui.viewmodels.GoogleLogInViewModel
 
 class SocialmediaLoginUtil {
@@ -26,17 +25,18 @@ class SocialmediaLoginUtil {
         val googleLogInViewModel = ViewModelProvider(viewModelStoreOwner)[GoogleLogInViewModel::class.java]
 
         this.observerListenerGoogle = listener
-        googleLogInViewModel.googleLogInData.observe(lifecycleOwner) {socialLoginResult ->
-            when (socialLoginResult) {
+        googleLogInViewModel.googleLogInData.observe(lifecycleOwner) {
+            when (it) {
                 is ResultType.Success -> {
-                    val result = socialLoginResult.data[0].result
-                    Toast.makeText(context, result, Toast.LENGTH_LONG).show()
-                    Log.i("OneTap", "observeGoogleLogInData Packcode: ${socialLoginResult.data[0].packcode}")
+                    val socialLoginResult = it.data[0]
+                    val result = socialLoginResult.result
+
+                    Log.i("OneTap", "observeGoogleLogInData Packcode: ${socialLoginResult.packcode}")
 
                     this.observerListenerGoogle.observerListenerSocial(result)
 
                     //Store login data
-                    saveGoogleLoginData(context, socialLoginResult)
+                    SharedPreferencesUtil.saveLogInData(context,socialLoginResult)
                 }
 
                 is ResultType.Error -> {
@@ -50,39 +50,5 @@ class SocialmediaLoginUtil {
         }
     }
 
-    private fun saveGoogleLoginData(context: Context, socialLoginResult: ResultType.Success<GoogleLogInResponse>) {
-        val loginResult = socialLoginResult.data[0]
-        try {
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_audioad, loginResult.audioad)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_concurrent, loginResult.concurrent)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_concurrenttext, loginResult.concurrenttext)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_consent, loginResult.consent)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_consenttext, loginResult.consenttext)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_consenturl, loginResult.consenturl)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_currentversion, loginResult.currentversion)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_currentversionios, loginResult.currentversionios)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_email, loginResult.email)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_enforce, loginResult.enforce)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_enforcetext, loginResult.enforcetext)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_extrainfo, loginResult.extrainfo)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_fullname, loginResult.fullname)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_liveurl, loginResult.liveurl)
-            SharedPreferencesUtil.saveData(context, AppUtils.SocialLogIn_loginsrc, loginResult.loginsrc)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_msisdn, loginResult.msisdn)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_packcode, loginResult.packcode)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_packname, loginResult.packname)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_packtext, loginResult.packtext)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_play, loginResult.play)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_referral, loginResult.referral)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_referralimage, loginResult.referralimage)
-            SharedPreferencesUtil.saveData(context, AppUtils.SocialLogIn_response, loginResult.response)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_result, loginResult.result)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_showad, loginResult.showad)
-            SharedPreferencesUtil.saveData(context, AppUtils.LogIn_token, loginResult.token)
-        }catch (e: Exception){
-            Log.i("LogUtil", "error: ${e.toString()}")
-        }
-
-    }
 
 }

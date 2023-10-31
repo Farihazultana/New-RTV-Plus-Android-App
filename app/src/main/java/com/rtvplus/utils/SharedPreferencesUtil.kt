@@ -2,6 +2,10 @@ package com.rtvplus.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.rtvplus.data.models.logIn.LogInResponseItem
+import java.lang.reflect.Type
 
 object SharedPreferencesUtil {
     private const val PREF_NAME = "SP_Authentication"
@@ -23,8 +27,15 @@ object SharedPreferencesUtil {
         editor.apply()
     }
 
+    fun saveLogInData(context: Context, list: LogInResponseItem?) {
+        val editor = getSharedPreferences(context).edit()
+        val gson = Gson()
+        val json = gson.toJson(list)
+        editor.putString(AppUtils.LogInObj, json)
+        editor.apply()
+    }
 
-    fun getData(context: Context, key: String, defaultValue: Any): Any {
+    fun getData(context: Context, key: String, defaultValue: Any?): Any {
         val sharedPreferences = getSharedPreferences(context)
         return when (defaultValue) {
             is String -> sharedPreferences.getString(key, defaultValue.toString()) ?: defaultValue
@@ -34,6 +45,13 @@ object SharedPreferencesUtil {
             is Long -> sharedPreferences.getLong(key, defaultValue.toLong())
             else -> throw IllegalArgumentException("Unsupported data type")
         }
+    }
+
+    fun getSavedLogInData(context: Context): LogInResponseItem? {
+        val gson = Gson()
+        val json: String? = getSharedPreferences(context).getString(AppUtils.LogInObj, null)
+        val type: Type = object : TypeToken<LogInResponseItem?>() {}.type
+        return gson.fromJson(json, type)
     }
 
     fun removeKey(context: Context, key: String) {

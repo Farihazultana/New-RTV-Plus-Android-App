@@ -5,13 +5,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.telephony.TelephonyManager
-import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.rtvplus.data.models.device_info.DeviceInfo
-import com.rtvplus.data.models.logIn.LogInModuleItem
-import com.rtvplus.data.models.logIn.LogInResponseItem
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.emailRegex
 import com.rtvplus.utils.AppUtils.phoneRegex
@@ -65,12 +62,5 @@ class RtvApplication : Application() {
             -1
         }
     }
-
-//    fun storeLoginInfo(logInResult: LogInResponseItem) {
-//
-//        loginInfo.result  = logInResult.result
-//
-//    }
-
 
 }

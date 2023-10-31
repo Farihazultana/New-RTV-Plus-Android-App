@@ -1,7 +1,7 @@
 package com.rtvplus.data.repository
 
 import android.util.Log
-import com.rtvplus.data.models.socialmedia_login.google.GoogleLogInResponse
+import com.rtvplus.data.models.logIn.LogInResponse
 import com.rtvplus.data.services.ApiServices
 import com.rtvplus.utils.ResultType
 import java.lang.Exception
@@ -17,7 +17,7 @@ class GoogleLogInRepository @Inject constructor(private val apiServices: ApiServ
         lastName: String,
         email: String,
         imgUrl: String
-    ): ResultType<GoogleLogInResponse> {
+    ): ResultType<LogInResponse> {
         try {
             val response = apiServices.getGoogleLogInData(
                 logintype,

@@ -1,6 +1,5 @@
 package com.rtvplus.ui.activities
 
-import com.rtvplus.utils.LogInUtil
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
@@ -14,20 +13,22 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.rtvplus.R
-import com.rtvplus.databinding.ActivityLoginBinding
-import com.rtvplus.ui.viewmodels.ForgetPasswordViewModel
-import com.rtvplus.utils.ResultType
-import com.rtvplus.utils.SharedPreferencesUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.textfield.TextInputEditText
+import com.rtvplus.R
+import com.rtvplus.databinding.ActivityLoginBinding
+import com.rtvplus.ui.viewmodels.ForgetPasswordViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.SignInType
 import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.LogInUtil
+import com.rtvplus.utils.ResultType
+import com.rtvplus.utils.SharedPreferencesUtil
 import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -207,37 +208,119 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
         when (requestCode) {
             _requestCodeSignIn -> {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                try {
-                    task.getResult(ApiException::class.java)
-                    val acct = GoogleSignIn.getLastSignedInAccount(this)
-                    if (acct != null) {
-                        val personEmail = acct.email
-                        val firstname = acct.givenName
-                        val lastname = acct.familyName
-                        val imageUri = acct.photoUrl
-                        val userID = acct.id
-
-                        Log.i("SignIn", "onActivityResult: $personEmail, $userID, $firstname, $lastname, $imageUri")
-
-                        SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, userID ?: "")
-                        SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_Email, personEmail ?: "")
-                        SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_FirstName, firstname ?: "")
-                        SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_LastName, lastname ?: "")
-                        SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_ImgUri, imageUri?.toString() ?: "")
-
-
-                        SocialmediaLoginUtil().fetchGoogleLogInData(this, userID!!, firstname!!, lastname!!, personEmail!!, imageUri.toString())
-
-
-                    }
-
-                } catch (e: ApiException) {
-                    Toast.makeText(applicationContext, "Something went wrong", Toast.LENGTH_SHORT)
-                        .show()
+                if (resultCode != RESULT_OK) {
+                    // User canceled the sign-in.
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Google Sign-In was canceled by the user",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return
                 }
 
+                val task = gsc!!.silentSignIn()
+                task.addOnCompleteListener { task ->
+                    try {
+                        if (task.isSuccessful) {
+                            // Successful sign-in
+                            updateViewWithAccount()
+                        } else {
+                            // Handle other cases or show an error message to the user.
+                            val exception = task.exception
+                            if (exception is ApiException) {
+                                val statusCode = exception.statusCode
+                                when (statusCode) {
+                                    GoogleSignInStatusCodes.SIGN_IN_CANCELLED -> {
+                                        // User canceled the sign-in.
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            "Google Sign-In was canceled by the user",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                    GoogleSignInStatusCodes.SIGN_IN_FAILED -> {
+                                        // Sign-in failed for some reason.
+                                        // Update UI accordingly or show an error message.
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            "Google Sign-In failed. Please try again later.",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+
+                                    else -> {
+                                        // Handle unknown errors or show a generic error message.
+                                        Toast.makeText(
+                                            this@LoginActivity,
+                                            "Google Sign-In encountered an error. Please try again later.",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
+                            }
+                        }
+                    } catch (apiException: ApiException) {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "An error occurred during Google Sign-In. Please try again.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
             }
+        }
+    }
+
+
+
+
+    private fun updateViewWithAccount() {
+        val acct = GoogleSignIn.getLastSignedInAccount(this)
+        if (acct != null) {
+            val personEmail = acct.email
+            val firstname = acct.givenName
+            val lastname = acct.familyName
+            val imageUri = acct.photoUrl
+            val userID = acct.id
+
+            Log.i(
+                "SignIn",
+                "onActivityResult: $personEmail, $userID, $firstname, $lastname, $imageUri"
+            )
+
+            SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, userID ?: "")
+            SharedPreferencesUtil.saveData(
+                this@LoginActivity,
+                AppUtils.GoogleSignIn_Email,
+                personEmail ?: ""
+            )
+            SharedPreferencesUtil.saveData(
+                this@LoginActivity,
+                AppUtils.GoogleSignIn_FirstName,
+                firstname ?: ""
+            )
+            SharedPreferencesUtil.saveData(
+                this@LoginActivity,
+                AppUtils.GoogleSignIn_LastName,
+                lastname ?: ""
+            )
+            SharedPreferencesUtil.saveData(
+                this@LoginActivity,
+                AppUtils.GoogleSignIn_ImgUri,
+                imageUri?.toString() ?: ""
+            )
+
+
+            SocialmediaLoginUtil().fetchGoogleLogInData(
+                this,
+                userID!!,
+                firstname!!,
+                lastname!!,
+                personEmail!!,
+                imageUri.toString()
+            )
+
+
         }
     }
 

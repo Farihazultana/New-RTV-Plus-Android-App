@@ -9,17 +9,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.rtvplus.R
-import com.rtvplus.data.models.logIn.LogInModuleItem
 import com.rtvplus.data.models.subscription.SubschemesItem
 import com.rtvplus.utils.AppUtils
-import com.rtvplus.utils.AppUtils.LogInModule
 import com.rtvplus.utils.SharedPreferencesUtil
 import java.util.Locale
-import javax.inject.Inject
 
 
 class SubscriptionAdapter(
@@ -31,8 +27,6 @@ class SubscriptionAdapter(
     private var selectedPositions = -1
     var subscriptionData: ArrayList<SubschemesItem> = ArrayList()
 
-//    @Inject
-//    lateinit var logInModule: LogInModuleItem
 
     inner class SubscriptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val packageName: TextView = itemView.findViewById(R.id.tv_packName)
@@ -52,50 +46,54 @@ class SubscriptionAdapter(
         holder: SubscriptionViewHolder,
         @SuppressLint("RecyclerView") position: Int
     ) {
-        val item = subscriptionData?.get(position)
-        Log.i("Tag", "onBindViewHolder: $item")
+        val subschemeItem = subscriptionData?.get(position)
+        Log.i("Tag", "onBindViewHolder: $subschemeItem")
 
-        if (item != null) {
-            val packName = item.pack_name.lowercase(Locale.ROOT)
+        if (subschemeItem != null) {
+            val packName = subschemeItem.pack_name.lowercase(Locale.ROOT)
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
             holder.packageName.text = packName
         }
-        if (item != null) {
-            holder.subText.text = item.sub_text
+        if (subschemeItem != null) {
+            holder.subText.text = subschemeItem.sub_text
         }
 
         holder.checkedCard.visibility =
             if (selectedPositions == position) View.VISIBLE else View.GONE
 
         holder.itemView.setOnClickListener {
-            if (item?.userpack == "nopack"){
+            if (subschemeItem?.userpack == "nopack") {
                 selectedPositions = position
-                cardClickListener.onCardClickListener(position, item)
-            }else{
+                cardClickListener.onCardClickListener(position, subschemeItem)
+            } else {
                 holder.itemView.isClickable = false
             }
         }
 
-        //logInModule[0].packcode
-        //Log.i("sub", "Login Module onBindViewHolder: ${logInModule[0].packcode}")
-        val loginPackcode = SharedPreferencesUtil.getData(context, AppUtils.LogIn_packcode, "")
-        Log.i("SubLog", "onBindViewHolder: $loginPackcode")
 
-        val loginDataStore = SharedPreferencesUtil.getData(context, AppUtils.LogIn_packcode, "")
-        Log.i("SubAdapLog", "onBindViewHolder login packcode: $loginDataStore")
-        Log.i("SubAdapLog", "onBindViewHolder item sub pack: ${item?.sub_pack}")
+        val loginPackcode = SharedPreferencesUtil.getSavedLogInData(context)?.packcode
+        Log.i("SubAdap", "onBindViewHolder pack subscribed: [login] $loginPackcode == ${subschemeItem?.sub_pack} [Subscription]")
 
-
-        if(loginDataStore == item?.sub_pack || selectedPositions == position){
-            if (loginDataStore == item?.sub_pack){
-                holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.green_lite))
+        if (loginPackcode == subschemeItem?.sub_pack || selectedPositions == position) {
+            if (loginPackcode == subschemeItem?.sub_pack) {
+                holder.packCard.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.packCard.context,
+                        R.color.green_lite
+                    )
+                )
             }
             holder.checkedCard.visibility = View.VISIBLE
 
             return
-        }else{
+        } else {
             holder.checkedCard.visibility = View.GONE
-            holder.packCard.setCardBackgroundColor(ContextCompat.getColor(holder.packCard.context, R.color.appwhite))
+            holder.packCard.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    holder.packCard.context,
+                    R.color.appwhite
+                )
+            )
         }
 
     }
@@ -111,7 +109,7 @@ class SubscriptionAdapter(
     }
 
     override fun getItemCount(): Int {
-        return subscriptionData.size ?: -1
+        return subscriptionData.size
     }
 
     interface CardClickListener {
