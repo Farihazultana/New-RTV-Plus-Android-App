@@ -146,7 +146,8 @@ class MoreFragment : Fragment() {
             if (username == email) {
                 binding.logInAs.text = username
             } else {
-                binding.logInAs.text = "Logged in as: $username"
+
+                binding.logInAs.text = "Logged in as: ${username.substring(2)}"
             }
             binding.notLoginText.visibility = View.GONE
             binding.logInBtn.visibility = View.GONE
