@@ -14,6 +14,7 @@ import com.rtvplus.R
 import com.rtvplus.data.models.info.InfoResponse
 import com.rtvplus.databinding.ActivityInfoBinding
 import com.rtvplus.ui.viewmodels.InfoViewModel
+import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.ResultType
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
@@ -28,6 +29,10 @@ class InfoActivity : AppCompatActivity() {
         setContentView(binding.root)
         val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
+
+        if (!AppUtils.isOnline(this)) {
+            AppUtils.showAlertDialog(this)
+        }
 
         val intent = intent
         val appInfo = intent.getStringExtra("appinfo")

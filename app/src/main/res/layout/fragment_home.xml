@@ -35,6 +35,25 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmerFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include layout="@layout/row_object_child_home_data_shimer" />
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -49,26 +68,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tryAgainBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="@color/appwhite"
-            android:paddingHorizontal="@dimen/_32sdp"
             android:background="@drawable/rounder_btn_bg"
             android:backgroundTint="@color/green"
+            android:paddingHorizontal="@dimen/_32sdp"
             android:text="Try Again"
+            android:textColor="@color/appwhite"
             android:visibility="visible" />
 
         <!-- Parent RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/parent_recyclerview"
             android:layout_width="match_parent"
-            android:layout_marginStart="8dp"
             android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
             android:visibility="visible" />
 
     </FrameLayout>

@@ -17,6 +17,7 @@ class PlayListAdapter(var episodeList: List<Episodelist>) :
     private var selectedItemPosition = 0
     private var onItemClickListener: OnItemClickListener? = null
 
+
     interface OnItemClickListener {
         fun onItemClick(position: Int)
     }

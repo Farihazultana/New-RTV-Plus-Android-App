@@ -71,11 +71,14 @@ class MoreFragment : Fragment() {
 
         //To check if signed in with google
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
-        val email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "").toString()
-        if (signInType == "Google"){
+        val email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "")
+            .toString()
+        if (signInType == "Google") {
             username = email
             binding.imgSocialLoginProfile.visibility = View.VISIBLE
-            val imgUri = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri,"").toString()
+            val imgUri =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
+                    .toString()
             Glide.with(requireActivity()).load(imgUri)
                 .placeholder(R.drawable.no_img)
                 .fitCenter().transform(RoundedCorners(50))
@@ -140,10 +143,11 @@ class MoreFragment : Fragment() {
         }
 
         if (username.isNotEmpty()) {
-            if (username == email){
+            if (username == email) {
                 binding.logInAs.text = username
-            }else{
-                binding.logInAs.text = "Logged in as: $username"
+            } else {
+
+                binding.logInAs.text = "Logged in as: ${username.substring(2)}"
             }
             binding.notLoginText.visibility = View.GONE
             binding.logInBtn.visibility = View.GONE
@@ -173,7 +177,10 @@ class MoreFragment : Fragment() {
         val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
 
         dialog.show()
-        btnLogout.setOnClickListener { logout(username) }
+        btnLogout.setOnClickListener {
+            logout(username)
+            dialog.dismiss()
+        }
         btnCancel.setOnClickListener { dialog.dismiss() }
     }
 
@@ -215,6 +222,7 @@ class MoreFragment : Fragment() {
 
     private fun navigateToHomeFragment() {
         val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
 

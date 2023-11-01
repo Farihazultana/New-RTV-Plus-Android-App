@@ -33,6 +33,10 @@ class LiveTvFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        if (!AppUtils.isOnline(requireContext())) {
+            AppUtils.showAlertDialog(requireContext())
+        }
+
         val username =
             SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
                 .toString()
@@ -108,7 +112,6 @@ class LiveTvFragment : Fragment() {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
         var url = ""
-
 
             logInViewModel.logInData.observe(viewLifecycleOwner) {
                 url = when (it) {

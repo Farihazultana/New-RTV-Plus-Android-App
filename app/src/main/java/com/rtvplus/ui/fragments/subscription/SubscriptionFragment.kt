@@ -1,6 +1,5 @@
 package com.rtvplus.ui.fragments.subscription
 
-import com.rtvplus.utils.LogInUtil
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,9 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.subscription.SubschemesItem
 import com.rtvplus.databinding.FragmentSubscribeBottomBinding
@@ -29,6 +26,7 @@ import com.rtvplus.utils.AppUtils.GoogleSignIn_FirstName
 import com.rtvplus.utils.AppUtils.GoogleSignIn_LastName
 import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.rtvplus.utils.SocialmediaLoginUtil
@@ -37,13 +35,15 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, LogInUtil.ObserverListener, SocialmediaLoginUtil.ObserverListenerSocial {
+class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
+    LogInUtil.ObserverListener, SocialmediaLoginUtil.ObserverListenerSocial {
     private lateinit var binding: FragmentSubscriptionBinding
     private lateinit var bottomBinding: FragmentSubscribeBottomBinding
     private val bottomSheetFragment = SubscribeBottomFragment()
     private val args = Bundle()
     private lateinit var subscriptionAdapter: SubscriptionAdapter
     private val subscriptionViewModel by viewModels<SubscriptionViewModel>()
+
     //private val logInViewModel by viewModels<LogInViewModel>()
     private var selectedPositions = -1
 
@@ -62,21 +62,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
 
 
-        val receivedData = arguments?.getString("key")
-
-        if (receivedData != null) {
-            // Rebind the BottomNavigationView to the SubscriptionFragment
-            val bottomNavigationView =
-                requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-            bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
-
-            // Set the start destination of the NavGraph to SubscriptionFragment
-            val navController = findNavController()
-            val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
-            navGraph.setStartDestination(R.id.SubscriptionFragment)
-
-            navController.graph = navGraph
-        }
 
         getPhoneNumSP = SharedPreferencesUtil.getData(
             requireContext(),
@@ -104,7 +89,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
         subscription()
 
         LogInUtil().observeLoginData(requireActivity(), this, this, this)
-        SocialmediaLoginUtil().observeGoogleLogInData(requireActivity(),this,this,this)
+        SocialmediaLoginUtil().observeGoogleLogInData(requireActivity(), this, this, this)
 
         return binding.root
     }
@@ -126,7 +111,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
                     showBottomSheet()
 
                 } else {
-                    Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG)
+                        .show()
                     val intent = Intent(requireContext(), LoginActivity::class.java)
                     startActivityForResult(intent, 1234)
                 }
@@ -148,18 +134,38 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
 
     override fun onResume() {
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
-        if (signInType == "Phone"){
-            val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
-            val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
-            LogInUtil().fetchLogInData(this,user, password)
-        }else{
-            val user = SharedPreferencesUtil.getData(requireContext(),UsernameInputKey, "").toString()
-            val email = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_Email, "").toString()
-            val firstname = SharedPreferencesUtil.getData(requireContext(),GoogleSignIn_FirstName,"").toString()
-            val lastname = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_LastName,"").toString()
-            val imgUri = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri,"").toString()
-            Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
-            SocialmediaLoginUtil().fetchGoogleLogInData(this, user, firstname, lastname, email, imgUri)
+        if (signInType == "Phone") {
+            val user =
+                SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            val password =
+                SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
+            LogInUtil().fetchLogInData(this, user, password)
+        } else {
+            val user =
+                SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            val email =
+                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_Email, "").toString()
+            val firstname =
+                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_FirstName, "")
+                    .toString()
+            val lastname =
+                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_LastName, "")
+                    .toString()
+            val imgUri =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
+                    .toString()
+            Log.i(
+                "OneTap",
+                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
+            )
+            SocialmediaLoginUtil().fetchGoogleLogInData(
+                this,
+                user,
+                firstname,
+                lastname,
+                email,
+                imgUri
+            )
         }
 
         super.onResume()
@@ -174,7 +180,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
             subscriptionViewModel.subscriptionData.observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is ResultType.Loading -> {
-                        binding.subscribeProgressBar.visibility = View.VISIBLE
+                        binding.shimmerFrameLayout.visibility = View.VISIBLE
+                        binding.shimmerFrameLayout.startShimmer()
                         binding.textView.visibility = View.GONE
                         binding.btnContinuePayment.visibility = View.GONE
                     }
@@ -182,7 +189,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener, 
                     is ResultType.Success -> {
                         val subscriptionData = result.data
                         subscriptionAdapter.setData(subscriptionData.subschemes, selectedPositions)
-                        binding.subscribeProgressBar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                         binding.textView.visibility = View.VISIBLE
                         //binding.textView.text = LoginActivity.packText
                         binding.btnContinuePayment.visibility = View.VISIBLE

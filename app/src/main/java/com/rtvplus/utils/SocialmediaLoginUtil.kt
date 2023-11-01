@@ -40,7 +40,7 @@ class SocialmediaLoginUtil {
                 }
 
                 is ResultType.Error -> {
-                    Toast.makeText(context, "Something is wrong, please try again!", Toast.LENGTH_LONG).show()
+                   // Toast.makeText(context, "Something is wrong, please try again!", Toast.LENGTH_LONG).show()
                 }
 
                 else -> {
