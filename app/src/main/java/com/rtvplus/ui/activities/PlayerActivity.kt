@@ -80,6 +80,12 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         val view = binding.root
         setContentView(view)
 
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+
+        if (!AppUtils.isOnline(this)) {
+            AppUtils.showAlertDialog(this)
+        }
+
         username = SharedPreferencesUtil.getData(
             this,
             AppUtils.UsernameInputKey,
@@ -102,6 +108,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
         handleFullScreen()
 
+        checkResponse()
+
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
@@ -116,14 +124,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
 
         binding.favouriteIcon.setOnClickListener {
-//            if (binding.favouriteIcon.tag == R.drawable.baseline_favorite_border_24) {
-//
-//                binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
-//            }
-//            else
-//            {
-//                binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
-//            }
 
             if (isInList == 1) {
                 if (username.isNotEmpty()) {
@@ -146,6 +146,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
+
             )
         } else {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -221,13 +222,15 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         playListViewModel.content.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
-                    binding.progressbar.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.startShimmer()
                     binding.nastedScrollView.visibility = View.GONE
                 }
 
                 is ResultType.Success<*> -> {
                     val content = result.data as PlayListResponse
-                    binding.progressbar.visibility = View.GONE
+                    binding.shimmerFrameLayout.visibility = View.GONE
+                    binding.shimmerFrameLayout.stopShimmer()
                     binding.nastedScrollView.visibility = View.VISIBLE
                     binding.suggestionTitle.text = content.dramaname
 
@@ -256,7 +259,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                             displayCommentScreen()
                         }
                         playListAdapter.episodeList = content.episodelist
-                        binding.progressBar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                         similarItemsAdapter.notifyDataSetChanged()
                     } else {
                         Log.d("checkEmpty", "item empty")
@@ -300,14 +304,16 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         singleContentViewModel.content.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
-                    binding.progressbar.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.visibility = View.VISIBLE
+                    binding.shimmerFrameLayout.startShimmer()
                     binding.nastedScrollView.visibility = View.GONE
                     // Handle loading state if needed
                 }
 
                 is ResultType.Success<*> -> {
                     val content = result.data as SingleContentResponse
-                    binding.progressbar.visibility = View.GONE
+                    binding.shimmerFrameLayout.visibility = View.GONE
+                    binding.shimmerFrameLayout.stopShimmer()
                     binding.nastedScrollView.visibility = View.VISIBLE
 
                     Glide.with(binding.imageView.context).load(content.image_location)
@@ -374,20 +380,23 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                     removeListViewModel.removeContentResponse.observe(this) {
                         when (it) {
                             is ResultType.Loading -> {
-                                binding.progressbar.visibility = View.VISIBLE
+                                binding.shimmerFrameLayout.visibility = View.VISIBLE
+                                binding.shimmerFrameLayout.startShimmer()
 
                             }
 
                             is ResultType.Success<*> -> {
                                 val response = it.data as RemoveListResponse
                                 if (response.status == "success") {
-                                    binding.progressbar.visibility = View.GONE
+                                    binding.shimmerFrameLayout.visibility = View.GONE
+                                    binding.shimmerFrameLayout.stopShimmer()
                                     Toast.makeText(
                                         this@PlayerActivity,
                                         response.status,
                                         Toast.LENGTH_SHORT
                                     ).show()
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
+                                    isInList = 0
 
                                 } else {
 
@@ -397,7 +406,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                         response.status,
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    binding.progressbar.visibility = View.GONE
+                                    binding.shimmerFrameLayout.visibility = View.GONE
+                                    binding.shimmerFrameLayout.stopShimmer()
                                 }
                             }
 
@@ -413,19 +423,22 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                     addListViewModel.addContentResponse.observe(this) { it ->
                         when (it) {
                             is ResultType.Loading -> {
-                                binding.progressbar.visibility = View.VISIBLE
+                                binding.shimmerFrameLayout.visibility = View.VISIBLE
+                                binding.shimmerFrameLayout.startShimmer()
                             }
 
                             is ResultType.Success<*> -> {
                                 val response = it.data as AddListResponse
                                 if (response.status == "success") {
-                                    binding.progressbar.visibility = View.GONE
+                                    binding.shimmerFrameLayout.visibility = View.GONE
+                                    binding.shimmerFrameLayout.stopShimmer()
                                     Toast.makeText(
                                         this@PlayerActivity,
                                         response.status,
                                         Toast.LENGTH_SHORT
                                     ).show()
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
+                                    isInList = 1
 
                                 } else {
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
@@ -434,14 +447,15 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                         response.status,
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    binding.progressbar.visibility = View.GONE
+                                    binding.shimmerFrameLayout.visibility = View.GONE
+                                    binding.shimmerFrameLayout.stopShimmer()
                                 }
                             }
 
                             is ResultType.Error -> {
                                 Toast.makeText(
                                     this@PlayerActivity,
-                                    "Something is wrong. Please try again",
+                                    R.string.error_response_msg,
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
@@ -459,7 +473,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 is ResultType.Error -> {
                     Toast.makeText(
                         this@PlayerActivity,
-                        "Something is wrong. Please try again",
+                        R.string.error_response_msg,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -496,7 +510,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         similarItemsAdapter.similarContentList =
             content.similar[0].similarcontents
         similarItemsAdapter.isPemiumUser = checkIfPremiumUser()
-        binding.progressBar.visibility = View.GONE
+        binding.shimmerFrameLayout.visibility = View.GONE
+        binding.shimmerFrameLayout.stopShimmer()
         similarItemsAdapter.notifyDataSetChanged()
     }
 
@@ -519,20 +534,29 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         // Set a click listener for the Confirm button
         confirmButton.setOnClickListener {
             val userInput = editText.text.toString()
-            commentViewModel.saveComment(username, userInput)
-            checkResponse()
-            alertDialog.dismiss()
+            if (userInput.isNotEmpty())
+            {
+                commentViewModel.saveComment(username, userInput)
+
+                alertDialog.dismiss()
+            }
+            else
+            {
+                alertDialog.dismiss()
+            }
+
+
         }
         alertDialog.show()
     }
 
     private fun checkResponse() {
+
         commentViewModel.saveCommentResponse.observe(this) { it ->
             when (it) {
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
-
                 is ResultType.Success<*> -> {
                     val response = it.data as CommentResponse
                     if (response.status == "success") {
@@ -551,6 +575,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                     binding.progressbar.visibility = View.GONE
                 }
             }
+            binding.progressbar.visibility = View.GONE
         }
     }
 
@@ -584,6 +609,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         fullScreenbutton: ImageView,
         playerView: PlayerView
     ) {
+
         // Set the activity orientation to landscape
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_exit_24)

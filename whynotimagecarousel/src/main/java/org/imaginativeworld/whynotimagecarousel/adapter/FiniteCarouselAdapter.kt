@@ -14,7 +14,6 @@ import org.imaginativeworld.whynotimagecarousel.model.CarouselGravity
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 import org.imaginativeworld.whynotimagecarousel.model.CarouselType
 import org.imaginativeworld.whynotimagecarousel.utils.CarouselItemDecoration
-import org.imaginativeworld.whynotimagecarousel.utils.setImage
 
 open class FiniteCarouselAdapter(
     private val recyclerView: RecyclerView,
@@ -69,27 +68,27 @@ open class FiniteCarouselAdapter(
         }
 
         // Init views
-        if (holder.binding is ItemCarouselBinding) {
-            holder.binding.img.scaleType = imageScaleType
+        //  if (holder.binding is ItemCarouselBinding) {
+        /*            holder.binding.img.scaleType = imageScaleType
 
-            if (imagePlaceholder != null) {
-                holder.binding.img.setImage(item, imagePlaceholder)
-            } else {
-                holder.binding.img.setImage(item)
+                    if (imagePlaceholder != null) {
+                        holder.binding.img.setImage(item, imagePlaceholder)
+                    } else {
+                        holder.binding.img.setImage(item)
+                    }*/
+
+        listener?.apply {
+            holder.itemView.setOnClickListener {
+                this.onClick(realItemPosition, item)
             }
 
-            listener?.apply {
-                holder.itemView.setOnClickListener {
-                    this.onClick(realItemPosition, item)
-                }
+            holder.itemView.setOnLongClickListener {
+                this.onLongClick(realItemPosition, item)
 
-                holder.itemView.setOnLongClickListener {
-                    this.onLongClick(realItemPosition, item)
-
-                    true
-                }
+                true
             }
         }
+        //  }
 
         // Init listeners
         listener?.onBindViewHolder(

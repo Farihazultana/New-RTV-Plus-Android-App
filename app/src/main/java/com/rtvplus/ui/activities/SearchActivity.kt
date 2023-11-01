@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.speech.RecognizerIntent
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -23,12 +24,14 @@ import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SearchViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
+import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener {
+class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,  LogInUtil.ObserverListener, SocialmediaLoginUtil.ObserverListenerSocial {
     lateinit var binding: ActivitySearchBinding
     private val searchViewModel by viewModels<SearchViewModel>()
     private lateinit var searchListAdapter: SearchListAdapter
@@ -37,12 +40,18 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
     private val logInViewModel by viewModels<LogInViewModel>()
     private var isPremiumUser: Int? = 0
     val handler = Handler(Looper.getMainLooper())
+    lateinit var username: String
+    private lateinit var signInType: String
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
+
+        if (!AppUtils.isOnline(this)) {
+            AppUtils.showAlertDialog(this)
+        }
 
         binding.arrowBack.setOnClickListener {
             onBackPressed()
@@ -57,6 +66,21 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
 
         val searchPlate: View = searchView.findViewById(androidx.appcompat.R.id.search_plate)
         searchPlate.setBackgroundResource(android.R.color.transparent)
+
+        username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
+
+        if (username.isNotEmpty()) {
+            logInViewModel.fetchLogInData(username, "", "yes", "1")
+        }
+
+        signInType = SharedPreferencesUtil.getData(this, AppUtils.SignInType, "").toString()
+        if (signInType == "Phone") {
+            LogInUtil().observeLoginData(this, this, this, this)
+        } else {
+            SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+        }
+
+        isPremiumUser = SharedPreferencesUtil.getSavedLogInData(this)?.play ?: 0
 
         searchView.setOnCloseListener {
             val voiceIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
@@ -98,12 +122,17 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+
+                if (!AppUtils.isOnline(this@SearchActivity)) {
+                    AppUtils.showAlertDialog(this@SearchActivity)
+                }
                 if (!newText.isNullOrEmpty()) {
                     searchQuery = newText
                     if (newText.length > 2) {
                         handler.postDelayed({
                             searchViewModel.fetchSearchData("app", newText.toString())
-                            binding.progressbar.visibility = View.VISIBLE
+                            binding.shimmerFrameLayout.visibility = View.VISIBLE
+                            binding.shimmerFrameLayout.startShimmer()
                         }, 1000)
                     }
                     binding.searchVoiceBtn.visibility = View.GONE
@@ -121,37 +150,6 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
         binding.searchItemRecyclerView.adapter = searchListAdapter
 
 
-        val username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
-
-        if (username.isNotEmpty()) {
-            logInViewModel.fetchLogInData(username, "", "yes", "1")
-        }
-
-
-        logInViewModel.logInData.observe(this) {
-            when (it) {
-                is ResultType.Success -> {
-                    val logInResult = it.data
-
-                    for (item in logInResult) {
-                        val result = item.play
-                        isPremiumUser = result
-                    }
-                }
-
-                is ResultType.Error -> {
-
-                }
-
-                else -> {
-
-                }
-            }
-
-
-        }
-
-
         searchViewModel.searchData.observe(this) { result ->
             when (result) {
                 is ResultType.Loading -> {
@@ -161,7 +159,8 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                     val content = result.data as SearchResponse
                     if (content.contents.isNotEmpty()) {
                         if (isPremiumUser.toString().isNotEmpty()) {
-                            binding.progressbar.visibility = View.GONE
+                            binding.shimmerFrameLayout.stopShimmer()
+                            binding.shimmerFrameLayout.visibility = View.GONE
                             binding.emptyResultTv.visibility = View.GONE
                             searchListAdapter.content = content.contents
                             searchListAdapter.isPemiumUser = isPremiumUser
@@ -174,7 +173,8 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                             binding.emptyResultTv.text = "No result found for: $searchQuery"
                             searchQuery = null
                         }
-                        binding.progressbar.visibility = View.GONE
+                        binding.shimmerFrameLayout.visibility = View.GONE
+                        binding.shimmerFrameLayout.stopShimmer()
                         searchListAdapter.content = content.contents
                         searchListAdapter.notifyDataSetChanged()
                     }
@@ -183,7 +183,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
                 is ResultType.Error -> {
                     Toast.makeText(
                         this@SearchActivity,
-                        "Something is wrong. Please try again",
+                        R.string.error_response_msg,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -268,6 +268,52 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener 
             // If the back stack is empty, navigate back or exit the activity
             super.onBackPressed()
         }
+    }
+
+    override fun onResume() {
+        if (signInType == "Phone") {
+            val user =
+                SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+            val password =
+                SharedPreferencesUtil.getData(this, AppUtils.UserPasswordKey, "").toString()
+            LogInUtil().fetchLogInData(this, user, password)
+        } else {
+            val user =
+                SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+            val email =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_Email, "").toString()
+            val firstname =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_FirstName, "")
+                    .toString()
+            val lastname =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_LastName, "")
+                    .toString()
+            val imgUri =
+                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_ImgUri, "")
+                    .toString()
+            Log.i(
+                "OneTap",
+                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
+            )
+            SocialmediaLoginUtil().fetchGoogleLogInData(
+                this,
+                user,
+                firstname,
+                lastname,
+                email,
+                imgUri
+            )
+        }
+
+        super.onResume()
+    }
+
+    override fun observerListener(result: String) {
+
+    }
+
+    override fun observerListenerSocial(result: String) {
+
     }
 
 }

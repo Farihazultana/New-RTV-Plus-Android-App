@@ -17,7 +17,7 @@ class HomeViewModel @Inject constructor(private val homeRepository: HomeReposito
     private val _homeData = MutableStateFlow<ResultType<HomeResponse>>(ResultType.Loading)
     val homeData: StateFlow<ResultType<HomeResponse>> get() = _homeData
 
-    fun fetchHomeData(msisdn: String, view: String,version: String, fromsrc: String, lng: String) {
+    fun fetchHomeData(msisdn: String, view: String, version: String, fromsrc: String, lng: String) {
         viewModelScope.launch {
             try {
                 val result = homeRepository.getHomeData(msisdn, view, version, fromsrc, lng)

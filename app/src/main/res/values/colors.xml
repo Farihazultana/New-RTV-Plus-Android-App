@@ -8,6 +8,7 @@
     <color name="light_green">#B0C9B1</color>
     <color name="sliderIndicatorColor">#C7C7C7</color>
     <color name="gray">#9E9A9A</color>
+    <color name="lite_gray">#bebebe</color>
     <color name="colorPrimaryDark">#59419B</color>
     <color name="card_background_color">#F7EDEEEF</color>
     <color name="green_lite">#f5fffa</color>
