@@ -2,14 +2,12 @@ package com.rtvplus.ui.activities
 
 import android.graphics.Color
 import android.os.Bundle
-import android.provider.CalendarContract.Colors
 import android.text.method.LinkMovementMethod
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.text.HtmlCompat
 import com.rtvplus.R
 import com.rtvplus.data.models.info.InfoResponse
 import com.rtvplus.databinding.ActivityInfoBinding
@@ -58,10 +56,10 @@ class InfoActivity : AppCompatActivity() {
                 is ResultType.Success<*> -> {
                     val content = result.data as InfoResponse
                     if (content.details.isNotEmpty()) {
-                        binding.infoDataTv.text = content.details
-                        binding.infoDataTv.text =
-                            HtmlCompat.fromHtml(content.details, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                        binding.infoDataTv.movementMethod = LinkMovementMethod.getInstance()
+                        //binding.infoDataWv.text = content.details
+                        binding.infoDataWv.loadDataWithBaseURL(null, content.details, "text/html", "utf-8", null);
+                        binding.infoDataWv.setOnLongClickListener { true }
+                        binding.infoDataWv.isLongClickable = false
                         binding.progressbar.visibility = View.GONE
                     } else {
                         binding.progressbar.visibility = View.GONE
