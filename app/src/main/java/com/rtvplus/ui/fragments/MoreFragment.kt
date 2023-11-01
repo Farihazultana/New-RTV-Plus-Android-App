@@ -68,8 +68,7 @@ class MoreFragment : Fragment() {
 
         //To check if signed in with google
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
-        val email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "")
-            .toString()
+        val email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "").toString()
         if (signInType == "Google") {
             username = email
             binding.imgSocialLoginProfile.visibility = View.VISIBLE
@@ -141,7 +140,8 @@ class MoreFragment : Fragment() {
 
         if (username.isNotEmpty()) {
             if (username == email) {
-                binding.logInAs.text = username
+                val gmailUser = SharedPreferencesUtil.getData(requireContext(),AppUtils.GoogleSignIn_dpName, "").toString()
+                binding.logInAs.text = gmailUser
             } else {
 
                 binding.logInAs.text = "Logged in as: ${username.substring(2)}"

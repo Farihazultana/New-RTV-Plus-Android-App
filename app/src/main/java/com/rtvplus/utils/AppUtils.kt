@@ -29,6 +29,7 @@ object AppUtils {
     const val GoogleSignIn_LastName = "lastname"
     const val GoogleSignIn_ImgUri = "ImageUri"
     const val GoogleSignIn_Email = "Email"
+    const val GoogleSignIn_dpName = "display name"
 
 
 

@@ -284,6 +284,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
     private fun updateViewWithAccount() {
         val acct = GoogleSignIn.getLastSignedInAccount(this)
         if (acct != null) {
+            val displayName = acct.displayName
             val personEmail = acct.email
             val firstname = acct.givenName
             val lastname = acct.familyName
@@ -292,31 +293,15 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
             Log.i(
                 "SignIn",
-                "onActivityResult: $personEmail, $userID, $firstname, $lastname, $imageUri"
+                "onActivityResult: $displayName $personEmail, $userID, $firstname, $lastname, $imageUri"
             )
 
             SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, userID ?: "")
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_Email,
-                personEmail ?: ""
-            )
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_FirstName,
-                firstname ?: ""
-            )
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_LastName,
-                lastname ?: ""
-            )
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_ImgUri,
-                imageUri?.toString() ?: ""
-            )
-
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_Email, personEmail ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_FirstName, firstname ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_LastName, lastname ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_ImgUri, imageUri?.toString() ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_dpName, displayName ?: "")
 
             SocialmediaLoginUtil().fetchGoogleLogInData(
                 this,

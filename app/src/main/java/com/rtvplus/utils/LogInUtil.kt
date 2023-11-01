@@ -44,7 +44,7 @@ class LogInUtil {
                 }
 
                 is ResultType.Error -> {
-                    Toast.makeText(context, "Username or Password incorrect. Try Again!", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "Something went wrong! Try again.", Toast.LENGTH_SHORT).show()
                 }
 
                 else -> {
