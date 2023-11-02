@@ -89,24 +89,24 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
-        var backPressedTime: Long = 0
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (backPressedTime + 2000 > System.currentTimeMillis()) {
-                    requireActivity().finish()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Press back again to leave the app.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-                backPressedTime = System.currentTimeMillis()
-            }
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+//        var backPressedTime: Long = 0
+//
+//        val callback = object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                if (backPressedTime + 2000 > System.currentTimeMillis()) {
+//                    requireActivity().finish()
+//                } else {
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Press back again to leave the app.",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                }
+//                backPressedTime = System.currentTimeMillis()
+//            }
+//        }
+//
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         viewLifecycleOwner.lifecycleScope.launch {
             homeViewModel.homeData.collect { result ->

@@ -8,9 +8,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +20,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
@@ -78,7 +81,51 @@ class MainActivity : AppCompatActivity() {
         if (username!!.isNotEmpty()) {
             logInViewModel.fetchLogInData(username!!, "", "yes", "1")
         }
-        setupWithNavController(bottomNavigationView, navController)
+
+        binding.bottomNavigationBarId.setOnNavigationItemSelectedListener { item ->
+            if (item.itemId == R.id.LiveTvFragment && username.isEmpty())
+            {
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                selectedItemId = R.id.HomeFragment
+            }
+            else
+            {
+                if(item.itemId != binding.bottomNavigationBarId.selectedItemId)
+                    NavigationUI.onNavDestinationSelected(item, navController)
+
+            }
+            true
+        }
+
+
+      //  setupWithNavController(bottomNavigationView, navController)
+
+//                binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
+//            val itemId = menuItem.itemId
+//            if (selectedItemId != itemId) {
+//                when (itemId) {
+//                    R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
+//                    R.id.LiveTvFragment -> {
+//                        if (username.isNotEmpty()) {
+//                            navController.navigate(R.id.LiveTvFragment)
+//                        } else {
+//                            val intent = Intent(this, LoginActivity::class.java)
+//                            startActivity(intent)
+//                            selectedItemId = R.id.HomeFragment
+//                        }
+//                    }
+//
+//                    R.id.SubscriptionFragment -> navController.navigate(R.id.SubscriptionFragment)
+//                    R.id.MoreFragment -> navController.navigate(R.id.MoreFragment)
+//                }
+//                selectedItemId = itemId
+//            }
+//            true
+//        }
+
+
+
 
         binding.bottomNavigationBarId.setItemIconTintList(
             ContextCompat.getColorStateList(
@@ -122,14 +169,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-//        if (System.currentTimeMillis() - backPressedTime < DOUBLE_BACK_PRESS_INTERVAL) {
-//            super.onBackPressed()
-//            finish()
-//        } else {
-//            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
-//        }
-//        backPressedTime = System.currentTimeMillis()
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            finish()
+        } else {
+            Toast.makeText(
+                this,
+                "Press back again to leave the app.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 
     private fun checkSoftwareVersion() {
