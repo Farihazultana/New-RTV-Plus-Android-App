@@ -180,7 +180,7 @@ class LiveTvFragment : Fragment() {
     }
     override fun onResume() {
         super.onResume()
-        val username =
+        username =
             SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
                 .toString()
 

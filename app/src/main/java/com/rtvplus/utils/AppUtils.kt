@@ -39,6 +39,7 @@ object AppUtils {
 
     val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
     val phoneRegex = Regex("^8801[3-9]\\d{8}$")
+    var isLoggedIn: Boolean = false
 
     fun isOnline(context: Context): Boolean {
         val connectivityManager =

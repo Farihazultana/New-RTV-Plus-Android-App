@@ -63,8 +63,9 @@
                 android:id="@+id/logInAs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="38dp"
+                android:layout_marginTop="32dp"
                 android:gravity="center"
+                android:text="User not logged in!"
                 android:textColor="@color/textBlack"
                 android:textSize="@dimen/_13sdp"
                 android:textStyle="bold"
@@ -72,18 +73,6 @@
                 app:layout_constraintStart_toEndOf="@+id/imgSocialLoginProfile"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/notLoginText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:text="User not logged in!"
-                android:textColor="@color/textBlack"
-                android:textSize="@dimen/_13sdp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/logInAs" />
 
             <Button
                 android:id="@+id/logInBtn"
@@ -96,7 +85,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/notLoginText" />
+                app:layout_constraintTop_toBottomOf="@+id/logInAs" />
 
             <TextView
                 android:id="@+id/favourite"

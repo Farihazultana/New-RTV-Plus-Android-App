@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -21,7 +20,6 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
@@ -30,8 +28,10 @@ import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.isOnline
 import com.rtvplus.utils.AppUtils.showAlertDialog
+import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
+import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -49,7 +49,9 @@ class MainActivity : AppCompatActivity() {
     var currentversion: Int? = 0
     var enforcetext: String? = null
     private var enforce: Int? = 0
+    var  username : String ? = ""
     private val logInViewModel by viewModels<LogInViewModel>()
+    private lateinit var signInType: String
 
     companion object {
         const val PERMISSION_REQUEST_CODE = 123
@@ -76,22 +78,19 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
 
-        val username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+         username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
 
         if (username!!.isNotEmpty()) {
             logInViewModel.fetchLogInData(username!!, "", "yes", "1")
         }
 
         binding.bottomNavigationBarId.setOnNavigationItemSelectedListener { item ->
-            if (item.itemId == R.id.LiveTvFragment && username.isEmpty())
-            {
+            if (item.itemId == R.id.LiveTvFragment && username!!.isEmpty()) {
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 selectedItemId = R.id.HomeFragment
-            }
-            else
-            {
-                if(item.itemId != binding.bottomNavigationBarId.selectedItemId)
+            } else {
+                if (item.itemId != binding.bottomNavigationBarId.selectedItemId)
                     NavigationUI.onNavDestinationSelected(item, navController)
 
             }
@@ -99,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-      //  setupWithNavController(bottomNavigationView, navController)
+        //  setupWithNavController(bottomNavigationView, navController)
 
 //                binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
 //            val itemId = menuItem.itemId
@@ -123,8 +122,6 @@ class MainActivity : AppCompatActivity() {
 //            }
 //            true
 //        }
-
-
 
 
         binding.bottomNavigationBarId.setItemIconTintList(
@@ -244,4 +241,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(webIntent)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+    }
+
+
 }

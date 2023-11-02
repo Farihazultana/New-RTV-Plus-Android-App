@@ -25,6 +25,7 @@ import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SearchViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.AppUtils.isLoggedIn
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -42,6 +43,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
     private var isPremiumUser: Int? = 0
     val handler = Handler(Looper.getMainLooper())
     lateinit var username: String
+    var searhText: String ?= ""
     private lateinit var signInType: String
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
@@ -111,6 +113,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
         searchView.setOnQueryTextListener(object :
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                searhText = query.toString()
                 searchViewModel.fetchSearchData("app", query.toString())
 
                 if (!query.isNullOrEmpty()) {
@@ -131,6 +134,8 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
                 }
                 if (!newText.isNullOrEmpty()) {
                     searchQuery = newText
+                    searhText = newText
+
                     if (newText.length > 2) {
                         handler.postDelayed({
                             searchViewModel.fetchSearchData("app", newText.toString())
@@ -159,6 +164,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
                 }
 
                 is ResultType.Success<*> -> {
+                    isPremiumUser = SharedPreferencesUtil.getSavedLogInData(this)?.play ?: 0
                     val content = result.data as SearchResponse
                     if (content.contents.isNotEmpty()) {
                         if (isPremiumUser.toString().isNotEmpty()) {
@@ -204,6 +210,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
             if (results != null && results.isNotEmpty()) {
                 // Get the first recognized voice input and save it in the variable
                 voiceSearchQuery = results[0]
+                searhText = voiceSearchQuery.toString()
                 searchViewModel.fetchSearchData("app", voiceSearchQuery.toString())
                 if (!voiceSearchQuery.isNullOrEmpty()) {
                     binding.emptyResultTv.text = "No result found for: $voiceSearchQuery"
@@ -274,6 +281,21 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
     }
 
     override fun onResume() {
+
+        Log.i("checkiflogin", isLoggedIn.toString())
+        Log.i("checkiflogin", searhText.toString())
+        if (isLoggedIn)
+        {
+            searchViewModel.fetchSearchData("app", searhText.toString())
+
+            signInType = SharedPreferencesUtil.getData(this, AppUtils.SignInType, "").toString()
+            if (signInType == "Phone") {
+                LogInUtil().observeLoginData(this, this, this, this)
+            } else {
+                SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+            }
+        }
+
         if (signInType == "Phone") {
             val user =
                 SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
@@ -318,5 +340,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
     override fun observerListenerSocial(result: String) {
 
     }
+
+
 
 }

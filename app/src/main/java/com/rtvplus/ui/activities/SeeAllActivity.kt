@@ -20,13 +20,13 @@ import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.ui.viewmodels.SeeAllViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.AppUtils.isLoggedIn
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
 
 @AndroidEntryPoint
 class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
@@ -125,10 +125,14 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
                     }
 
                     is ResultType.Success -> {
+                        isPremiumUser = SharedPreferencesUtil.getSavedLogInData(this@SeeAllActivity)?.play ?: 0
+                        username = SharedPreferencesUtil.getData(this@SeeAllActivity, UsernameInputKey, "").toString()
+
                         val seeAllData = it.data
 
                         if (currentPage == 1) {
                             seeAllAdapter.seeAllData = seeAllData.contents
+                            seeAllAdapter.isPemiumUser = isPremiumUser
                             binding.tvSeeAllTitle.text = seeAllData.catname
                         } else {
                             if (!seeAllAdapter.seeAllData?.containsAll(seeAllData.contents)!!) {
@@ -175,6 +179,9 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
     }
 
     override fun onItemClickListener(position: Int, item: Content?) {
+
+        isPremiumUser = SharedPreferencesUtil.getSavedLogInData(this@SeeAllActivity)?.play ?: 0
+        username = SharedPreferencesUtil.getData(this@SeeAllActivity, UsernameInputKey, "").toString()
 
         if (item != null) {
 
@@ -231,6 +238,22 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
     }
 
     override fun onResume() {
+
+        if (isLoggedIn)
+        {
+            isPremiumUser = SharedPreferencesUtil.getSavedLogInData(this@SeeAllActivity)?.play ?: 0
+
+            signInType = SharedPreferencesUtil.getData(this, AppUtils.SignInType, "").toString()
+            if (signInType == "Phone") {
+                LogInUtil().observeLoginData(this, this, this, this)
+            } else {
+                SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+            }
+
+            seeAllViewModel.fetchSeeAllData(currentPage.toString(), catCode, "0", "1")
+            Log.e("isLoggedInSeeAll", "isLoggedInSeeAll")
+        }
+
         if (signInType == "Phone") {
             val user =
                 SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()

@@ -24,11 +24,13 @@ import com.rtvplus.ui.adapters.ParentHomeAdapter
 import com.rtvplus.ui.viewmodels.HomeViewModel
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.isLoggedIn
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -109,7 +111,7 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.homeData.collect { result ->
+            homeViewModel.homeData.observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is ResultType.Loading -> {
                         binding.tryAgainBtn.visibility = View.GONE
@@ -187,9 +189,8 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
             )
         }
 
-
-
         super.onResume()
+
         homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")
     }
 

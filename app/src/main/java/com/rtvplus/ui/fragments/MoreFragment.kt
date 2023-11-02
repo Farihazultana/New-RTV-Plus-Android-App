@@ -7,12 +7,14 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -26,15 +28,21 @@ import com.rtvplus.ui.activities.FeedBackActivity
 import com.rtvplus.ui.activities.InfoActivity
 import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.MainActivity
+import com.rtvplus.ui.viewmodels.SharedViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.PACKAGE_NAME
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.AppUtils.isLoggedIn
 import com.rtvplus.utils.SharedPreferencesUtil
 
 class MoreFragment : Fragment() {
+    private lateinit var email: String
     private lateinit var binding: FragmentMoreBinding
     private lateinit var dialog: Dialog
     private lateinit var oneTapClient: SignInClient
+    lateinit var username: String
+    private val sharedViewModel: SharedViewModel by viewModels()
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -60,15 +68,12 @@ class MoreFragment : Fragment() {
 //        }
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        var username = SharedPreferencesUtil.getData(
-            requireContext(),
-            UsernameInputKey,
-            ""
-        ).toString()
+        username = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
 
         //To check if signed in with google
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
-        val email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "").toString()
+        email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "")
+            .toString()
         if (signInType == "Google") {
             username = email
             binding.imgSocialLoginProfile.visibility = View.VISIBLE
@@ -146,15 +151,12 @@ class MoreFragment : Fragment() {
 
                 binding.logInAs.text = "Logged in as: ${username.substring(2)}"
             }
-            binding.notLoginText.visibility = View.GONE
             binding.logInBtn.visibility = View.GONE
             binding.logout.visibility = View.VISIBLE
             binding.logInAs.visibility = View.VISIBLE
         } else {
-            binding.notLoginText.visibility = View.VISIBLE
             binding.logInBtn.visibility = View.VISIBLE
             binding.logout.visibility = View.GONE
-            binding.logInAs.visibility = View.GONE
         }
 
         binding.logInBtn.setOnClickListener {
@@ -188,7 +190,7 @@ class MoreFragment : Fragment() {
         Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
         if (isOneTapClientInitialized()) {
             SharedPreferencesUtil.clear(requireContext())
-            binding.logInAs.text = null
+            //binding.logInAs.text = null
 
             if (username.isNotEmpty()) {
                 oneTapClient.signOut().addOnFailureListener {
@@ -211,7 +213,10 @@ class MoreFragment : Fragment() {
     private fun setDialog() {
         dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.logout_dialog)
-        dialog.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         dialog.setCancelable(true)
         dialog.window!!.attributes!!.windowAnimations = R.style.animation
     }
@@ -229,6 +234,44 @@ class MoreFragment : Fragment() {
         val intent = Intent(requireContext(), MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
+    }
+
+    override fun onResume() {
+
+        Log.e("checkflagvalue", AppUtils.isLoggedIn.toString())
+
+
+        if (isLoggedIn) {
+            Log.e("checkflagvalue", AppUtils.isLoggedIn.toString())
+            username =
+                SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            Log.e("checkflagvalue", username)
+
+            if (username.isNotEmpty()) {
+                if (username == email) {
+                    val gmailUser = SharedPreferencesUtil.getData(
+                        requireContext(),
+                        AppUtils.GoogleSignIn_dpName,
+                        ""
+                    ).toString()
+                    binding.logInAs.text = gmailUser
+                } else {
+                    binding.logInAs.text = "Logged in as: ${username.substring(2)}"
+
+                }
+                binding.logInBtn.visibility = View.GONE
+                binding.logout.visibility = View.VISIBLE
+                binding.logInAs.visibility = View.VISIBLE
+            } else {
+                binding.logInBtn.visibility = View.VISIBLE
+                binding.logout.visibility = View.GONE
+                binding.logInAs.text = "User not logged in!"
+            }
+        }
+
+        super.onResume()
+
+
     }
 
 }
