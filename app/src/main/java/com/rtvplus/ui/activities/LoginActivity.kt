@@ -3,6 +3,7 @@ package com.rtvplus.ui.activities
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -59,12 +60,13 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         val view = binding.root
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(view)
 
         val logInUtil = LogInUtil()
 
         //Text Counter for Phone number 0/11
-        textCounter()
+        //textCounter()
 
 
         //LogIn with phone
@@ -113,7 +115,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
     }
 
 
-    private fun textCounter() {
+    /*private fun textCounter() {
         binding.etPhoneText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -130,26 +132,19 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
             }
         }
         )
-    }
-    private fun openDialog() {
-        dialog = Dialog(this)
-        dialog.setContentView(R.layout.dialog_forget_password)
-        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog.setCancelable(true)
-        dialog.window!!.attributes!!.windowAnimations = R.style.animation
-    }
+    }*/
+
     private fun forgetPassword() {
-        openDialog()
+        setDialog()
         forgetPasswordObserve()
-
         val btnSendRequest = dialog.findViewById<Button>(R.id.btnSendRequest)
-
         binding.tvForgotPassword.setOnClickListener {
-            dialog.show()
+            forgetAction(btnSendRequest)
         }
-        btnSendRequest?.setOnClickListener {
-            val enteredUsername =
-                dialog.findViewById<TextInputEditText>(R.id.etUsername).text.toString()
+    }
+    private fun forgetAction(button : Button) {
+        button.setOnClickListener {
+            val enteredUsername = dialog.findViewById<TextInputEditText>(R.id.etUsername).text.toString()
             Log.i("Forget", "onCreate: $enteredUsername")
 
             if (enteredUsername.isNotEmpty() && enteredUsername.length == 11) {
@@ -165,7 +160,21 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
         }
 
+        dialog.show()
     }
+
+
+    private fun setDialog() {
+        dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_forget_password)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.setCancelable(true)
+        dialog.window!!.attributes!!.windowAnimations = R.style.animation
+    }
+
     private fun forgetPasswordApiCall(phoneText: String) {
         forgetPasswordViewModel.fetchForgetPasswordData(phoneText, "forget")
     }
@@ -277,6 +286,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
     private fun updateViewWithAccount() {
         val acct = GoogleSignIn.getLastSignedInAccount(this)
         if (acct != null) {
+            val displayName = acct.displayName
             val personEmail = acct.email
             val firstname = acct.givenName
             val lastname = acct.familyName
@@ -285,31 +295,15 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
             Log.i(
                 "SignIn",
-                "onActivityResult: $personEmail, $userID, $firstname, $lastname, $imageUri"
+                "onActivityResult: $displayName $personEmail, $userID, $firstname, $lastname, $imageUri"
             )
 
             SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, userID ?: "")
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_Email,
-                personEmail ?: ""
-            )
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_FirstName,
-                firstname ?: ""
-            )
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_LastName,
-                lastname ?: ""
-            )
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_ImgUri,
-                imageUri?.toString() ?: ""
-            )
-
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_Email, personEmail ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_FirstName, firstname ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_LastName, lastname ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_ImgUri, imageUri?.toString() ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_dpName, displayName ?: "")
 
             SocialmediaLoginUtil().fetchGoogleLogInData(
                 this,

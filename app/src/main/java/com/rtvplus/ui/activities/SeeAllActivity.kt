@@ -2,6 +2,7 @@ package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -16,7 +17,6 @@ import com.rtvplus.data.models.seeAll.Content
 import com.rtvplus.databinding.ActivitySeeAllBinding
 import com.rtvplus.ui.adapters.SeeAllAdapter
 import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
-import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SeeAllViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.UsernameInputKey
@@ -38,7 +38,6 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
     private var currentPage = 1
     private var isLoading = false
     private var isLastpage = false
-    private val logInViewModel by viewModels<LogInViewModel>()
     lateinit var username: String
     private lateinit var signInType: String
     private var isPremiumUser: Int? = 0
@@ -50,6 +49,8 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         if (!AppUtils.isOnline(this)) {
             AppUtils.showAlertDialog(this)
@@ -85,9 +86,6 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
         binding.rvSeeAll.layoutManager = layoutManager
         binding.rvSeeAll.adapter = seeAllAdapter
 
-        if (username.isNotEmpty()) {
-            logInViewModel.fetchLogInData(username, "", "yes", "1")
-        }
 
         if (catCode.isNotEmpty()) {
             loadMoreData() // Initial data load

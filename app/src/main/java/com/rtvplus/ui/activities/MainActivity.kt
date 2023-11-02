@@ -3,6 +3,7 @@ package com.rtvplus.ui.activities
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,13 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
@@ -59,6 +58,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
@@ -79,7 +79,6 @@ class MainActivity : AppCompatActivity() {
             logInViewModel.fetchLogInData(username!!, "", "yes", "1")
         }
         setupWithNavController(bottomNavigationView, navController)
-
 
         binding.bottomNavigationBarId.setItemIconTintList(
             ContextCompat.getColorStateList(
@@ -123,17 +122,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
         super.onBackPressed()
-
-//        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+//        if (System.currentTimeMillis() - backPressedTime < DOUBLE_BACK_PRESS_INTERVAL) {
+//            super.onBackPressed()
 //            finish()
 //        } else {
-//            Toast.makeText(
-//                this,
-//                "Press back again to leave the app.",
-//                Toast.LENGTH_LONG
-//            ).show()
+//            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
 //        }
 //        backPressedTime = System.currentTimeMillis()
     }
@@ -183,6 +177,8 @@ class MainActivity : AppCompatActivity() {
         notNowButton.setOnClickListener {
             alertDialog.dismiss()
         }
+
+
         alertDialog.show()
     }
 

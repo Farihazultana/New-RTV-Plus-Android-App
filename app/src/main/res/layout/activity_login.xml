@@ -58,6 +58,9 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="16dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="11"
+                    app:counterTextColor="@color/textBlack"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -84,13 +87,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="16dp"
-                    app:passwordToggleEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/etPhone">
+                    app:layout_constraintTop_toBottomOf="@+id/etPhone"
+                    app:passwordToggleEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPasswordText"
@@ -99,15 +101,15 @@
                         android:backgroundTint="@color/green"
                         android:drawableStart="@drawable/ic_lock_open"
                         android:drawablePadding="@dimen/_2sdp"
-                        android:textCursorDrawable="@null"
+                        android:ems="15"
                         android:hint="Password"
-                        android:textColorHint="@color/appgrey"
-                        android:textColor="@color/textBlack"
                         android:inputType="number"
-                        android:ems="15"/>
+                        android:textColor="@color/textBlack"
+                        android:textColorHint="@color/appgrey"
+                        android:textCursorDrawable="@null" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
+                <!--<TextView
                     android:id="@+id/tvInputCounter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -115,14 +117,14 @@
                     android:textColor="@color/appgrey"
                     android:textSize="@dimen/_12ssp"
                     app:layout_constraintEnd_toEndOf="@+id/etPhone"
-                    app:layout_constraintTop_toBottomOf="@+id/etPhone" />
+                    app:layout_constraintTop_toBottomOf="@+id/etPhone" />-->
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_LogIn"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
                     android:layout_marginStart="@dimen/_11sdp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginEnd="@dimen/_11sdp"
                     android:backgroundTint="@color/green"
                     android:text="Login"
@@ -146,6 +148,7 @@
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:text="Or"
                     android:textColor="@color/appgrey"
                     android:textSize="@dimen/_10ssp"

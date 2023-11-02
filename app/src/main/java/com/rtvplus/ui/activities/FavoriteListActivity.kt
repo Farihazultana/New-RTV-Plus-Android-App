@@ -2,7 +2,7 @@ package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rtvplus.R
@@ -30,8 +29,6 @@ import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveItemClickListener,
@@ -53,6 +50,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFavoriteListBinding.inflate(layoutInflater)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         val view = binding.root
         setContentView(view)
 

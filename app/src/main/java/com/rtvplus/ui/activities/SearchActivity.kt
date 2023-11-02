@@ -3,6 +3,7 @@ package com.rtvplus.ui.activities
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -48,6 +49,8 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         if (!AppUtils.isOnline(this)) {
             AppUtils.showAlertDialog(this)
