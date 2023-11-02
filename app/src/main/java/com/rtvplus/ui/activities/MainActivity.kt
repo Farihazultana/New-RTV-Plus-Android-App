@@ -10,11 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
@@ -78,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         }
         setupWithNavController(bottomNavigationView, navController)
 
+
         binding.bottomNavigationBarId.setItemIconTintList(
             ContextCompat.getColorStateList(
                 this,
@@ -120,12 +123,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+
         super.onBackPressed()
-//        if (System.currentTimeMillis() - backPressedTime < DOUBLE_BACK_PRESS_INTERVAL) {
-//            super.onBackPressed()
+
+//        if (backPressedTime + 2000 > System.currentTimeMillis()) {
 //            finish()
 //        } else {
-//            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(
+//                this,
+//                "Press back again to leave the app.",
+//                Toast.LENGTH_LONG
+//            ).show()
 //        }
 //        backPressedTime = System.currentTimeMillis()
     }
@@ -175,8 +183,6 @@ class MainActivity : AppCompatActivity() {
         notNowButton.setOnClickListener {
             alertDialog.dismiss()
         }
-
-
         alertDialog.show()
     }
 

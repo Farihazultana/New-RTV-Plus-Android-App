@@ -99,7 +99,7 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
                     Toast.makeText(
                         requireContext(),
                         "Press back again to leave the app.",
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
                 backPressedTime = System.currentTimeMillis()

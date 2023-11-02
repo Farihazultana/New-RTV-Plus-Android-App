@@ -342,14 +342,12 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
             SharedPreferencesUtil.saveData(this, SignInType, "Google")
             finish()
         }
-
     }
 
     override fun finish() {
         super.finish()
-        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
+//        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+//        startActivity(intent)
     }
 
     override fun onBackPressed() {

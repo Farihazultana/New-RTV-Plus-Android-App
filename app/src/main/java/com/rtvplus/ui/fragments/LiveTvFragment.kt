@@ -178,5 +178,16 @@ class LiveTvFragment : Fragment() {
         super.onStop()
         player.stop()
     }
+    override fun onResume() {
+        super.onResume()
+        val username =
+            SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
+                .toString()
+
+        if (username.isEmpty()) {
+            val intent = Intent(requireContext(), MainActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
 }

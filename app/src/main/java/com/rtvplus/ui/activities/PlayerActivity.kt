@@ -67,6 +67,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     private var startFrom: Long? = 0L
     private lateinit var catcode: String
     private lateinit var handler: Handler
+    private var isPostPlayTime = false
     private var elapsedTime: Long = 0L
     private var time: Long = 0L
     private var isInList: Int = 0
@@ -100,6 +101,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
             startFrom = isPlayed.toLong()
         }
 
+
         initilizeSimilarContentAdapter()
 
         keepScreenOn()
@@ -124,7 +126,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
 
         binding.favouriteIcon.setOnClickListener {
-
             if (isInList == 1) {
                 if (username.isNotEmpty()) {
                     removeListViewModel.removeFavoriteContent(receivedValue, username)
@@ -135,10 +136,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 }
             }
         }
-
         handler = Handler()
         startTimer()
-
     }
 
     private fun hideStatusBar() {
@@ -399,7 +398,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                     isInList = 0
 
                                 } else {
-
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
                                     Toast.makeText(
                                         this@PlayerActivity,
@@ -663,7 +661,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     override fun onBackPressed() {
         player.stop()
 
-
         val elapsedTimeInSeconds = (elapsedTime) / 1000
         val timeInSeconds = player.currentPosition / 1000
 
@@ -674,6 +671,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 username,
                 elapsedTimeInSeconds.toString()
             )
+            isPostPlayTime = true
         }
 
         //  Log.e("elapsedTime", elapsedTimeInSeconds.toString())

@@ -170,6 +170,7 @@ class ParentHomeAdapter(
                     if (currentItem.catcode == "cwt") {
                         holder.seeAll.visibility = View.GONE
                     } else {
+                        holder.seeAll.visibility = View.VISIBLE
 
                         holder.seeAll.setOnClickListener {
                             val intent = Intent(holder.itemView.context, SeeAllActivity::class.java)
