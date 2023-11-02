@@ -3,6 +3,7 @@ package com.rtvplus.ui.activities
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -59,6 +60,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         val view = binding.root
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(view)
 
         val logInUtil = LogInUtil()

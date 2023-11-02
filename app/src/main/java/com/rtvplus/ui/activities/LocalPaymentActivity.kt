@@ -4,6 +4,7 @@ import com.rtvplus.utils.LogInUtil
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -43,6 +44,7 @@ class LocalPaymentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLocalPaymentBinding.inflate(layoutInflater)
         val view = binding.root
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(view)
 
         localPaymentView = binding.wvLocalPayment

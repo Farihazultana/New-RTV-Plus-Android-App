@@ -1,6 +1,7 @@
 package com.rtvplus.ui.activities
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,6 +28,7 @@ class RegistrationActivity : AppCompatActivity() {
 
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
         val view = binding.root
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(view)
 
         /*binding.etPhoneText.addTextChangedListener(object : TextWatcher {

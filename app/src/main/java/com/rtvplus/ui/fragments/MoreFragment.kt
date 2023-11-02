@@ -42,7 +42,7 @@ class MoreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMoreBinding.inflate(inflater, container, false)
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         binding.backButton.setOnClickListener {
             val navController = findNavController(binding.root)
