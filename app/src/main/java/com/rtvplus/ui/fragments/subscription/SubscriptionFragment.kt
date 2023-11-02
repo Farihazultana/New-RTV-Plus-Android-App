@@ -1,6 +1,8 @@
 package com.rtvplus.ui.fragments.subscription
 
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -56,7 +58,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
     ): View {
         binding = FragmentSubscriptionBinding.inflate(inflater, container, false)
         bottomBinding = FragmentSubscribeBottomBinding.inflate(inflater, container, false)
-
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         val fragmentManager = requireActivity().supportFragmentManager
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
@@ -84,7 +86,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
 
         subscriptionAdapter = SubscriptionAdapter(this, requireContext())
         binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rvSubscriptionPacks.adapter = subscriptionAdapter
+        //binding.rvSubscriptionPacks.adapter = subscriptionAdapter
 
         subscription()
 
@@ -126,14 +128,12 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
             }
 
         }
-
         observeSubscription()
-
-
     }
 
     override fun onResume() {
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
+
         if (signInType == "Phone") {
             val user =
                 SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
@@ -168,14 +168,26 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
             )
         }
 
+       // subscription()
+
         super.onResume()
     }
+
+   /* override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.i("SubAdapt", "onActivityResult: $resultCode $resultCode")
+        if (requestCode == 1234 && resultCode == Activity.RESULT_OK) {
+
+            subscription()
+        }
+    }*/
 
     fun subscription() {
         subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
     }
 
     private fun observeSubscription() {
+
         viewLifecycleOwner.lifecycleScope.launch {
             subscriptionViewModel.subscriptionData.observe(viewLifecycleOwner) { result ->
                 when (result) {
@@ -187,6 +199,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
                     }
 
                     is ResultType.Success -> {
+                        binding.rvSubscriptionPacks.adapter = subscriptionAdapter
+
                         val subscriptionData = result.data
                         subscriptionAdapter.setData(subscriptionData.subschemes, selectedPositions)
                         binding.shimmerFrameLayout.visibility = View.GONE
@@ -204,7 +218,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
                                     "Subscription",
                                     "onViewCreated: ${item.packtext} & ${item.userpack}"
                                 )
-
                             } else {
                                 binding.textView.text = item.packtext
                                 binding.btnContinuePayment.visibility = View.VISIBLE

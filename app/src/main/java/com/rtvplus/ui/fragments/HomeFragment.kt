@@ -45,7 +45,7 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "").toString()
         if (signInType == "Phone") {

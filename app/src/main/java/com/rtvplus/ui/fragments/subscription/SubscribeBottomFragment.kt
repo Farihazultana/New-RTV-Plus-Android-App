@@ -1,6 +1,7 @@
 package com.rtvplus.ui.fragments.subscription
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_subscribe_bottom, container, false)
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         bottomBinding = FragmentSubscribeBottomBinding.bind(view)
 
         val packageText = arguments?.getString("packageText", "") ?: ""

@@ -1,5 +1,6 @@
 package com.rtvplus.ui.fragments.subscription
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,7 @@ class RedeemCouponBottomFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentRedeemCouponBottomBinding.inflate(inflater, container, false)
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         val view = binding.root
 
         val pinView = binding.pinview

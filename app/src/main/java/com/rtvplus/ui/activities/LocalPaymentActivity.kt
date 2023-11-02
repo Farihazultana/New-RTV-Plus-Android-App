@@ -4,6 +4,7 @@ import com.rtvplus.utils.LogInUtil
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -43,6 +44,7 @@ class LocalPaymentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLocalPaymentBinding.inflate(layoutInflater)
         val view = binding.root
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(view)
 
         localPaymentView = binding.wvLocalPayment
@@ -134,13 +136,11 @@ class LocalPaymentActivity : AppCompatActivity() {
                         if (paymentId.isNotEmpty() && orderId.isNotEmpty()) {
                             handleSavedLocalPaymentData(paymentId, orderId)
                             setResult(Activity.RESULT_OK)
-                            finish()
                         } else {
                             setResult(Activity.RESULT_OK)
-                            finish()
+                            finish() //if user cancels payment LocalPayment activity will be gone
                         }
                         setResult(Activity.RESULT_OK)
-                        finish()
                     }
                 }
                 return true
@@ -176,7 +176,10 @@ class LocalPaymentActivity : AppCompatActivity() {
                                 "Saved Local payment data: $savedLocalPayment"
                             )
                             setResult(Activity.RESULT_OK)
-                            finish()
+                            if(it.data.result.isNotEmpty()){
+                                finish() //if user completes payment LocalPayment activity will be gone
+                            }
+
                         }
 
                         is ResultType.Error -> {
@@ -210,16 +213,6 @@ class LocalPaymentActivity : AppCompatActivity() {
             localPaymentView.destroy()
             //localPaymentView = null
         }
-
-        /*val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("subscription", "subscription")
-        startActivity(intent)*/
-        val user = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
-        val password = SharedPreferencesUtil.getData(this, AppUtils.UserPasswordKey, "").toString()
-        LogInUtil().fetchLogInData(this,user, password)
-
-        //dummy for test
-        SharedPreferencesUtil.saveData(this, LogInModule, "start180")
 
         super.finish()
     }
