@@ -16,6 +16,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.facebook.AccessToken
+import com.facebook.GraphRequest
+import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -206,6 +209,10 @@ class MoreFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+
+        //Facebook logout
+        LoginManager.getInstance().logOut()
+
     }
 
     private fun setDialog() {

@@ -105,6 +105,7 @@ dependencies {
 
     //Facebook Sign In
     implementation ("com.facebook.android:facebook-login:latest.release")
+    implementation ("com.facebook.android:facebook-login:16.2.0")
 
 
     //responsive screen size

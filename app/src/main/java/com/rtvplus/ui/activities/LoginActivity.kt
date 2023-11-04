@@ -5,8 +5,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
@@ -14,6 +12,14 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.GraphRequest
+import com.facebook.GraphResponse
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -33,6 +39,7 @@ import com.rtvplus.utils.SharedPreferencesUtil
 import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 
 @AndroidEntryPoint
@@ -47,6 +54,8 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
     private val _requestCodeSignIn = 1000
     private var gso: GoogleSignInOptions? = null
     private var gsc: GoogleSignInClient? = null
+
+    private lateinit var callbackManager: CallbackManager
 
     private lateinit var enteredPhone: String
     private lateinit var enteredPassword: String
@@ -85,6 +94,45 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
         binding.btnGoogleSignIn.setOnClickListener {
             googleLogIn()
         }
+
+        //Facebook Signin
+        callbackManager = CallbackManager.Factory.create()
+        val accessToken = AccessToken.getCurrentAccessToken()
+
+        if (accessToken != null && !accessToken.isExpired){
+            finish()
+        }
+
+        LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult>{
+            override fun onCancel() {
+
+            }
+
+            override fun onError(error: FacebookException) {
+
+            }
+
+            override fun onSuccess(result: LoginResult) {
+                finish()
+            }
+
+        })
+
+        binding.btnFacebookSignIn.setOnClickListener{
+            LoginManager.getInstance().logInWithReadPermissions(this, listOf("public_profile", "email"))
+        }
+
+        //profile info
+        val request = GraphRequest.newMeRequest(accessToken) { obj, response ->
+            val id = obj?.getString("id")
+            val email = obj?.getString("email")
+            val fullname = obj?.getString("name")
+            val profileImage = obj?.getJSONObject("picture")?.getJSONObject("data")?.getString("Url")
+        }
+        val parameters = Bundle()
+        parameters.putString("fields", "id,name,link,picture,type(large),email")
+        request.parameters = parameters
+        request.executeAsync()
 
         //Not Registered Click here
         binding.tvGoToRegistration.setOnClickListener {
