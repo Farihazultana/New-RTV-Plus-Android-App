@@ -48,6 +48,7 @@ class LiveTvFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,7 +64,7 @@ class LiveTvFragment : Fragment() {
             override fun handleOnBackPressed() {
                 player.stop()
                 fragmentManager.popBackStack()
-              //  requireActivity().finish()
+                //  requireActivity().finish()
 
 //                val mainActivity = requireActivity() as MainActivity
 //                mainActivity.showBottomNavigationBar()
@@ -113,19 +114,21 @@ class LiveTvFragment : Fragment() {
         }
         var url = ""
 
-            logInViewModel.logInData.observe(viewLifecycleOwner) {
-                url = when (it) {
-                    is ResultType.Success -> {
-                        it.data[0].liveurl
-                    }
-                    is ResultType.Error -> {
-                        ""
-                    }
-                    else -> {
-                        ""
-                    }
+        logInViewModel.logInData.observe(viewLifecycleOwner) {
+            url = when (it) {
+                is ResultType.Success -> {
+                    it.data[0].liveurl
+                }
+
+                is ResultType.Error -> {
+                    ""
+                }
+
+                else -> {
+                    ""
                 }
             }
+        }
 
 
         return url
@@ -178,6 +181,7 @@ class LiveTvFragment : Fragment() {
         super.onStop()
         player.stop()
     }
+
     override fun onResume() {
         super.onResume()
         username =

@@ -45,6 +45,7 @@ import com.rtvplus.ui.viewmodels.SaveCommentViewModel
 import com.rtvplus.ui.viewmodels.SavePlayTimeViewModel
 import com.rtvplus.ui.viewmodels.SingleContentViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.isPostPlayTime
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -94,6 +95,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         receivedValue = intent.getStringExtra("id").toString()
         contentType = intent.getStringExtra("type").toString()
         catcode = intent.getStringExtra("ct").toString()
+
+        isPostPlayTime = false
 
         val isPlayed = intent.getStringExtra("isplayed")
         if (!isPlayed.isNullOrEmpty()) {
@@ -674,6 +677,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 username,
                 elapsedTimeInSeconds.toString()
             )
+
+            isPostPlayTime = true
         }
 
         //  Log.e("elapsedTime", elapsedTimeInSeconds.toString())

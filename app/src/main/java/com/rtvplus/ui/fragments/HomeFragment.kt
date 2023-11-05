@@ -25,6 +25,7 @@ import com.rtvplus.ui.viewmodels.HomeViewModel
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.isLoggedIn
+import com.rtvplus.utils.AppUtils.isPostPlayTime
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -191,7 +192,11 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
 
         super.onResume()
 
+        Log.e("checkLogin", isLoggedIn.toString())
+        Log.e("checkLogin", isPostPlayTime.toString())
+
         homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")
+
     }
 
     override fun observerListener(result: String) {
