@@ -1,8 +1,8 @@
 package com.rtvplus.ui.fragments
 
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,37 +13,31 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.DefaultLivePlaybackSpeedControl
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentLiveTvBinding
-import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils
-import com.rtvplus.utils.ResultType
+import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.SharedPreferencesUtil
+import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LiveTvFragment : Fragment() {
+class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
+    SocialmediaLoginUtil.ObserverListenerSocial {
     private lateinit var binding: FragmentLiveTvBinding
     private lateinit var player: ExoPlayer
     private val logInViewModel by viewModels<LogInViewModel>()
     lateinit var username: String
+    private lateinit var signInType: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         if (!AppUtils.isOnline(requireContext())) {
             AppUtils.showAlertDialog(requireContext())
-        }
-
-        val username =
-            SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
-                .toString()
-
-        if (username.isEmpty()) {
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            startActivity(intent)
         }
         super.onCreate(savedInstanceState)
 
@@ -59,28 +53,46 @@ class LiveTvFragment : Fragment() {
         username = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
             .toString()
 
-        val fragmentManager = requireActivity().supportFragmentManager
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                player.stop()
-                fragmentManager.popBackStack()
-                //  requireActivity().finish()
-
-//                val mainActivity = requireActivity() as MainActivity
-//                mainActivity.showBottomNavigationBar()
-
-//                val navController = findNavController(binding.root)
-//                navController.navigate(R.id.HomeFragment)
-//                val bottomNavigationView =
-//                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-//                bottomNavigationView.selectedItemId = R.id.HomeFragment
-            }
+        signInType =
+            SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "").toString()
+        if (signInType == "Phone") {
+            LogInUtil().observeLoginData(requireActivity(), this, this, this)
+        } else {
+            SocialmediaLoginUtil().observeGoogleLogInData(requireActivity(), this, this, this)
         }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+//        val fragmentManager = requireActivity().supportFragmentManager
+//        val callback = object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                player.stop()
+//                fragmentManager.popBackStack()
+//                //  requireActivity().finish()
+//
+////                val mainActivity = requireActivity() as MainActivity
+////                mainActivity.showBottomNavigationBar()
+//
+////                val navController = findNavController(binding.root)
+////                navController.navigate(R.id.HomeFragment)
+////                val bottomNavigationView =
+////                    requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+////                bottomNavigationView.selectedItemId = R.id.HomeFragment
+//            }
+//        }
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+
 
         player = ExoPlayer.Builder(requireContext()).setAudioAttributes(
             androidx.media3.common.AudioAttributes.DEFAULT, true
         ).setHandleAudioBecomingNoisy(true).build()
+
+
+//        val player =
+//            ExoPlayer.Builder(requireContext())
+//                .setMediaSourceFactory(DefaultMediaSourceFactory(requireContext()).setLiveTargetOffsetMs(5000))
+//                .build()
+
+
 
         binding.playerView.player = player
 
@@ -94,45 +106,33 @@ class LiveTvFragment : Fragment() {
             val isFullscreen = isFullscreen()
             setFullscreen(!isFullscreen)
         }
-        val url = getLiveTvUrl()
+        val url = SharedPreferencesUtil.getSavedLogInData(requireActivity())?.liveurl ?: ""
         playLiveTv(url)
 
         return view
     }
 
     private fun playLiveTv(url: String) {
+        Log.d("live-tv-url", url.toString())
+
         val mediaItem =
-            MediaItem.fromUri(url)
+            MediaItem.Builder()
+                .setUri(url)
+                .setLiveConfiguration(
+                    MediaItem.LiveConfiguration.Builder().setMaxPlaybackSpeed(1.02f).build()
+                )
+                .build()
         player.setMediaItem(mediaItem)
         player.prepare()
         player.play()
+
+//        val mediaItem =
+//            MediaItem.fromUri(url)
+//        player.setMediaItem(mediaItem)
+//        player.prepare()
+//        player.play()
     }
 
-    private fun getLiveTvUrl(): String {
-        if (username.isNotEmpty()) {
-            logInViewModel.fetchLogInData(username, "", "yes", "1")
-        }
-        var url = ""
-
-        logInViewModel.logInData.observe(viewLifecycleOwner) {
-            url = when (it) {
-                is ResultType.Success -> {
-                    it.data[0].liveurl
-                }
-
-                is ResultType.Error -> {
-                    ""
-                }
-
-                else -> {
-                    ""
-                }
-            }
-        }
-
-
-        return url
-    }
 
     private fun isFullscreen(): Boolean {
         return requireActivity().requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -183,15 +183,59 @@ class LiveTvFragment : Fragment() {
     }
 
     override fun onResume() {
-        super.onResume()
-        username =
-            SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
-                .toString()
 
-        if (username.isEmpty()) {
-            val intent = Intent(requireContext(), MainActivity::class.java)
-            startActivity(intent)
+
+        if (signInType == "Phone") {
+            val user =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
+                    .toString()
+            val password =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.UserPasswordKey, "")
+                    .toString()
+            LogInUtil().fetchLogInData(this, user, password)
+        } else {
+            val user =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
+                    .toString()
+            val email =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "")
+                    .toString()
+            val firstname =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_FirstName, "")
+                    .toString()
+            val lastname =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_LastName, "")
+                    .toString()
+            val imgUri =
+                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
+                    .toString()
+            Log.i(
+                "OneTap",
+                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
+            )
+            SocialmediaLoginUtil().fetchGoogleLogInData(
+                this,
+                user,
+                firstname,
+                lastname,
+                email,
+                imgUri
+            )
         }
+
+
+
+
+        super.onResume()
+
+    }
+
+    override fun observerListener(result: String) {
+
+    }
+
+    override fun observerListenerSocial(result: String) {
+
     }
 
 }

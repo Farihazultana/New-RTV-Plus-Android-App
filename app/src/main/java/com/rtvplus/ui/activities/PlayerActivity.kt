@@ -81,7 +81,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         val view = binding.root
         setContentView(view)
 
-      //  window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        //  window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
         if (!AppUtils.isOnline(this)) {
             AppUtils.showAlertDialog(this)
@@ -537,14 +537,11 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         // Set a click listener for the Confirm button
         confirmButton.setOnClickListener {
             val userInput = editText.text.toString()
-            if (userInput.isNotEmpty())
-            {
+            if (userInput.isNotEmpty()) {
                 commentViewModel.saveComment(username, userInput)
 
                 alertDialog.dismiss()
-            }
-            else
-            {
+            } else {
                 alertDialog.dismiss()
             }
 
@@ -560,6 +557,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
+
                 is ResultType.Success<*> -> {
                     val response = it.data as CommentResponse
                     if (response.status == "success") {
@@ -594,7 +592,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
         if (fullscreen) {
             makeFullScreen(fullScreenbutton, playerView)
-          //  hideStatusBar()
+            //  hideStatusBar()
         } else {
 
             // Set the activity orientation back to portrait
