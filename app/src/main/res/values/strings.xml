@@ -24,7 +24,7 @@
     <string name="no_internet_description">The device you\'re trying to connect to is not currently online. Please check your internet connection.</string>
     <string name="no_internet_title">No internet Connection</string>
 
-    <string name="facebook_app_id">320107847408443</string>
-    <string name="fb_login_protocol_scheme">320107847408443</string>
-    <string name="facebook_client_token">e44cd8582e5eb19e68a1f4a4b07b6ed2</string>
+    <string name="facebook_app_id">1499396174238223</string>
+    <string name="fb_login_protocol_scheme">1499396174238223</string>
+    <string name="facebook_client_token">ef6d541483f76ddba4071ccc0fd5287f</string>
 </resources>

@@ -17,7 +17,6 @@ import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.GraphRequest
-import com.facebook.GraphResponse
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -33,18 +32,19 @@ import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.SignInType
 import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.FacebookLoginUtil
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.json.JSONObject
+import org.json.JSONException
 
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
-    SocialmediaLoginUtil.ObserverListenerSocial {
+    SocialmediaLoginUtil.ObserverListenerSocial{
 
     private lateinit var binding: ActivityLoginBinding
     private val forgetPasswordViewModel by viewModels<ForgetPasswordViewModel>()
@@ -55,12 +55,10 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
     private var gso: GoogleSignInOptions? = null
     private var gsc: GoogleSignInClient? = null
 
-    private lateinit var callbackManager: CallbackManager
+    private val callbackManager = CallbackManager.Factory.create()
 
     private lateinit var enteredPhone: String
     private lateinit var enteredPassword: String
-
-
 
 
     @SuppressLint("CommitPrefEdits")
@@ -86,6 +84,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
         //phone login observe & socialMedia login observe
         logInUtil.observeLoginData(this, this, this, this)
         SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+        FacebookLoginUtil().observeFacebookLoginData(this,this,this)
 
         //Forget Password
         forgetPassword()
@@ -96,49 +95,86 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
         }
 
         //Facebook Signin
-        callbackManager = CallbackManager.Factory.create()
-        val accessToken = AccessToken.getCurrentAccessToken()
+        facebookLoginIntegration()
+        //binding.btnFBlogin.setReadPermissions("email")
+        // Trigger the Facebook login when the button is clicked
+        binding.btnFacebookSignIn.setOnClickListener {
+            LoginManager.getInstance().logInWithReadPermissions(this, listOf("public_profile"))
 
-        if (accessToken != null && !accessToken.isExpired){
-            finish()
         }
 
-        LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult>{
-            override fun onCancel() {
-
-            }
-
-            override fun onError(error: FacebookException) {
-
-            }
-
-            override fun onSuccess(result: LoginResult) {
-                finish()
-            }
-
-        })
-
-        binding.btnFacebookSignIn.setOnClickListener{
-            LoginManager.getInstance().logInWithReadPermissions(this, listOf("public_profile", "email"))
+        //dummy logout fb
+        binding.textView6.setOnClickListener {
+            Log.i("FacebookProfile", "onCreate: Logged Out FB")
+            LoginManager.getInstance().logOut()
         }
 
-        //profile info
-        val request = GraphRequest.newMeRequest(accessToken) { obj, response ->
-            val id = obj?.getString("id")
-            val email = obj?.getString("email")
-            val fullname = obj?.getString("name")
-            val profileImage = obj?.getJSONObject("picture")?.getJSONObject("data")?.getString("Url")
-        }
-        val parameters = Bundle()
-        parameters.putString("fields", "id,name,link,picture,type(large),email")
-        request.parameters = parameters
-        request.executeAsync()
+
 
         //Not Registered Click here
         binding.tvGoToRegistration.setOnClickListener {
             val intent = Intent(this@LoginActivity, RegistrationActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun facebookLoginIntegration() {
+        // Facebook login callback
+        LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+                override fun onCancel() {
+                    Log.i("FacebookProfile", "onCancel: ")
+                }
+
+                override fun onError(error: FacebookException) {
+                    Log.i("FacebookProfile", "onError: $error")
+                }
+
+                override fun onSuccess(result: LoginResult) {
+                    // Handle successful login
+                    // After successful login, retrieve the user's profile information
+                    Log.i("FacebookProfile", "onSuccess: ")
+                    val accessToken = AccessToken.getCurrentAccessToken()
+                    if (accessToken != null && !accessToken.isExpired) {
+                        // Request the user's profile information
+                        val request = GraphRequest.newMeRequest(accessToken) { obj, response ->
+                            Log.i("FacebookProfile", "onSuccess: $response")
+                            if (response?.error == null) {
+                                try {
+                                    val id = obj?.getString("id").toString()
+                                    //val email = obj?.getString("email")
+                                    val fullname = obj?.getString("name").toString()
+                                    //val birthday = obj?.getString("birthday")
+
+                                    // Access the profile picture URL
+                                    val pictureObj = obj?.getJSONObject("picture")
+                                    val pictureData = pictureObj?.getJSONObject("data")
+                                    val profileImage = pictureData?.getString("url").toString()
+
+                                    // Log the profile information
+                                    Log.d("FacebookProfile", "ID: $id, Name: $fullname, Email: , Image URL: $profileImage")
+
+                                    SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, id ?: "")
+                                    SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.FBSignIN_Fullname, fullname ?: "")
+                                    SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.FBSignIn_ImgUri, profileImage ?: "")
+                                    FacebookLoginUtil().fetchFacebookLogInData(this@LoginActivity, id, fullname,profileImage)
+                                }catch (e : JSONException){
+                                    Log.e("FacebookProfile", "onSuccess: $e")
+                                }
+
+                            }else {
+                                Log.e("FacebookProfile", "Error in GraphRequest: ${response.error}")
+                            }
+                        }
+                        val parameters = Bundle()
+                        parameters.putString("fields", "id,name,email,picture.type(large)")
+                        request.parameters = parameters
+                        request.executeAsync()
+
+                        SharedPreferencesUtil.saveData(this@LoginActivity, SignInType, "Facebook")
+                        finish()
+                    }
+                }
+            })
     }
 
     private fun handlePhoneLogin(logInUtil: LogInUtil) {
@@ -152,10 +188,18 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
         } else {
             if (enteredPhone.isEmpty() || enteredPassword.isEmpty()) {
-                Toast.makeText(this@LoginActivity, "Phone number or Password must not be empty! Please input first.", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Phone number or Password must not be empty! Please input first.",
+                    Toast.LENGTH_LONG
+                ).show()
 
             } else {
-                Toast.makeText(this@LoginActivity, "Phone number should be 11 digits", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Phone number should be 11 digits",
+                    Toast.LENGTH_LONG
+                ).show()
 
             }
 
@@ -190,9 +234,11 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
             forgetAction(btnSendRequest)
         }
     }
-    private fun forgetAction(button : Button) {
+
+    private fun forgetAction(button: Button) {
         button.setOnClickListener {
-            val enteredUsername = dialog.findViewById<TextInputEditText>(R.id.etUsername).text.toString()
+            val enteredUsername =
+                dialog.findViewById<TextInputEditText>(R.id.etUsername).text.toString()
             Log.i("Forget", "onCreate: $enteredUsername")
 
             if (enteredUsername.isNotEmpty() && enteredUsername.length == 11) {
@@ -200,9 +246,17 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
                 forgetPasswordApiCall(phoneText)
             } else {
                 if (enteredUsername.isEmpty()) {
-                    Toast.makeText(this@LoginActivity, "Phone number can't be empty!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Phone number can't be empty!",
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
-                    Toast.makeText(this@LoginActivity, "Please type valid mobile number", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Please type valid mobile number",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
 
@@ -226,6 +280,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
     private fun forgetPasswordApiCall(phoneText: String) {
         forgetPasswordViewModel.fetchForgetPasswordData(phoneText, "forget")
     }
+
     private fun forgetPasswordObserve() {
         lifecycleScope.launch {
             forgetPasswordViewModel.forgetPasswordData.observe(this@LoginActivity) {
@@ -236,7 +291,8 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
                     }
 
                     is ResultType.Error -> {
-                        Toast.makeText(this@LoginActivity, "Something is wrong!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@LoginActivity, "Something is wrong!", Toast.LENGTH_LONG)
+                            .show()
                     }
 
                     else -> {
@@ -246,6 +302,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
             }
         }
     }
+
     private fun googleLogIn() {
         // Initialize GoogleSignInOptions
         gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -260,6 +317,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
         val signInIntent = gsc!!.signInIntent
         startActivityForResult(signInIntent, _requestCodeSignIn)
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -295,6 +353,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
                                             Toast.LENGTH_LONG
                                         ).show()
                                     }
+
                                     GoogleSignInStatusCodes.SIGN_IN_FAILED -> {
                                         // Sign-in failed for some reason.
                                         // Update UI accordingly or show an error message.
@@ -326,9 +385,10 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
                 }
             }
         }
+
+        //facebook
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
-
-
 
 
     private fun updateViewWithAccount() {
@@ -347,11 +407,31 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
             )
 
             SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, userID ?: "")
-            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_Email, personEmail ?: "")
-            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_FirstName, firstname ?: "")
-            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_LastName, lastname ?: "")
-            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_ImgUri, imageUri?.toString() ?: "")
-            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_dpName, displayName ?: "")
+            SharedPreferencesUtil.saveData(
+                this@LoginActivity,
+                AppUtils.GoogleSignIn_Email,
+                personEmail ?: ""
+            )
+            SharedPreferencesUtil.saveData(
+                this@LoginActivity,
+                AppUtils.GoogleSignIn_FirstName,
+                firstname ?: ""
+            )
+            SharedPreferencesUtil.saveData(
+                this@LoginActivity,
+                AppUtils.GoogleSignIn_LastName,
+                lastname ?: ""
+            )
+            SharedPreferencesUtil.saveData(
+                this@LoginActivity,
+                AppUtils.GoogleSignIn_ImgUri,
+                imageUri?.toString() ?: ""
+            )
+            SharedPreferencesUtil.saveData(
+                this@LoginActivity,
+                AppUtils.GoogleSignIn_dpName,
+                displayName ?: ""
+            )
 
             SocialmediaLoginUtil().fetchGoogleLogInData(
                 this,
@@ -375,7 +455,8 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
             //Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
             finish()
         } else {
-            Toast.makeText(this, "Username or Password incorrect. Try Again!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Username or Password incorrect. Try Again!", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -386,6 +467,14 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
         }
 
     }
+
+    /*override fun observerListenerFB(result: String) {
+        if (result == "success"){
+            SharedPreferencesUtil.saveData(this, SignInType, "Facebook")
+            finish()
+        }
+
+    }*/
 
     override fun finish() {
         super.finish()
@@ -398,6 +487,8 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
         super.onBackPressed()
         finish()
     }
+
+
 
 
 }

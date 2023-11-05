@@ -84,6 +84,15 @@ class MoreFragment : Fragment() {
                 .error(R.drawable.no_img)
                 .into(binding.imgSocialLoginProfile)
         }
+        else if (signInType == "Facebook"){
+            binding.imgSocialLoginProfile.visibility = View.VISIBLE
+            val imgUri = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIn_ImgUri, "").toString()
+            Glide.with(requireActivity()).load(imgUri)
+                .placeholder(R.drawable.no_img)
+                .fitCenter().transform(RoundedCorners(50))
+                .error(R.drawable.no_img)
+                .into(binding.imgSocialLoginProfile)
+        }
 
         binding.favourite.setOnClickListener {
             if (username.isNotEmpty()) {
@@ -145,8 +154,11 @@ class MoreFragment : Fragment() {
             if (username == email) {
                 val gmailUser = SharedPreferencesUtil.getData(requireContext(),AppUtils.GoogleSignIn_dpName, "").toString()
                 binding.logInAs.text = gmailUser
-            } else {
-
+            } else if (signInType == "Facebook"){
+                val fullname = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIN_Fullname,"").toString()
+                binding.logInAs.text = fullname
+            }
+            else {
                 binding.logInAs.text = "Logged in as: ${username.substring(2)}"
             }
             binding.notLoginText.visibility = View.GONE
@@ -209,6 +221,7 @@ class MoreFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+
 
         //Facebook logout
         LoginManager.getInstance().logOut()

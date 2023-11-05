@@ -31,6 +31,10 @@ object AppUtils {
     const val GoogleSignIn_Email = "Email"
     const val GoogleSignIn_dpName = "display name"
 
+    const val FBSignIn_ImgUri = "FB Img"
+    const val FBSignIN_Fullname = "FB name"
+
+
 
 
     //loginResponse save key as obj

@@ -14,7 +14,11 @@ class SocialmediaLoginUtil {
         fun observerListenerSocial(result: String)
     }
 
+
+
     private lateinit var observerListenerGoogle: ObserverListenerSocial
+
+
 
     fun fetchGoogleLogInData(viewModelStoreOwner: ViewModelStoreOwner,username: String, firstName: String, lastName: String, email: String, imgUrl: String){
         val googleLogInViewModel = ViewModelProvider(viewModelStoreOwner)[GoogleLogInViewModel::class.java]
@@ -49,6 +53,7 @@ class SocialmediaLoginUtil {
             }
         }
     }
+
 
 
 }
