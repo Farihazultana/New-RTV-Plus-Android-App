@@ -81,7 +81,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         val view = binding.root
         setContentView(view)
 
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+      //  window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
         if (!AppUtils.isOnline(this)) {
             AppUtils.showAlertDialog(this)
@@ -584,17 +584,19 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
     fun isFullscreen(): Boolean {
         return requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
     }
 
     fun setFullscreen(fullscreen: Boolean) {
         val playerView = binding.playerView
         val fullScreenbutton: ImageView = findViewById(R.id.fullscreen)
 
+
         if (fullscreen) {
             makeFullScreen(fullScreenbutton, playerView)
-            hideStatusBar()
+          //  hideStatusBar()
         } else {
-            hideStatusBar()
+
             // Set the activity orientation back to portrait
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_24)
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
