@@ -168,10 +168,11 @@ class ParentHomeAdapter(
                     )
                     holder.textView.text = currentItem.catname
                     holder.recyclerView.adapter = holder.childListAdapter
+
                     if (currentItem.catcode == "cwt") {
                         holder.seeAll.visibility = View.GONE
                     } else {
-
+                        holder.seeAll.visibility = View.VISIBLE
                         holder.seeAll.setOnClickListener {
                             val intent = Intent(holder.itemView.context, SeeAllActivity::class.java)
                             intent.putExtra("catcode", currentItem.catcode)

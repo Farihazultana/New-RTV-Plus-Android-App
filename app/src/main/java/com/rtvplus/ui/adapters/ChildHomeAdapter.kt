@@ -145,7 +145,6 @@ class ChildHomeAdapter(
             is ContinueWatchingViewHolder -> {
 
                 holder.progressBar.max = currentItem.lengthinsec.toInt()
-
                 holder.progressBar.progress = currentItem.playposition.toInt()
 
 
