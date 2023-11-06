@@ -177,10 +177,11 @@ class MoreFragment : Fragment() {
         }
 
         //Logout
-        setDialog()
         binding.logout.setOnClickListener {
+            setDialog()
             handleLogoutClick(username)
         }
+
         return binding.root
     }
 
@@ -208,17 +209,13 @@ class MoreFragment : Fragment() {
                 oneTapClient.signOut().addOnFailureListener {
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                 }.addOnCompleteListener {
-                    //Toast.makeText(context, "You are Signed Out!", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "Logout completed!", Toast.LENGTH_SHORT).show()
                 }
             }
 
             navigateToHomeFragment()
         } else {
-            Toast.makeText(
-                requireContext(),
-                "OneTapClient is not initialized",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(requireContext(), "OneTapClient is not initialized", Toast.LENGTH_SHORT).show()
         }
 
 

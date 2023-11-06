@@ -202,10 +202,10 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
     }
 
     private fun forgetPassword() {
-        setDialog()
         forgetPasswordObserve()
-        val btnSendRequest = dialog.findViewById<Button>(R.id.btnSendRequest)
         binding.tvForgotPassword.setOnClickListener {
+            setDialog()
+            val btnSendRequest = dialog.findViewById<Button>(R.id.btnSendRequest)
             forgetAction(btnSendRequest)
         }
     }
@@ -250,6 +250,8 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
         )
         dialog.setCancelable(true)
         dialog.window!!.attributes!!.windowAnimations = R.style.animation
+
+
     }
 
     private fun forgetPasswordApiCall(phoneText: String) {
