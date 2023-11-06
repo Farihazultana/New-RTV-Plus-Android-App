@@ -3,11 +3,10 @@ package com.rtvplus.utils
 import android.content.ContentValues
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import com.rtvplus.ui.viewmodels.GoogleLogInViewModel
+import com.rtvplus.ui.viewmodels.SocialLogInViewModel
 
 class SocialmediaLoginUtil {
     interface ObserverListenerSocial {
@@ -16,13 +15,13 @@ class SocialmediaLoginUtil {
 
     private lateinit var observerListenerGoogle: ObserverListenerSocial
 
-    fun fetchGoogleLogInData(viewModelStoreOwner: ViewModelStoreOwner, loginSrc: String, username: String, firstName: String, lastName: String, email: String, imgUrl: String){
-        val googleLogInViewModel = ViewModelProvider(viewModelStoreOwner)[GoogleLogInViewModel::class.java]
-        googleLogInViewModel.fetchGoogleLogInData("social", loginSrc, username, "", firstName, lastName,email, imgUrl)
+    fun fetchSocialLogInData(viewModelStoreOwner: ViewModelStoreOwner, loginSrc: String, username: String, firstName: String, lastName: String, email: String, imgUrl: String){
+        val googleLogInViewModel = ViewModelProvider(viewModelStoreOwner)[SocialLogInViewModel::class.java]
+        googleLogInViewModel.fetchSocialLogInData("social", loginSrc, username, "", firstName, lastName,email, imgUrl)
     }
 
-    fun observeGoogleLogInData(context: Context, lifecycleOwner: LifecycleOwner, viewModelStoreOwner: ViewModelStoreOwner, listener : ObserverListenerSocial){
-        val googleLogInViewModel = ViewModelProvider(viewModelStoreOwner)[GoogleLogInViewModel::class.java]
+    fun observeSocialLogInData(context: Context, lifecycleOwner: LifecycleOwner, viewModelStoreOwner: ViewModelStoreOwner, listener : ObserverListenerSocial){
+        val googleLogInViewModel = ViewModelProvider(viewModelStoreOwner)[SocialLogInViewModel::class.java]
 
         this.observerListenerGoogle = listener
         googleLogInViewModel.googleLogInData.observe(lifecycleOwner) {

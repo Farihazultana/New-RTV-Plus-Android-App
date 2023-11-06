@@ -39,6 +39,7 @@ class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
     private lateinit var dialog: Dialog
     private lateinit var oneTapClient: SignInClient
+    private lateinit var signInType: String
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -64,14 +65,10 @@ class MoreFragment : Fragment() {
 //        }
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        var username = SharedPreferencesUtil.getData(
-            requireContext(),
-            UsernameInputKey,
-            ""
-        ).toString()
+        var username = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
 
         //To check if signed in with google
-        val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
+        signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "").toString()
         Log.i("FacebookProfile", "More Fragment onCreateView: $signInType")
         val email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "").toString()
         if (signInType == AppUtils.Type_google) {
@@ -202,10 +199,10 @@ class MoreFragment : Fragment() {
 
     private fun logout(username: String) {
         SharedPreferencesUtil.clear(requireContext())
-        Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
         if (isOneTapClientInitialized()) {
-            SharedPreferencesUtil.clear(requireContext())
-            binding.logInAs.text = null
+            //SharedPreferencesUtil.clear(requireContext())
+            binding.logInAs.text = ""
 
             if (username.isNotEmpty()) {
                 oneTapClient.signOut().addOnFailureListener {
@@ -226,7 +223,9 @@ class MoreFragment : Fragment() {
 
 
         //Facebook logout
-        LoginManager.getInstance().logOut()
+        if (signInType == AppUtils.Type_fb){
+            LoginManager.getInstance().logOut()
+        }
 
     }
 

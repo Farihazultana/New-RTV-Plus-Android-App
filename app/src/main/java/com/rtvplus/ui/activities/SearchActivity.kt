@@ -80,7 +80,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
         if (signInType == "Phone") {
             LogInUtil().observeLoginData(this, this, this, this)
         } else {
-            SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+            SocialmediaLoginUtil().observeSocialLogInData(this, this, this, this)
         }
 
         isPremiumUser = SharedPreferencesUtil.getSavedLogInData(this)?.play ?: 0
@@ -298,7 +298,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
                 "OneTap",
                 "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
             )
-            SocialmediaLoginUtil().fetchGoogleLogInData(this,"google", user, firstname, lastname, email, imgUri)
+            SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
         }
 
         super.onResume()

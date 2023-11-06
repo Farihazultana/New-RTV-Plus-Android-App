@@ -81,7 +81,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
 
         //phone login observe & socialMedia login observe
         logInUtil.observeLoginData(this, this, this, this)
-        SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+        SocialmediaLoginUtil().observeSocialLogInData(this, this, this, this)
 
         //Forget Password
         forgetPassword()
@@ -153,7 +153,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
                                     SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, id ?: "")
                                     SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.FBSignIN_Fullname, fullname ?: "")
                                     SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.FBSignIn_ImgUri, profileImage ?: "")
-                                    SocialmediaLoginUtil().fetchGoogleLogInData(this@LoginActivity, "facebook",id,fullname, "","", profileImage )
+                                    SocialmediaLoginUtil().fetchSocialLogInData(this@LoginActivity, "facebook",id,fullname, "","", profileImage )
                                 }catch (e : JSONException){
                                     Log.e("FacebookProfile", "onSuccess: $e")
                                 }
@@ -405,7 +405,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
                 displayName ?: ""
             )
 
-            SocialmediaLoginUtil().fetchGoogleLogInData(
+            SocialmediaLoginUtil().fetchSocialLogInData(
                 this,
                 "google",
                 userID!!,

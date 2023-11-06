@@ -90,7 +90,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
         subscription()
 
         LogInUtil().observeLoginData(requireActivity(), this, this, this)
-        SocialmediaLoginUtil().observeGoogleLogInData(requireActivity(), this, this, this)
+        SocialmediaLoginUtil().observeSocialLogInData(requireActivity(), this, this, this)
 
         return binding.root
     }
@@ -144,27 +144,18 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
             val lastname = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_LastName, "").toString()
             val imgUri = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "").toString()
             Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
-            SocialmediaLoginUtil().fetchGoogleLogInData(this,"google", user, firstname, lastname, email, imgUri)
+            SocialmediaLoginUtil().fetchSocialLogInData(this,AppUtils.Type_google, user, firstname, lastname, email, imgUri)
         } else{
             val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
             val fullname = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIN_Fullname, "").toString()
             val imgUrl = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIn_ImgUri,"").toString()
-            SocialmediaLoginUtil().fetchGoogleLogInData(this, "facebook",user,fullname, "","", imgUrl )
+            SocialmediaLoginUtil().fetchSocialLogInData(this, AppUtils.Type_fb,user,fullname, "","", imgUrl )
         }
 
        // subscription()
 
         super.onResume()
     }
-
-   /* override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.i("SubAdapt", "onActivityResult: $resultCode $resultCode")
-        if (requestCode == 1234 && resultCode == Activity.RESULT_OK) {
-
-            subscription()
-        }
-    }*/
 
     fun subscription() {
         subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)

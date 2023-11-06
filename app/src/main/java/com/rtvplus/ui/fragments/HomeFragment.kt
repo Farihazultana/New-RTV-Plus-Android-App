@@ -22,7 +22,6 @@ import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.ui.activities.SearchActivity
 import com.rtvplus.ui.adapters.ParentHomeAdapter
 import com.rtvplus.ui.viewmodels.HomeViewModel
-import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
@@ -51,7 +50,7 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
         if (signInType == "Phone") {
             LogInUtil().observeLoginData(requireActivity(),this,this,this)
         } else {
-            SocialmediaLoginUtil().observeGoogleLogInData(requireActivity(),this,this,this)
+            SocialmediaLoginUtil().observeSocialLogInData(requireActivity(),this,this,this)
         }
 
 
@@ -177,7 +176,7 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
                 "OneTap",
                 "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
             )
-            SocialmediaLoginUtil().fetchGoogleLogInData(this,"google", user, firstname, lastname, email, imgUri)
+            SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
         }
 
 
