@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,8 +72,9 @@ class MoreFragment : Fragment() {
 
         //To check if signed in with google
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
+        Log.i("FacebookProfile", "More Fragment onCreateView: $signInType")
         val email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "").toString()
-        if (signInType == "Google") {
+        if (signInType == AppUtils.Type_google) {
             username = email
             binding.imgSocialLoginProfile.visibility = View.VISIBLE
             val imgUri =
@@ -84,7 +86,7 @@ class MoreFragment : Fragment() {
                 .error(R.drawable.no_img)
                 .into(binding.imgSocialLoginProfile)
         }
-        else if (signInType == "Facebook"){
+        if (signInType == AppUtils.Type_fb){
             binding.imgSocialLoginProfile.visibility = View.VISIBLE
             val imgUri = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIn_ImgUri, "").toString()
             Glide.with(requireActivity()).load(imgUri)
@@ -154,7 +156,7 @@ class MoreFragment : Fragment() {
             if (username == email) {
                 val gmailUser = SharedPreferencesUtil.getData(requireContext(),AppUtils.GoogleSignIn_dpName, "").toString()
                 binding.logInAs.text = gmailUser
-            } else if (signInType == "Facebook"){
+            } else if (signInType == AppUtils.Type_fb){
                 val fullname = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIN_Fullname,"").toString()
                 binding.logInAs.text = fullname
             }

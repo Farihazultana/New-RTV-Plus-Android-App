@@ -32,7 +32,6 @@ import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.SignInType
 import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
-import com.rtvplus.utils.FacebookLoginUtil
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -43,8 +42,7 @@ import org.json.JSONException
 
 
 @AndroidEntryPoint
-class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
-    SocialmediaLoginUtil.ObserverListenerSocial{
+class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, SocialmediaLoginUtil.ObserverListenerSocial{
 
     private lateinit var binding: ActivityLoginBinding
     private val forgetPasswordViewModel by viewModels<ForgetPasswordViewModel>()
@@ -84,7 +82,6 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
         //phone login observe & socialMedia login observe
         logInUtil.observeLoginData(this, this, this, this)
         SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
-        FacebookLoginUtil().observeFacebookLoginData(this,this,this)
 
         //Forget Password
         forgetPassword()
@@ -156,7 +153,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
                                     SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, id ?: "")
                                     SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.FBSignIN_Fullname, fullname ?: "")
                                     SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.FBSignIn_ImgUri, profileImage ?: "")
-                                    FacebookLoginUtil().fetchFacebookLogInData(this@LoginActivity, id, fullname,profileImage)
+                                    SocialmediaLoginUtil().fetchGoogleLogInData(this@LoginActivity, "facebook",id,fullname, "","", profileImage )
                                 }catch (e : JSONException){
                                     Log.e("FacebookProfile", "onSuccess: $e")
                                 }
@@ -170,8 +167,6 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
                         request.parameters = parameters
                         request.executeAsync()
 
-                        SharedPreferencesUtil.saveData(this@LoginActivity, SignInType, "Facebook")
-                        finish()
                     }
                 }
             })
@@ -205,26 +200,6 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
         }
     }
-
-
-    /*private fun textCounter() {
-        binding.etPhoneText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val charCount = p0?.length ?: 0
-                binding.tvInputCounter.text = "$charCount/11"
-
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        }
-        )
-    }*/
 
     private fun forgetPassword() {
         setDialog()
@@ -401,10 +376,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
             val imageUri = acct.photoUrl
             val userID = acct.id
 
-            Log.i(
-                "SignIn",
-                "onActivityResult: $displayName $personEmail, $userID, $firstname, $lastname, $imageUri"
-            )
+            Log.i("SignIn", "onActivityResult: $displayName $personEmail, $userID, $firstname, $lastname, $imageUri")
 
             SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, userID ?: "")
             SharedPreferencesUtil.saveData(
@@ -435,6 +407,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
 
             SocialmediaLoginUtil().fetchGoogleLogInData(
                 this,
+                "google",
                 userID!!,
                 firstname!!,
                 lastname!!,
@@ -455,26 +428,23 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener,
             //Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
             finish()
         } else {
-            Toast.makeText(this, "Username or Password incorrect. Try Again!", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(this, "Username or Password incorrect. Try Again!", Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun observerListenerSocial(result: String) {
+    override fun observerListenerSocial(result: String, loginSrc: String) {
         if (result == "success") {
-            SharedPreferencesUtil.saveData(this, SignInType, "Google")
+            if (loginSrc == AppUtils.Type_google){
+                SharedPreferencesUtil.saveData(this, SignInType, AppUtils.Type_google)
+            }else if (loginSrc == AppUtils.Type_fb){
+                SharedPreferencesUtil.saveData(this, SignInType, AppUtils.Type_fb)
+            }
+
             finish()
         }
 
     }
 
-    /*override fun observerListenerFB(result: String) {
-        if (result == "success"){
-            SharedPreferencesUtil.saveData(this, SignInType, "Facebook")
-            finish()
-        }
-
-    }*/
 
     override fun finish() {
         super.finish()

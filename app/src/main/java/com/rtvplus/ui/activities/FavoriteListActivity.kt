@@ -337,14 +337,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                 "OneTap",
                 "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
             )
-            SocialmediaLoginUtil().fetchGoogleLogInData(
-                this,
-                user,
-                firstname,
-                lastname,
-                email,
-                imgUri
-            )
+            SocialmediaLoginUtil().fetchGoogleLogInData(this,"google", user, firstname, lastname, email, imgUri)
         }
 
         super.onResume()
@@ -354,7 +347,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
 
     }
 
-    override fun observerListenerSocial(result: String) {
+    override fun observerListenerSocial(result: String, loginSrc: String) {
 
     }
 

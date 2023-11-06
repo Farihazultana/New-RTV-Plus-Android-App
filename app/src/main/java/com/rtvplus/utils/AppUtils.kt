@@ -24,6 +24,8 @@ object AppUtils {
     const val USER_GMAIL = "rtv_user_gmail_001"
     const val LogInModule = "result"
     const val SignInType = "SignedInWith"
+    const val Type_google = "google"
+    const val Type_fb = "facebook"
     const val GoogleSignIn_IdToken = "ID token"
     const val GoogleSignIn_FirstName = "firstname"
     const val GoogleSignIn_LastName = "lastname"

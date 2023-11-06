@@ -298,14 +298,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
                 "OneTap",
                 "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
             )
-            SocialmediaLoginUtil().fetchGoogleLogInData(
-                this,
-                user,
-                firstname,
-                lastname,
-                email,
-                imgUri
-            )
+            SocialmediaLoginUtil().fetchGoogleLogInData(this,"google", user, firstname, lastname, email, imgUri)
         }
 
         super.onResume()
@@ -315,7 +308,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
 
     }
 
-    override fun observerListenerSocial(result: String) {
+    override fun observerListenerSocial(result: String, loginSrc: String) {
 
     }
 
