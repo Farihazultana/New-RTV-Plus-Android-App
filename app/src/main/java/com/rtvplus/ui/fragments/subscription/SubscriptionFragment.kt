@@ -28,6 +28,7 @@ import com.rtvplus.utils.AppUtils.GoogleSignIn_FirstName
 import com.rtvplus.utils.AppUtils.GoogleSignIn_LastName
 import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.FacebookLoginUtil
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -92,6 +93,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
 
         LogInUtil().observeLoginData(requireActivity(), this, this, this)
         SocialmediaLoginUtil().observeGoogleLogInData(requireActivity(), this, this, this)
+        FacebookLoginUtil().observeFacebookLoginData(requireActivity(), this, this)
 
         return binding.root
     }
@@ -135,37 +137,22 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
 
         if (signInType == "Phone") {
-            val user =
-                SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
-            val password =
-                SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
+            val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
-        } else {
-            val user =
-                SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
-            val email =
-                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_Email, "").toString()
-            val firstname =
-                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_FirstName, "")
-                    .toString()
-            val lastname =
-                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_LastName, "")
-                    .toString()
-            val imgUri =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
-                    .toString()
-            Log.i(
-                "OneTap",
-                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
-            )
-            SocialmediaLoginUtil().fetchGoogleLogInData(
-                this,
-                user,
-                firstname,
-                lastname,
-                email,
-                imgUri
-            )
+        } else if (signInType == "Google"){
+            val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            val email = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_Email, "").toString()
+            val firstname = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_FirstName, "").toString()
+            val lastname = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_LastName, "").toString()
+            val imgUri = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "").toString()
+            Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
+            SocialmediaLoginUtil().fetchGoogleLogInData(this, user, firstname, lastname, email, imgUri)
+        } else{
+            val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            val fullname = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIN_Fullname, "").toString()
+            val imgUrl = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIn_ImgUri,"").toString()
+            FacebookLoginUtil().fetchFacebookLogInData(this,user, fullname, imgUrl)
         }
 
        // subscription()
