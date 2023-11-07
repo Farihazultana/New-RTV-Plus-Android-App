@@ -313,6 +313,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
     }
 
     override fun onResume() {
+        val loginData = SharedPreferencesUtil.getSavedSocialLogInData(this)
         if (signInType == "Phone") {
             val user =
                 SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
@@ -320,24 +321,17 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
                 SharedPreferencesUtil.getData(this, AppUtils.UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
         } else {
-            val user =
-                SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
-            val email =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_Email, "").toString()
-            val firstname =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_FirstName, "")
-                    .toString()
-            val lastname =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_LastName, "")
-                    .toString()
-            val imgUri =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_ImgUri, "")
-                    .toString()
-            Log.i(
-                "OneTap",
-                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
-            )
-            SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
+
+            val user = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+            if (loginData != null){
+                val email =loginData.email
+                val firstname =loginData.firstName
+                val lastname =loginData.lastName
+                val imgUri =loginData.imageUri
+                Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
+                SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
+            }
+
         }
 
         super.onResume()

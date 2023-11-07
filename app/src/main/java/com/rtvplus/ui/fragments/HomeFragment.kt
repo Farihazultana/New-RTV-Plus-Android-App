@@ -159,24 +159,23 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
                 SharedPreferencesUtil.getData(requireContext(), AppUtils.UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
         } else {
-            val user =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
-            val email =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "").toString()
-            val firstname =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_FirstName, "")
-                    .toString()
-            val lastname =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_LastName, "")
-                    .toString()
-            val imgUri =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
-                    .toString()
-            Log.i(
-                "OneTap",
-                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
-            )
-            SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
+            val loginData = SharedPreferencesUtil.getSavedSocialLogInData(requireActivity())
+            val user = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
+
+            if (loginData != null){
+                val email =loginData.email
+                val firstname =loginData.firstName
+                val lastname =loginData.lastName
+                val imgUri =loginData.imageUri
+
+                Log.i(
+                    "OneTap",
+                    "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
+                )
+                SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
+            }
+
+
         }
 
 

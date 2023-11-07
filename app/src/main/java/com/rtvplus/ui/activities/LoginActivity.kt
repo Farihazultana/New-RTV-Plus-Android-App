@@ -26,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.textfield.TextInputEditText
 import com.rtvplus.R
+import com.rtvplus.data.models.logIn.SocialLoginData
 import com.rtvplus.databinding.ActivityLoginBinding
 import com.rtvplus.ui.viewmodels.ForgetPasswordViewModel
 import com.rtvplus.utils.AppUtils
@@ -92,21 +93,11 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
         }
 
         //Facebook Signin
-        facebookLoginIntegration()
-        //binding.btnFBlogin.setReadPermissions("email")
         // Trigger the Facebook login when the button is clicked
         binding.btnFacebookSignIn.setOnClickListener {
+            facebookLoginIntegration()
             LoginManager.getInstance().logInWithReadPermissions(this, listOf("public_profile"))
-
         }
-
-        //dummy logout fb
-        binding.textView6.setOnClickListener {
-            Log.i("FacebookProfile", "onCreate: Logged Out FB")
-            LoginManager.getInstance().logOut()
-        }
-
-
 
         //Not Registered Click here
         binding.tvGoToRegistration.setOnClickListener {
@@ -302,11 +293,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
             _requestCodeSignIn -> {
                 if (resultCode != RESULT_OK) {
                     // User canceled the sign-in.
-                    Toast.makeText(
-                        this@LoginActivity,
-                        "Google Sign-In was canceled by the user",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this@LoginActivity, "Google Sign-In was canceled by the user", Toast.LENGTH_LONG).show()
                     return
                 }
 
@@ -378,44 +365,20 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
             val imageUri = acct.photoUrl
             val userID = acct.id
 
+            val loginData = SocialLoginData(personEmail.toString(), firstname.toString(), lastname.toString(), imageUri.toString(), displayName.toString())
+
             Log.i("SignIn", "onActivityResult: $displayName $personEmail, $userID, $firstname, $lastname, $imageUri")
 
             SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, userID ?: "")
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_Email,
-                personEmail ?: ""
-            )
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_FirstName,
-                firstname ?: ""
-            )
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_LastName,
-                lastname ?: ""
-            )
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_ImgUri,
-                imageUri?.toString() ?: ""
-            )
-            SharedPreferencesUtil.saveData(
-                this@LoginActivity,
-                AppUtils.GoogleSignIn_dpName,
-                displayName ?: ""
-            )
+            /*SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_Email, personEmail ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_FirstName, firstname ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_LastName, lastname ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_ImgUri, imageUri?.toString() ?: "")
+            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_dpName, displayName ?: "")*/
 
-            SocialmediaLoginUtil().fetchSocialLogInData(
-                this,
-                "google",
-                userID!!,
-                firstname!!,
-                lastname!!,
-                personEmail!!,
-                imageUri.toString()
-            )
+            SharedPreferencesUtil.saveSocialLogInData(this, loginData)
+
+            SocialmediaLoginUtil().fetchSocialLogInData(this, "google", userID!!, firstname!!, lastname!!, personEmail!!, imageUri.toString())
 
 
         }
