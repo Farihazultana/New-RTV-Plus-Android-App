@@ -167,6 +167,14 @@
                     app:layout_constraintStart_toEndOf="@+id/textView6"
                     app:layout_constraintTop_toTopOf="@+id/textView6" />
 
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/btn_FBlogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnFacebookSignIn"
+                    app:layout_constraintEnd_toStartOf="@+id/btnFacebookSignIn" />
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnFacebookSignIn"
                     android:layout_width="@dimen/_105sdp"

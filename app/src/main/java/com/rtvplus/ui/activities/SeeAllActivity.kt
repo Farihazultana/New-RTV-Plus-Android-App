@@ -74,7 +74,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
         if (signInType == "Phone") {
             LogInUtil().observeLoginData(this, this, this, this)
         } else {
-            SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+            SocialmediaLoginUtil().observeSocialLogInData(this, this, this, this)
         }
 
         isPremiumUser = SharedPreferencesUtil.getSavedLogInData(this)?.play ?: 0
@@ -255,14 +255,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
                 "OneTap",
                 "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
             )
-            SocialmediaLoginUtil().fetchGoogleLogInData(
-                this,
-                user,
-                firstname,
-                lastname,
-                email,
-                imgUri
-            )
+            SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
         }
         super.onResume()
     }
@@ -271,7 +264,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
 
     }
 
-    override fun observerListenerSocial(result: String) {
+    override fun observerListenerSocial(result: String, loginSrc: String) {
 
     }
 }

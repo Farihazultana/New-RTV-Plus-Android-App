@@ -103,6 +103,11 @@ dependencies {
     //Google Sign In
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
 
+    //Facebook Sign In
+    implementation ("com.facebook.android:facebook-login:latest.release")
+    implementation ("com.facebook.android:facebook-login:16.2.0")
+
+
     //responsive screen size
     implementation ("com.intuit.sdp:sdp-android:1.1.0")
     implementation ("com.intuit.ssp:ssp-android:1.1.0")

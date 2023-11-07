@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.facebook.AccessToken
+import com.facebook.GraphRequest
+import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -35,6 +39,7 @@ class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
     private lateinit var dialog: Dialog
     private lateinit var oneTapClient: SignInClient
+    private lateinit var signInType: String
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -60,21 +65,27 @@ class MoreFragment : Fragment() {
 //        }
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        var username = SharedPreferencesUtil.getData(
-            requireContext(),
-            UsernameInputKey,
-            ""
-        ).toString()
+        var username = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
 
         //To check if signed in with google
-        val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
+        signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "").toString()
+        Log.i("FacebookProfile", "More Fragment onCreateView: $signInType")
         val email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "").toString()
-        if (signInType == "Google") {
+        if (signInType == AppUtils.Type_google) {
             username = email
             binding.imgSocialLoginProfile.visibility = View.VISIBLE
             val imgUri =
                 SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
                     .toString()
+            Glide.with(requireActivity()).load(imgUri)
+                .placeholder(R.drawable.no_img)
+                .fitCenter().transform(RoundedCorners(50))
+                .error(R.drawable.no_img)
+                .into(binding.imgSocialLoginProfile)
+        }
+        if (signInType == AppUtils.Type_fb){
+            binding.imgSocialLoginProfile.visibility = View.VISIBLE
+            val imgUri = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIn_ImgUri, "").toString()
             Glide.with(requireActivity()).load(imgUri)
                 .placeholder(R.drawable.no_img)
                 .fitCenter().transform(RoundedCorners(50))
@@ -142,8 +153,11 @@ class MoreFragment : Fragment() {
             if (username == email) {
                 val gmailUser = SharedPreferencesUtil.getData(requireContext(),AppUtils.GoogleSignIn_dpName, "").toString()
                 binding.logInAs.text = gmailUser
-            } else {
-
+            } else if (signInType == AppUtils.Type_fb){
+                val fullname = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIN_Fullname,"").toString()
+                binding.logInAs.text = fullname
+            }
+            else {
                 binding.logInAs.text = "Logged in as: ${username.substring(2)}"
             }
             binding.notLoginText.visibility = View.GONE
@@ -163,10 +177,11 @@ class MoreFragment : Fragment() {
         }
 
         //Logout
-        setDialog()
         binding.logout.setOnClickListener {
+            setDialog()
             handleLogoutClick(username)
         }
+
         return binding.root
     }
 
@@ -185,27 +200,30 @@ class MoreFragment : Fragment() {
 
     private fun logout(username: String) {
         SharedPreferencesUtil.clear(requireContext())
-        Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
         if (isOneTapClientInitialized()) {
-            SharedPreferencesUtil.clear(requireContext())
-            binding.logInAs.text = null
+            //SharedPreferencesUtil.clear(requireContext())
+            binding.logInAs.text = ""
 
             if (username.isNotEmpty()) {
                 oneTapClient.signOut().addOnFailureListener {
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                 }.addOnCompleteListener {
-                    //Toast.makeText(context, "You are Signed Out!", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "Logout completed!", Toast.LENGTH_SHORT).show()
                 }
             }
 
             navigateToHomeFragment()
         } else {
-            Toast.makeText(
-                requireContext(),
-                "OneTapClient is not initialized",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(requireContext(), "OneTapClient is not initialized", Toast.LENGTH_SHORT).show()
         }
+
+
+        //Facebook logout
+        if (signInType == AppUtils.Type_fb){
+            LoginManager.getInstance().logOut()
+        }
+
     }
 
     private fun setDialog() {

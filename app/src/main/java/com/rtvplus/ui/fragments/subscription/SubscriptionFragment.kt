@@ -91,7 +91,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
         subscription()
 
         LogInUtil().observeLoginData(requireActivity(), this, this, this)
-        SocialmediaLoginUtil().observeGoogleLogInData(requireActivity(), this, this, this)
+        SocialmediaLoginUtil().observeSocialLogInData(requireActivity(), this, this, this)
 
         return binding.root
     }
@@ -135,37 +135,22 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
 
         if (signInType == "Phone") {
-            val user =
-                SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
-            val password =
-                SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
+            val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
-        } else {
-            val user =
-                SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
-            val email =
-                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_Email, "").toString()
-            val firstname =
-                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_FirstName, "")
-                    .toString()
-            val lastname =
-                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_LastName, "")
-                    .toString()
-            val imgUri =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
-                    .toString()
-            Log.i(
-                "OneTap",
-                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
-            )
-            SocialmediaLoginUtil().fetchGoogleLogInData(
-                this,
-                user,
-                firstname,
-                lastname,
-                email,
-                imgUri
-            )
+        } else if (signInType == "Google"){
+            val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            val email = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_Email, "").toString()
+            val firstname = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_FirstName, "").toString()
+            val lastname = SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_LastName, "").toString()
+            val imgUri = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "").toString()
+            Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
+            SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
+        } else{
+            val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+            val fullname = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIN_Fullname, "").toString()
+            val imgUrl = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIn_ImgUri,"").toString()
+            SocialmediaLoginUtil().fetchSocialLogInData(this, "facebook",user,fullname, "","", imgUrl )
         }
 
        // subscription()
@@ -284,8 +269,9 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
         subscription()
     }
 
-    override fun observerListenerSocial(result: String) {
+    override fun observerListenerSocial(result: String, loginSrc: String) {
         subscription()
     }
+
 
 }
