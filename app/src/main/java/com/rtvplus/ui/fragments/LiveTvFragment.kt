@@ -7,15 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.DefaultLivePlaybackSpeedControl
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentLiveTvBinding
 import com.rtvplus.ui.activities.MainActivity
@@ -81,7 +78,6 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
 
-
         player = ExoPlayer.Builder(requireContext()).setAudioAttributes(
             androidx.media3.common.AudioAttributes.DEFAULT, true
         ).setHandleAudioBecomingNoisy(true).build()
@@ -91,7 +87,6 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
 //            ExoPlayer.Builder(requireContext())
 //                .setMediaSourceFactory(DefaultMediaSourceFactory(requireContext()).setLiveTargetOffsetMs(5000))
 //                .build()
-
 
 
         binding.playerView.player = player
@@ -114,14 +109,12 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
 
     private fun playLiveTv(url: String) {
         Log.d("live-tv-url", url.toString())
-
-        val mediaItem =
-            MediaItem.Builder()
-                .setUri(url)
-                .setLiveConfiguration(
-                    MediaItem.LiveConfiguration.Builder().setMaxPlaybackSpeed(1.02f).build()
-                )
-                .build()
+        val mediaItem = MediaItem.Builder()
+            .setUri(url)
+            .setLiveConfiguration(
+                MediaItem.LiveConfiguration.Builder().setMaxPlaybackSpeed(1.02f).build()
+            )
+            .build()
         player.setMediaItem(mediaItem)
         player.prepare()
         player.play()
@@ -184,7 +177,6 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
 
     override fun onResume() {
 
-
         if (signInType == "Phone") {
             val user =
                 SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
@@ -222,9 +214,6 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
                 imgUri
             )
         }
-
-
-
 
         super.onResume()
 
