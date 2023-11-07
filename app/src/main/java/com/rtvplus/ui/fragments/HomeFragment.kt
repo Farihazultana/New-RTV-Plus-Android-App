@@ -8,9 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -23,7 +23,6 @@ import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.ui.activities.SearchActivity
 import com.rtvplus.ui.adapters.ParentHomeAdapter
 import com.rtvplus.ui.viewmodels.HomeViewModel
-import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.isLoggedIn
 import com.rtvplus.utils.AppUtils.isPostPlayTime
@@ -32,8 +31,8 @@ import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.ObserverListenerSocial {
@@ -42,6 +41,11 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
     private val homeViewModel by viewModels<HomeViewModel>()
     var username: String? = ""
     private lateinit var signInType: String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

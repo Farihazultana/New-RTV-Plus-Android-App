@@ -3,7 +3,6 @@ package com.rtvplus.ui.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -19,7 +18,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.AudioAttributes
@@ -81,8 +79,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         val view = binding.root
-
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
         setContentView(view)
 
@@ -595,9 +591,9 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
         if (fullscreen) {
             makeFullScreen(fullScreenbutton, playerView)
-           // hideStatusBar()
+            // hideStatusBar()
         } else {
-           // hideStatusBar()
+            // hideStatusBar()
             // Set the activity orientation back to portrait
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_24)
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -615,7 +611,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         fullScreenbutton: ImageView,
         playerView: PlayerView
     ) {
-     //   hideStatusBar()
+        //   hideStatusBar()
         // Set the activity orientation to landscape
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_exit_24)

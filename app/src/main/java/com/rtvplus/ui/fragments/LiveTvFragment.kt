@@ -1,17 +1,12 @@
 package com.rtvplus.ui.fragments
 
 import android.content.pm.ActivityInfo
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 import android.widget.ImageView
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -43,6 +38,15 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
         if (!AppUtils.isOnline(requireContext())) {
             AppUtils.showAlertDialog(requireContext())
         }
+//
+//        WindowCompat.setDecorFitsSystemWindows(requireActivity().getWindow(), false)
+//        val windowInsetsCompat =
+//            WindowInsetsControllerCompat(requireActivity().getWindow(), requireActivity().getWindow().getDecorView())
+//        windowInsetsCompat.hide(WindowInsetsCompat.Type.statusBars())
+//        windowInsetsCompat.systemBarsBehavior =
+//            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
+
         super.onCreate(savedInstanceState)
 
     }
@@ -52,6 +56,7 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLiveTvBinding.inflate(inflater, container, false)
+
         val view = binding.root
 
         username = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "")
@@ -90,12 +95,10 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
             androidx.media3.common.AudioAttributes.DEFAULT, true
         ).setHandleAudioBecomingNoisy(true).build()
 
-
 //        val player =
 //            ExoPlayer.Builder(requireContext())
 //                .setMediaSourceFactory(DefaultMediaSourceFactory(requireContext()).setLiveTargetOffsetMs(5000))
 //                .build()
-
 
         binding.playerView.player = player
 
@@ -146,12 +149,14 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
         if (fullscreen) {
             // Set the activity orientation to landscape
             requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_exit_24)
 
             WindowInsetsControllerCompat(
                 requireActivity().window,
                 requireActivity().window.decorView
             ).let { controller ->
+                controller.hide(WindowInsetsCompat.Type.statusBars())
                 controller.hide(WindowInsetsCompat.Type.systemBars())
                 controller.systemBarsBehavior =
                     WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
@@ -162,8 +167,6 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
 
             playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-
-
 
         } else {
             // Set the activity orientation back to portrait
@@ -236,20 +239,6 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
 
     override fun observerListenerSocial(result: String) {
 
-    }
-
-
-    private fun hideSystemUI() {
-        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
-        WindowInsetsControllerCompat(requireActivity().window, binding.mainContainer).let { controller ->
-            controller.hide(WindowInsetsCompat.Type.systemBars())
-            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
-    }
-
-    private fun showSystemUI() {
-        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, true)
-        WindowInsetsControllerCompat(requireActivity().window, binding.mainContainer).show(WindowInsetsCompat.Type.systemBars())
     }
 
 }
