@@ -142,8 +142,12 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
                                     Log.d("FacebookProfile", "ID: $id, Name: $fullname, Email: , Image URL: $profileImage")
 
                                     SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, id ?: "")
-                                    SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.FBSignIN_Fullname, fullname ?: "")
-                                    SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.FBSignIn_ImgUri, profileImage ?: "")
+                                    /*SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.FBSignIN_Fullname, fullname ?: "")
+                                    SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.FBSignIn_ImgUri, profileImage ?: "")*/
+
+                                    val loginData = SocialLoginData("", "", "", profileImage, fullname)
+                                    SharedPreferencesUtil.saveSocialLogInData(this@LoginActivity, loginData)
+
                                     SocialmediaLoginUtil().fetchSocialLogInData(this@LoginActivity, "facebook",id,fullname, "","", profileImage )
                                 }catch (e : JSONException){
                                     Log.e("FacebookProfile", "onSuccess: $e")
@@ -370,11 +374,6 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
             Log.i("SignIn", "onActivityResult: $displayName $personEmail, $userID, $firstname, $lastname, $imageUri")
 
             SharedPreferencesUtil.saveData(this@LoginActivity, UsernameInputKey, userID ?: "")
-            /*SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_Email, personEmail ?: "")
-            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_FirstName, firstname ?: "")
-            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_LastName, lastname ?: "")
-            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_ImgUri, imageUri?.toString() ?: "")
-            SharedPreferencesUtil.saveData(this@LoginActivity, AppUtils.GoogleSignIn_dpName, displayName ?: "")*/
 
             SharedPreferencesUtil.saveSocialLogInData(this, loginData)
 

@@ -149,10 +149,13 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
             }
 
         } else{
-            val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
-            val fullname = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIN_Fullname, "").toString()
-            val imgUrl = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIn_ImgUri,"").toString()
-            SocialmediaLoginUtil().fetchSocialLogInData(this, "facebook",user,fullname, "","", imgUrl )
+            if(loginData != null){
+                val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+                val fullname = loginData.displayName
+                val imgUrl = loginData.imageUri
+                SocialmediaLoginUtil().fetchSocialLogInData(this, "facebook",user,fullname, "","", imgUrl )
+            }
+
         }
 
        // subscription()
