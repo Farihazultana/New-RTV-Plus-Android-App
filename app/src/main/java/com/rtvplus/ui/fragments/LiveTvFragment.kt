@@ -1,12 +1,18 @@
 package com.rtvplus.ui.fragments
 
 import android.content.pm.ActivityInfo
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.ImageView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
@@ -22,6 +28,7 @@ import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
@@ -57,6 +64,7 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
         } else {
             SocialmediaLoginUtil().observeGoogleLogInData(requireActivity(), this, this, this)
         }
+
 
 //        val fragmentManager = requireActivity().supportFragmentManager
 //        val callback = object : OnBackPressedCallback(true) {
@@ -151,8 +159,11 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
 
             val mainActivity = requireActivity() as MainActivity
             mainActivity.hideBottomNavigationBar()
+
             playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+
+
 
         } else {
             // Set the activity orientation back to portrait
@@ -225,6 +236,20 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
 
     override fun observerListenerSocial(result: String) {
 
+    }
+
+
+    private fun hideSystemUI() {
+        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
+        WindowInsetsControllerCompat(requireActivity().window, binding.mainContainer).let { controller ->
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    private fun showSystemUI() {
+        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, true)
+        WindowInsetsControllerCompat(requireActivity().window, binding.mainContainer).show(WindowInsetsCompat.Type.systemBars())
     }
 
 }

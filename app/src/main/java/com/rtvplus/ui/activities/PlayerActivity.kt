@@ -3,6 +3,7 @@ package com.rtvplus.ui.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -18,6 +19,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.AudioAttributes
@@ -79,9 +81,10 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         val view = binding.root
-        setContentView(view)
 
-        //  window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+
+        setContentView(view)
 
         if (!AppUtils.isOnline(this)) {
             AppUtils.showAlertDialog(this)
@@ -145,16 +148,17 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     }
 
     private fun hideStatusBar() {
+
         if (Build.VERSION.SDK_INT < 16) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
-
             )
         } else {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
             actionBar?.hide()
         }
+
     }
 
 
@@ -589,12 +593,11 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         val playerView = binding.playerView
         val fullScreenbutton: ImageView = findViewById(R.id.fullscreen)
 
-
         if (fullscreen) {
             makeFullScreen(fullScreenbutton, playerView)
-            //  hideStatusBar()
+           // hideStatusBar()
         } else {
-
+           // hideStatusBar()
             // Set the activity orientation back to portrait
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_24)
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -612,7 +615,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         fullScreenbutton: ImageView,
         playerView: PlayerView
     ) {
-
+     //   hideStatusBar()
         // Set the activity orientation to landscape
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_exit_24)
@@ -620,7 +623,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         WindowInsetsControllerCompat(this.window, this.window.decorView).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
         }
 
         playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
