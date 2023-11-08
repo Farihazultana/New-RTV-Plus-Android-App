@@ -298,7 +298,7 @@ class ImageCarousel(
                 if (showNavigationButtons) View.VISIBLE else View.GONE
         }
 
-    var imageScaleType: ImageView.ScaleType = ImageView.ScaleType.CENTER_CROP
+    var imageScaleType: ImageView.ScaleType = ImageView.ScaleType.FIT_XY
         set(value) {
             field = value
 
@@ -663,7 +663,7 @@ class ImageCarousel(
                 imageScaleType = scaleTypeArray[
                     getInteger(
                         R.styleable.ImageCarousel_imageScaleType,
-                        ImageView.ScaleType.CENTER_CROP.ordinal
+                        ImageView.ScaleType.FIT_XY.ordinal
                     )
                 ]
 
@@ -805,7 +805,7 @@ class ImageCarousel(
         data?.apply {
             adapter?.replaceData(this)
 
-            recyclerView.scrollToPosition(this.size / 2)
+            recyclerView.scrollToPosition(this.size)
 
             indicator?.apply {
                 this.createIndicators(dataSize, 0)

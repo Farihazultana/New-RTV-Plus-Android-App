@@ -23,6 +23,8 @@ import com.rtvplus.ui.viewmodels.FavoriteListViewModel
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.RemoveFavoriteListViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.Type_fb
+import com.rtvplus.utils.AppUtils.Type_google
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
@@ -81,15 +83,12 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
-
         favoriteListAdapter = FavoriteListAdapter(null, this, this, isPremiumUser)
         binding.favouriteListRecyclerview.layoutManager = GridLayoutManager(this, 2)
         binding.favouriteListRecyclerview.adapter = favoriteListAdapter
 
-
         if (username.isNotEmpty()) {
             loadMoreData()
-
             binding.favouriteListRecyclerview.addOnScrollListener(object :
                 RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -314,22 +313,40 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
 
     override fun onResume() {
         val loginData = SharedPreferencesUtil.getSavedSocialLogInData(this)
+        val user = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
         if (signInType == "Phone") {
             val user =
                 SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
             val password =
                 SharedPreferencesUtil.getData(this, AppUtils.UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
-        } else {
+        } else if (signInType == Type_google){
 
-            val user = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
             if (loginData != null){
                 val email =loginData.email
                 val firstname =loginData.firstName
                 val lastname =loginData.lastName
                 val imgUri =loginData.imageUri
                 Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
-                SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
+                SocialmediaLoginUtil().fetchSocialLogInData(this,
+                    Type_google, user, firstname, lastname, email, imgUri)
+            }
+
+        }
+        else if(signInType == Type_fb)
+        {
+            if (loginData != null) {
+                val fullname = loginData.displayName
+                val imgUrl = loginData.imageUri
+                SocialmediaLoginUtil().fetchSocialLogInData(
+                    this,
+                    AppUtils.Type_fb,
+                    user,
+                    fullname,
+                    "",
+                    "",
+                    imgUrl
+                )
             }
 
         }

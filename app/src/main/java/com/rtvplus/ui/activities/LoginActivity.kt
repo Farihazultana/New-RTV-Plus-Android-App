@@ -1,6 +1,7 @@
 package com.rtvplus.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -29,10 +30,12 @@ import com.rtvplus.R
 import com.rtvplus.data.models.logIn.SocialLoginData
 import com.rtvplus.databinding.ActivityLoginBinding
 import com.rtvplus.ui.viewmodels.ForgetPasswordViewModel
+import com.rtvplus.ui.viewmodels.SharedViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.SignInType
 import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
+import com.rtvplus.utils.AppUtils.isLoggedIn
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -59,6 +62,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
     private lateinit var enteredPhone: String
     private lateinit var enteredPassword: String
 
+    private val sharedViewModel: SharedViewModel by viewModels()
 
     @SuppressLint("CommitPrefEdits")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -389,6 +393,8 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
             SharedPreferencesUtil.saveData(this, UserPasswordKey, enteredPassword)
             SharedPreferencesUtil.saveData(this, SignInType, "Phone")
 
+            isLoggedIn= true
+
             //Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
             finish()
         } else {
@@ -406,19 +412,17 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
 
             finish()
         }
-
     }
 
 
     override fun finish() {
         super.finish()
-        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
+
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
+        sharedViewModel.flagLiveData.value = true
         finish()
     }
 

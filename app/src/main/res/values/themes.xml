@@ -3,7 +3,9 @@
     <style name="Base.Theme.RTVPlusAndroidAppRevamp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="android:windowIsTranslucent">true</item>
+<!--        <item name="android:windowFullscreen">true</item>-->
+
+<!--        <item name="android:windowIsTranslucent">true</item>-->
         <item name="android:statusBarColor">@color/green</item>
         <item name="android:windowAnimationStyle">@style/animation</item>
 
@@ -35,6 +37,14 @@
 
     <style name="progressBarGreen" parent="@style/Theme.AppCompat">
         <item name="colorAccent">@color/green</item>
+    </style>
+
+    <style name="AppTheme.FullScreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="Theme.RemoveSplashScreenTheme" parent="@style/Base.Theme.RTVPlusAndroidAppRevamp">
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
 </resources>

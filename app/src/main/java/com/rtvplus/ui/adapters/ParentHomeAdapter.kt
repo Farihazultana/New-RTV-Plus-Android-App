@@ -85,9 +85,10 @@ class ParentHomeAdapter(
 
         when (holder) {
             is BannerViewHolder -> {
-
+                holder.carousel4.registerLifecycle(lifecycle)
                 holder.carousel4.infiniteCarousel = true
                 holder.carousel4.autoPlay = true
+
                 // Custom view
                 holder.carousel4.carouselListener = object : CarouselListener {
 
@@ -135,8 +136,9 @@ class ParentHomeAdapter(
                         }
                     }
                 }
-                val listFour = mutableListOf<CarouselItem>()
 
+
+                val listFour = mutableListOf<CarouselItem>()
                 for (item in currentItem.contents) {
                     listFour.add(
                         CarouselItem(
@@ -147,7 +149,6 @@ class ParentHomeAdapter(
                 }
                 holder.carousel4.setIndicator(holder.custom_indicator)
                 holder.carousel4.setData(listFour)
-
 
                 Log.e("bind-indicator", "bind")
             }
@@ -167,10 +168,11 @@ class ParentHomeAdapter(
                     )
                     holder.textView.text = currentItem.catname
                     holder.recyclerView.adapter = holder.childListAdapter
+
                     if (currentItem.catcode == "cwt") {
                         holder.seeAll.visibility = View.GONE
                     } else {
-
+                        holder.seeAll.visibility = View.VISIBLE
                         holder.seeAll.setOnClickListener {
                             val intent = Intent(holder.itemView.context, SeeAllActivity::class.java)
                             intent.putExtra("catcode", currentItem.catcode)

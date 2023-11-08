@@ -13,14 +13,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.rtvplus.R
 import com.rtvplus.data.models.subscription.SubschemesItem
-import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.SharedPreferencesUtil
 import java.util.Locale
 
 
 class SubscriptionAdapter(
     private val cardClickListener: CardClickListener,
-    private val context : Context
+    private val context: Context
 
 ) : RecyclerView.Adapter<SubscriptionAdapter.SubscriptionViewHolder>() {
 
@@ -32,7 +31,7 @@ class SubscriptionAdapter(
         val packageName: TextView = itemView.findViewById(R.id.tv_packName)
         val subText: TextView = itemView.findViewById(R.id.tv_subText)
         val checkedCard: ImageView = itemView.findViewById(R.id.ig_checked)
-        val packCard : CardView = itemView.findViewById(R.id.cvPack)
+        val packCard: CardView = itemView.findViewById(R.id.cvPack)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
@@ -72,7 +71,10 @@ class SubscriptionAdapter(
 
 
         val loginPackcode = SharedPreferencesUtil.getSavedLogInData(context)?.packcode
-        Log.i("SubAdap", "onBindViewHolder pack subscribed: [login] $loginPackcode == ${subschemeItem?.sub_pack} [Subscription]")
+        Log.i(
+            "SubAdap",
+            "onBindViewHolder pack subscribed: [login] $loginPackcode == ${subschemeItem?.sub_pack} [Subscription]"
+        )
 
         if (loginPackcode == subschemeItem?.sub_pack || selectedPositions == position) {
             if (loginPackcode == subschemeItem?.sub_pack) {
@@ -99,7 +101,7 @@ class SubscriptionAdapter(
     }
 
     fun setData(subschemes: ArrayList<SubschemesItem>, selectedPositions: Int) {
-        if (subscriptionData.isNotEmpty()){
+        if (subscriptionData.isNotEmpty()) {
             subscriptionData.clear()
         }
         this.subscriptionData = subschemes

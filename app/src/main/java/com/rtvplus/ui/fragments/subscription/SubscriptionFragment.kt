@@ -32,7 +32,6 @@ import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
     LogInUtil.ObserverListener, SocialmediaLoginUtil.ObserverListenerSocial {

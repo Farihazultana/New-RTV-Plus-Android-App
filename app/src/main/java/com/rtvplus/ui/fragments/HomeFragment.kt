@@ -8,8 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -23,12 +24,15 @@ import com.rtvplus.ui.activities.SearchActivity
 import com.rtvplus.ui.adapters.ParentHomeAdapter
 import com.rtvplus.ui.viewmodels.HomeViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.isLoggedIn
+import com.rtvplus.utils.AppUtils.isPostPlayTime
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.ObserverListenerSocial {
@@ -37,6 +41,11 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
     private val homeViewModel by viewModels<HomeViewModel>()
     var username: String? = ""
     private lateinit var signInType: String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,27 +97,27 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
         binding.parentRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.parentRecyclerview.adapter = parentHomeAdapter
 
-        var backPressedTime: Long = 0
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (backPressedTime + 2000 > System.currentTimeMillis()) {
-                    requireActivity().finish()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Press back again to leave the app.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-                backPressedTime = System.currentTimeMillis()
-            }
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+//        var backPressedTime: Long = 0
+//
+//        val callback = object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                if (backPressedTime + 2000 > System.currentTimeMillis()) {
+//                    requireActivity().finish()
+//                } else {
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Press back again to leave the app.",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                }
+//                backPressedTime = System.currentTimeMillis()
+//            }
+//        }
+//
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.homeData.collect { result ->
+            homeViewModel.homeData.observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is ResultType.Loading -> {
                         binding.tryAgainBtn.visibility = View.GONE
@@ -152,36 +161,39 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
     }
 
     override fun onResume() {
+         signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "").toString()
+        val loginData = SharedPreferencesUtil.getSavedSocialLogInData(requireActivity())
+        val user = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
         if (signInType == "Phone") {
-            val user =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
-            val password =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.UserPasswordKey, "").toString()
+            val password = SharedPreferencesUtil.getData(requireContext(),
+                AppUtils.UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
-        } else {
-            val loginData = SharedPreferencesUtil.getSavedSocialLogInData(requireActivity())
-            val user = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
-
+        } else if (signInType == AppUtils.Type_google){
             if (loginData != null){
-                val email =loginData.email
+                val email = loginData.email
                 val firstname =loginData.firstName
                 val lastname =loginData.lastName
                 val imgUri =loginData.imageUri
-
-                Log.i(
-                    "OneTap",
-                    "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
-                )
-                SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
+                Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
+                SocialmediaLoginUtil().fetchSocialLogInData(this,AppUtils.Type_google, user, firstname, lastname, email, imgUri)
             }
 
+        } else if (signInType == AppUtils.Type_fb){
+            if(loginData != null){
+                val fullname = loginData.displayName
+                val imgUrl = loginData.imageUri
+                SocialmediaLoginUtil().fetchSocialLogInData(this, AppUtils.Type_fb,user,fullname, "","", imgUrl )
+            }
 
         }
 
-
-
         super.onResume()
+
+        Log.e("checkLogin", isLoggedIn.toString())
+        Log.e("checkLogin", isPostPlayTime.toString())
+
         homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")
+
     }
 
     override fun observerListener(result: String) {

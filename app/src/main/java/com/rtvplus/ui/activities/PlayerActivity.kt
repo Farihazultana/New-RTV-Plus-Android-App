@@ -45,6 +45,7 @@ import com.rtvplus.ui.viewmodels.SaveCommentViewModel
 import com.rtvplus.ui.viewmodels.SavePlayTimeViewModel
 import com.rtvplus.ui.viewmodels.SingleContentViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.isPostPlayTime
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -78,9 +79,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         val view = binding.root
-        setContentView(view)
 
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        setContentView(view)
 
         if (!AppUtils.isOnline(this)) {
             AppUtils.showAlertDialog(this)
@@ -94,6 +94,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         receivedValue = intent.getStringExtra("id").toString()
         contentType = intent.getStringExtra("type").toString()
         catcode = intent.getStringExtra("ct").toString()
+
+        isPostPlayTime = false
 
         val isPlayed = intent.getStringExtra("isplayed")
         if (!isPlayed.isNullOrEmpty()) {
@@ -142,16 +144,17 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     }
 
     private fun hideStatusBar() {
+
         if (Build.VERSION.SDK_INT < 16) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
-
             )
         } else {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
             actionBar?.hide()
         }
+
     }
 
 
@@ -390,22 +393,12 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                 if (response.status == "success") {
                                     binding.shimmerFrameLayout.visibility = View.GONE
                                     binding.shimmerFrameLayout.stopShimmer()
-                                    Toast.makeText(
-                                        this@PlayerActivity,
-                                        response.status,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
                                     isInList = 0
 
                                 } else {
 
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
-                                    Toast.makeText(
-                                        this@PlayerActivity,
-                                        response.status,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
                                     binding.shimmerFrameLayout.visibility = View.GONE
                                     binding.shimmerFrameLayout.stopShimmer()
                                 }
@@ -432,21 +425,11 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                 if (response.status == "success") {
                                     binding.shimmerFrameLayout.visibility = View.GONE
                                     binding.shimmerFrameLayout.stopShimmer()
-                                    Toast.makeText(
-                                        this@PlayerActivity,
-                                        response.status,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
                                     isInList = 1
 
                                 } else {
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
-                                    Toast.makeText(
-                                        this@PlayerActivity,
-                                        response.status,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
                                     binding.shimmerFrameLayout.visibility = View.GONE
                                     binding.shimmerFrameLayout.stopShimmer()
                                 }
@@ -534,18 +517,16 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         // Set a click listener for the Confirm button
         confirmButton.setOnClickListener {
             val userInput = editText.text.toString()
-            if (userInput.isNotEmpty())
-            {
-                commentViewModel.saveComment(username, userInput)
 
-                alertDialog.dismiss()
+            if (userInput.length < 3)
+            {
+                Toast.makeText(this, "Type at least 3 character",Toast.LENGTH_SHORT).show()
             }
             else
             {
+                commentViewModel.saveComment(username, userInput)
                 alertDialog.dismiss()
             }
-
-
         }
         alertDialog.show()
     }
@@ -557,21 +538,15 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 is ResultType.Loading -> {
                     binding.progressbar.visibility = View.VISIBLE
                 }
+
                 is ResultType.Success<*> -> {
                     val response = it.data as CommentResponse
                     if (response.status == "success") {
-                        Toast.makeText(this@PlayerActivity, response.status, Toast.LENGTH_SHORT)
-                            .show()
                         binding.progressbar.visibility = View.GONE
                     }
                 }
 
                 is ResultType.Error -> {
-                    Toast.makeText(
-                        this@PlayerActivity,
-                        R.string.error_response_msg,
-                        Toast.LENGTH_SHORT
-                    ).show()
                     binding.progressbar.visibility = View.GONE
                 }
             }
@@ -581,6 +556,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
     fun isFullscreen(): Boolean {
         return requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
     }
 
     fun setFullscreen(fullscreen: Boolean) {
@@ -589,12 +565,12 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
 
         if (fullscreen) {
             makeFullScreen(fullScreenbutton, playerView)
-            hideStatusBar()
+            // hideStatusBar()
         } else {
-            hideStatusBar()
+            // hideStatusBar()
             // Set the activity orientation back to portrait
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_24)
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             WindowInsetsControllerCompat(
                 this.window,
                 this.window.decorView
@@ -609,7 +585,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         fullScreenbutton: ImageView,
         playerView: PlayerView
     ) {
-
+        //   hideStatusBar()
         // Set the activity orientation to landscape
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_exit_24)
@@ -617,7 +593,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         WindowInsetsControllerCompat(this.window, this.window.decorView).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
         }
 
         playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -674,6 +650,8 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 username,
                 elapsedTimeInSeconds.toString()
             )
+
+            isPostPlayTime = true
         }
 
         //  Log.e("elapsedTime", elapsedTimeInSeconds.toString())
