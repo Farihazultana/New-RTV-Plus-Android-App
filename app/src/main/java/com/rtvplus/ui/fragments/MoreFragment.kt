@@ -70,28 +70,34 @@ class MoreFragment : Fragment() {
         //To check if signed in with google
         signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "").toString()
         Log.i("FacebookProfile", "More Fragment onCreateView: $signInType")
-        val email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "").toString()
-        if (signInType == AppUtils.Type_google) {
-            username = email
-            binding.imgSocialLoginProfile.visibility = View.VISIBLE
-            val imgUri =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
-                    .toString()
-            Glide.with(requireActivity()).load(imgUri)
-                .placeholder(R.drawable.no_img)
-                .fitCenter().transform(RoundedCorners(50))
-                .error(R.drawable.no_img)
-                .into(binding.imgSocialLoginProfile)
+
+        var email = ""
+        val loginData = SharedPreferencesUtil.getSavedSocialLogInData(requireActivity())
+        if (loginData != null){
+            email = loginData.email
+            if (signInType == AppUtils.Type_google) {
+                username = email
+                binding.imgSocialLoginProfile.visibility = View.VISIBLE
+                val imgUri =loginData.imageUri
+                Glide.with(requireActivity()).load(imgUri)
+                    .placeholder(R.drawable.no_img)
+                    .fitCenter().transform(RoundedCorners(50))
+                    .error(R.drawable.no_img)
+                    .into(binding.imgSocialLoginProfile)
+            }
+
+            if (signInType == AppUtils.Type_fb){
+                binding.imgSocialLoginProfile.visibility = View.VISIBLE
+                val imgUri = loginData.imageUri
+                Glide.with(requireActivity()).load(imgUri)
+                    .placeholder(R.drawable.no_img)
+                    .fitCenter().transform(RoundedCorners(50))
+                    .error(R.drawable.no_img)
+                    .into(binding.imgSocialLoginProfile)
+            }
         }
-        if (signInType == AppUtils.Type_fb){
-            binding.imgSocialLoginProfile.visibility = View.VISIBLE
-            val imgUri = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIn_ImgUri, "").toString()
-            Glide.with(requireActivity()).load(imgUri)
-                .placeholder(R.drawable.no_img)
-                .fitCenter().transform(RoundedCorners(50))
-                .error(R.drawable.no_img)
-                .into(binding.imgSocialLoginProfile)
-        }
+
+
 
         binding.favourite.setOnClickListener {
             if (username.isNotEmpty()) {
@@ -150,11 +156,11 @@ class MoreFragment : Fragment() {
         }
 
         if (username.isNotEmpty()) {
-            if (username == email) {
-                val gmailUser = SharedPreferencesUtil.getData(requireContext(),AppUtils.GoogleSignIn_dpName, "").toString()
+            if (username == email && loginData != null ) {
+                val gmailUser = loginData.displayName
                 binding.logInAs.text = gmailUser
-            } else if (signInType == AppUtils.Type_fb){
-                val fullname = SharedPreferencesUtil.getData(requireContext(), AppUtils.FBSignIN_Fullname,"").toString()
+            } else if (signInType == AppUtils.Type_fb && loginData != null){
+                val fullname = loginData.displayName
                 binding.logInAs.text = fullname
             }
             else {

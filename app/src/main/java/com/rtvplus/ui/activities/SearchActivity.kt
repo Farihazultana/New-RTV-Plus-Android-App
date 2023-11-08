@@ -72,9 +72,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
 
         username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
 
-        if (username.isNotEmpty()) {
-            logInViewModel.fetchLogInData(username, "", "yes", "1")
-        }
+
 
         signInType = SharedPreferencesUtil.getData(this, AppUtils.SignInType, "").toString()
         if (signInType == "Phone") {
@@ -221,26 +219,14 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
     override fun onItemClickListener(position: Int, item: Content?) {
         if (item != null) {
 
-            val phone = SharedPreferencesUtil.getData(
-                this,
-                AppUtils.LogInKey,
-                ""
-            )
-            val email = SharedPreferencesUtil.getData(
-                this,
-                AppUtils.GoogleSignInKey,
-                ""
-            )
+            val phone = SharedPreferencesUtil.getData(this, AppUtils.LogInKey, "")
 
-            if (phone.toString().isNotEmpty() || email.toString().isNotEmpty()) {
+            if (phone.toString() != "") {
                 if (isPremiumUser == 0 && item.isfree == "0") {
 
                     val fragmentTransaction = this.supportFragmentManager.beginTransaction()
                     val subscriptionFragment = SubscriptionFragment()
-                    fragmentTransaction.replace(
-                        R.id.subscriptionContainerView,
-                        subscriptionFragment
-                    )
+                    fragmentTransaction.replace(R.id.subscriptionContainerView, subscriptionFragment)
                     fragmentTransaction.addToBackStack(null)
                     fragmentTransaction.commit()
 
@@ -274,6 +260,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
     }
 
     override fun onResume() {
+        val loginData = SharedPreferencesUtil.getSavedSocialLogInData(this)
         if (signInType == "Phone") {
             val user =
                 SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
@@ -281,24 +268,17 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
                 SharedPreferencesUtil.getData(this, AppUtils.UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
         } else {
-            val user =
-                SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
-            val email =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_Email, "").toString()
-            val firstname =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_FirstName, "")
-                    .toString()
-            val lastname =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_LastName, "")
-                    .toString()
-            val imgUri =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_ImgUri, "")
-                    .toString()
-            Log.i(
-                "OneTap",
-                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
-            )
-            SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
+            val user = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+
+            if(loginData != null){
+                val email = loginData.email
+                val firstname =loginData.firstName
+                val lastname =loginData.lastName
+                val imgUri =loginData.imageUri
+                Log.i("OneTap", "onResume Search Activity: $user, $email, $firstname, $lastname, $imgUri")
+                SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
+            }
+
         }
 
         super.onResume()

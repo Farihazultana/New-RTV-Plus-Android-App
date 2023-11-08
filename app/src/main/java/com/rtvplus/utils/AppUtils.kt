@@ -13,34 +13,20 @@ import com.rtvplus.R
 object AppUtils {
     const val BASE_URL = "https://api-v200.rtvplus.tv/"
     const val PACKAGE_NAME = "com.rtvplus"
-    const val PhoneInputKey = "phone_input_key_rtv"
-    //const val GoogleSignInKey = "google_key"
-    // const val LogInKey = "login_key_key_rtv"
 
     const val LogInKey = "LogIn_Result"
     const val UsernameInputKey = "User"
     const val UserPasswordKey = "Password"
-    const val GoogleSignInKey = "Google"
-    const val USER_GMAIL = "rtv_user_gmail_001"
-    const val LogInModule = "result"
     const val SignInType = "SignedInWith"
     const val Type_google = "google"
     const val Type_fb = "facebook"
-    const val GoogleSignIn_IdToken = "ID token"
-    const val GoogleSignIn_FirstName = "firstname"
-    const val GoogleSignIn_LastName = "lastname"
-    const val GoogleSignIn_ImgUri = "ImageUri"
-    const val GoogleSignIn_Email = "Email"
-    const val GoogleSignIn_dpName = "display name"
-
-    const val FBSignIn_ImgUri = "FB Img"
-    const val FBSignIN_Fullname = "FB name"
 
 
 
 
     //loginResponse save key as obj
     const val LogInObj = "LogInResponseItem"
+    const val SocialLogInObj = "SocialLoginData"
 
 
     val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
