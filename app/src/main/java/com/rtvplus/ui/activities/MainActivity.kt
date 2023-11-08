@@ -67,17 +67,14 @@ class MainActivity : AppCompatActivity() {
             showAlertDialog(this)
         }
         setContentView(view)
-        navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
 
         val username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
 
-        if (username!!.isNotEmpty()) {
-            logInViewModel.fetchLogInData(username!!, "", "yes", "1")
-        }
+
         setupWithNavController(bottomNavigationView, navController)
 
         binding.bottomNavigationBarId.setItemIconTintList(
@@ -189,8 +186,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(marketIntent)
         } catch (e: ActivityNotFoundException) {
             // If Play Store app is not available, open the app link in a browser
-            val webUri =
-                Uri.parse("https://play.google.com/store/apps/details?id=${AppUtils.PACKAGE_NAME}")
+            val webUri = Uri.parse("https://play.google.com/store/apps/details?id=${AppUtils.PACKAGE_NAME}")
             val webIntent = Intent(Intent.ACTION_VIEW, webUri)
             startActivity(webIntent)
         }

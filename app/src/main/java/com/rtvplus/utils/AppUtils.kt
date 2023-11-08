@@ -21,9 +21,6 @@ object AppUtils {
     const val Type_google = "google"
     const val Type_fb = "facebook"
 
-
-
-
     //loginResponse save key as obj
     const val LogInObj = "LogInResponseItem"
     const val SocialLogInObj = "SocialLoginData"
@@ -33,8 +30,7 @@ object AppUtils {
     val phoneRegex = Regex("^8801[3-9]\\d{8}$")
 
     fun isOnline(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (connectivityManager != null) {
             val capabilities =
                 connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
@@ -56,8 +52,7 @@ object AppUtils {
 
     @SuppressLint("MissingInflatedId")
     fun showAlertDialog(context: Context) {
-        val dialogView =
-            LayoutInflater.from(context).inflate(R.layout.custom_dialougue_no_internet, null)
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.custom_dialougue_no_internet, null)
         val dialogOkButton = dialogView.findViewById<Button>(R.id.dialog_ok_button)
         val alertDialogBuilder = AlertDialog.Builder(context)
         alertDialogBuilder.setView(dialogView)

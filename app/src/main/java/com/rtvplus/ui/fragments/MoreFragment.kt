@@ -65,18 +65,16 @@ class MoreFragment : Fragment() {
 //        }
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-        var username = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+        val username = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
 
         //To check if signed in with google
         signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "").toString()
         Log.i("FacebookProfile", "More Fragment onCreateView: $signInType")
 
-        var email = ""
+
         val loginData = SharedPreferencesUtil.getSavedSocialLogInData(requireActivity())
         if (loginData != null){
-            email = loginData.email
-            if (signInType == AppUtils.Type_google) {
-                username = email
+            if (signInType == AppUtils.Type_google || signInType == AppUtils.Type_fb) {
                 binding.imgSocialLoginProfile.visibility = View.VISIBLE
                 val imgUri =loginData.imageUri
                 Glide.with(requireActivity()).load(imgUri)
@@ -86,15 +84,6 @@ class MoreFragment : Fragment() {
                     .into(binding.imgSocialLoginProfile)
             }
 
-            if (signInType == AppUtils.Type_fb){
-                binding.imgSocialLoginProfile.visibility = View.VISIBLE
-                val imgUri = loginData.imageUri
-                Glide.with(requireActivity()).load(imgUri)
-                    .placeholder(R.drawable.no_img)
-                    .fitCenter().transform(RoundedCorners(50))
-                    .error(R.drawable.no_img)
-                    .into(binding.imgSocialLoginProfile)
-            }
         }
 
 
@@ -156,14 +145,14 @@ class MoreFragment : Fragment() {
         }
 
         if (username.isNotEmpty()) {
-            if (username == email && loginData != null ) {
-                val gmailUser = loginData.displayName
-                binding.logInAs.text = gmailUser
-            } else if (signInType == AppUtils.Type_fb && loginData != null){
+            if (loginData != null){
                 val fullname = loginData.displayName
-                binding.logInAs.text = fullname
-            }
-            else {
+                if (signInType == AppUtils.Type_google) {
+                    binding.logInAs.text = fullname
+                } else {
+                    binding.logInAs.text = fullname
+                }
+            } else {
                 binding.logInAs.text = "Logged in as: ${username.substring(2)}"
             }
             binding.notLoginText.visibility = View.GONE
@@ -206,24 +195,24 @@ class MoreFragment : Fragment() {
 
     private fun logout(username: String) {
         SharedPreferencesUtil.clear(requireContext())
+        navigateToHomeFragment()
         //Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
-        if (isOneTapClientInitialized()) {
-            //SharedPreferencesUtil.clear(requireContext())
-            binding.logInAs.text = ""
+        if (signInType == AppUtils.Type_google){
+            if (isOneTapClientInitialized()) {
+                //SharedPreferencesUtil.clear(requireContext())
+                binding.logInAs.text = ""
 
-            if (username.isNotEmpty()) {
-                oneTapClient.signOut().addOnFailureListener {
-                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-                }.addOnCompleteListener {
-                    //Toast.makeText(context, "Logout completed!", Toast.LENGTH_SHORT).show()
+                if (username.isNotEmpty()) {
+                    oneTapClient.signOut().addOnFailureListener {
+                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                    }.addOnCompleteListener {
+                        //Toast.makeText(context, "Logout completed!", Toast.LENGTH_SHORT).show()
+                    }
                 }
+            } else {
+                Toast.makeText(requireContext(), "OneTapClient is not initialized", Toast.LENGTH_SHORT).show()
             }
-
-            navigateToHomeFragment()
-        } else {
-            Toast.makeText(requireContext(), "OneTapClient is not initialized", Toast.LENGTH_SHORT).show()
         }
-
 
         //Facebook logout
         if (signInType == AppUtils.Type_fb){

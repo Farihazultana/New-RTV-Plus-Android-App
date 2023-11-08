@@ -315,21 +315,13 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
                                 when (statusCode) {
                                     GoogleSignInStatusCodes.SIGN_IN_CANCELLED -> {
                                         // User canceled the sign-in.
-                                        Toast.makeText(
-                                            this@LoginActivity,
-                                            "Google Sign-In was canceled by the user",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        Toast.makeText(this@LoginActivity, "Google Sign-In was canceled by the user", Toast.LENGTH_LONG).show()
                                     }
 
                                     GoogleSignInStatusCodes.SIGN_IN_FAILED -> {
                                         // Sign-in failed for some reason.
                                         // Update UI accordingly or show an error message.
-                                        Toast.makeText(
-                                            this@LoginActivity,
-                                            "Google Sign-In failed. Please try again later.",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        Toast.makeText(this@LoginActivity, "Google Sign-In failed. Please try again later.", Toast.LENGTH_LONG).show()
                                     }
 
                                     else -> {

@@ -153,10 +153,8 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
 
     override fun onResume() {
         if (signInType == "Phone") {
-            val user =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
-            val password =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.UserPasswordKey, "").toString()
+            val user = SharedPreferencesUtil.getData(requireContext(), AppUtils.UsernameInputKey, "").toString()
+            val password = SharedPreferencesUtil.getData(requireContext(), AppUtils.UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
         } else {
             val loginData = SharedPreferencesUtil.getSavedSocialLogInData(requireActivity())
@@ -168,10 +166,7 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
                 val lastname =loginData.lastName
                 val imgUri =loginData.imageUri
 
-                Log.i(
-                    "OneTap",
-                    "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
-                )
+                Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
                 SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
             }
 

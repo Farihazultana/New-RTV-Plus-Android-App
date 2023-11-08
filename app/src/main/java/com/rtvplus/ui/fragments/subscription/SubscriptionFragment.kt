@@ -1,6 +1,5 @@
 package com.rtvplus.ui.fragments.subscription
 
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -210,6 +209,8 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+
+                    else -> {}
                 }
             }
         }
