@@ -148,6 +148,7 @@ dependencies {
     implementation ("androidx.media3:media3-exoplayer-dash:1.1.1")
     implementation ("androidx.media3:media3-ui:1.1.1")
     implementation ("androidx.media3:media3-exoplayer-hls:1.1.1")
+    implementation ("androidx.media3:media3-exoplayer-smoothstreaming:1.1.1")
 
     // firebase analytics
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))

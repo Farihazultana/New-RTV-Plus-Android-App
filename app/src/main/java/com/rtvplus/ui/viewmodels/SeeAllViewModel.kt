@@ -1,5 +1,6 @@
 package com.rtvplus.ui.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SeeAllViewModel @Inject constructor(private val repository: SeeAllRepository) : ViewModel() {
     private val _seeAllData = MutableLiveData<ResultType<SeeAllResponse>>(ResultType.Loading)
-    val seeAllData : MutableLiveData<ResultType<SeeAllResponse>> = _seeAllData
+    val seeAllData : LiveData<ResultType<SeeAllResponse>> = _seeAllData
     fun fetchSeeAllData(page: String, ct: String, tc: String, testval: String){
         viewModelScope.launch {
             try {

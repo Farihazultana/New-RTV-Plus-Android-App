@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +19,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI.setupWithNavController
+import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.device_info.DeviceInfo
@@ -27,8 +28,10 @@ import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.isOnline
 import com.rtvplus.utils.AppUtils.showAlertDialog
+import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil
+import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -46,7 +49,9 @@ class MainActivity : AppCompatActivity() {
     var currentversion: Int? = 0
     var enforcetext: String? = null
     private var enforce: Int? = 0
+    var  username : String ? = ""
     private val logInViewModel by viewModels<LogInViewModel>()
+    private lateinit var signInType: String
 
     companion object {
         const val PERMISSION_REQUEST_CODE = 123
@@ -67,15 +72,55 @@ class MainActivity : AppCompatActivity() {
             showAlertDialog(this)
         }
         setContentView(view)
-        navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.findNavController()
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
 
-        val username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+         username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
 
 
-        setupWithNavController(bottomNavigationView, navController)
+
+        binding.bottomNavigationBarId.setOnNavigationItemSelectedListener { item ->
+            if (item.itemId == R.id.LiveTvFragment && username!!.isEmpty()) {
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                selectedItemId = R.id.HomeFragment
+            } else {
+                if (item.itemId != binding.bottomNavigationBarId.selectedItemId)
+                    NavigationUI.onNavDestinationSelected(item, navController)
+
+            }
+            true
+        }
+
+
+        //  setupWithNavController(bottomNavigationView, navController)
+
+//                binding.bottomNavigationBarId.setOnItemSelectedListener { menuItem ->
+//            val itemId = menuItem.itemId
+//            if (selectedItemId != itemId) {
+//                when (itemId) {
+//                    R.id.HomeFragment -> navController.navigate(R.id.HomeFragment)
+//                    R.id.LiveTvFragment -> {
+//                        if (username.isNotEmpty()) {
+//                            navController.navigate(R.id.LiveTvFragment)
+//                        } else {
+//                            val intent = Intent(this, LoginActivity::class.java)
+//                            startActivity(intent)
+//                            selectedItemId = R.id.HomeFragment
+//                        }
+//                    }
+//
+//                    R.id.SubscriptionFragment -> navController.navigate(R.id.SubscriptionFragment)
+//                    R.id.MoreFragment -> navController.navigate(R.id.MoreFragment)
+//                }
+//                selectedItemId = itemId
+//            }
+//            true
+//        }
+
 
         binding.bottomNavigationBarId.setItemIconTintList(
             ContextCompat.getColorStateList(
@@ -119,14 +164,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-//        if (System.currentTimeMillis() - backPressedTime < DOUBLE_BACK_PRESS_INTERVAL) {
-//            super.onBackPressed()
-//            finish()
-//        } else {
-//            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
-//        }
-//        backPressedTime = System.currentTimeMillis()
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            finish()
+        } else {
+            Toast.makeText(
+                this,
+                "Press back again to leave the app.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 
     private fun checkSoftwareVersion() {
@@ -186,9 +233,17 @@ class MainActivity : AppCompatActivity() {
             startActivity(marketIntent)
         } catch (e: ActivityNotFoundException) {
             // If Play Store app is not available, open the app link in a browser
-            val webUri = Uri.parse("https://play.google.com/store/apps/details?id=${AppUtils.PACKAGE_NAME}")
+            val webUri =
+                Uri.parse("https://play.google.com/store/apps/details?id=${AppUtils.PACKAGE_NAME}")
             val webIntent = Intent(Intent.ACTION_VIEW, webUri)
             startActivity(webIntent)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        username = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+    }
+
+
 }

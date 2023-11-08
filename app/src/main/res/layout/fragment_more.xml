@@ -63,8 +63,9 @@
                 android:id="@+id/logInAs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="38dp"
+                android:layout_marginTop="32dp"
                 android:gravity="center"
+                android:text="User not logged in!"
                 android:textColor="@color/textBlack"
                 android:textSize="@dimen/_13sdp"
                 android:textStyle="bold"
@@ -72,18 +73,6 @@
                 app:layout_constraintStart_toEndOf="@+id/imgSocialLoginProfile"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/notLoginText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:text="User not logged in!"
-                android:textColor="@color/textBlack"
-                android:textSize="@dimen/_13sdp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/logInAs" />
 
             <Button
                 android:id="@+id/logInBtn"
@@ -96,7 +85,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/notLoginText" />
+                app:layout_constraintTop_toBottomOf="@+id/logInAs" />
 
             <TextView
                 android:id="@+id/favourite"
@@ -137,67 +126,6 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/favourite" />
-
-            <TextView
-                android:id="@+id/about"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/rounded_background"
-                android:drawablePadding="@dimen/_8sdp"
-                android:padding="@dimen/_12sdp"
-                android:text="About"
-                android:textColor="@color/textBlack"
-                android:textSize="@dimen/_12sdp"
-                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
-                app:drawableStartCompat="@drawable/baseline_info_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/feedBack" />
-
-            <TextView
-                android:id="@+id/license"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/rounded_background"
-                android:drawablePadding="@dimen/_12sdp"
-                android:padding="@dimen/_8sdp"
-                android:text="License"
-                android:textColor="@color/textBlack"
-                android:textSize="@dimen/_12sdp"
-                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
-                app:drawableStartCompat="@drawable/baseline_copyright_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/about" />
-
-            <TextView
-                android:id="@+id/help"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/rounded_background"
-                android:drawablePadding="@dimen/_12sdp"
-                android:padding="@dimen/_8sdp"
-                android:text="Help"
-                android:textColor="@color/textBlack"
-                android:textSize="@dimen/_12sdp"
-                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
-                app:drawableStartCompat="@drawable/baseline_help_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/license" />
-
             <TextView
                 android:id="@+id/rate"
                 android:layout_width="match_parent"
@@ -216,7 +144,26 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/help" />
+                app:layout_constraintTop_toBottomOf="@+id/feedBack" />
+            <TextView
+                android:id="@+id/help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_background"
+                android:drawablePadding="@dimen/_12sdp"
+                android:padding="@dimen/_8sdp"
+                android:text="Help"
+                android:textColor="@color/textBlack"
+                android:textSize="@dimen/_12sdp"
+                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                app:drawableStartCompat="@drawable/baseline_help_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rate" />
 
             <TextView
                 android:id="@+id/privacyPolicy"
@@ -236,7 +183,50 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rate" />
+                app:layout_constraintTop_toBottomOf="@+id/help" />
+
+            <TextView
+                android:id="@+id/license"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_background"
+                android:drawablePadding="@dimen/_12sdp"
+                android:padding="@dimen/_8sdp"
+                android:text="License"
+                android:textColor="@color/textBlack"
+                android:textSize="@dimen/_12sdp"
+                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                app:drawableStartCompat="@drawable/baseline_copyright_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/privacyPolicy" />
+
+
+            <TextView
+                android:id="@+id/about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/rounded_background"
+                android:drawablePadding="@dimen/_8sdp"
+                android:padding="@dimen/_12sdp"
+                android:text="About"
+                android:textColor="@color/textBlack"
+                android:textSize="@dimen/_12sdp"
+                app:drawableEndCompat="@drawable/baseline_arrow_forward_ios_24"
+                app:drawableStartCompat="@drawable/baseline_info_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/license" />
+
+
 
             <TextView
                 android:id="@+id/logout"
@@ -256,7 +246,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/privacyPolicy" />
+                app:layout_constraintTop_toBottomOf="@+id/about" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>

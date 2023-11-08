@@ -31,6 +31,8 @@ class SocialmediaLoginUtil {
                     val result = socialLoginResult.result
                     val loginSrc = socialLoginResult.loginsrc.toString()
 
+                    val url = socialLoginResult.consenttext
+                    Log.i("check-live-url-2",  url.toString())
 
                     this.observerListenerGoogle.observerListenerSocial(result, loginSrc)
 

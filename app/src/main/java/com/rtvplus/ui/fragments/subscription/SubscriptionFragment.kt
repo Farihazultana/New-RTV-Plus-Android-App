@@ -31,7 +31,6 @@ import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
     LogInUtil.ObserverListener, SocialmediaLoginUtil.ObserverListenerSocial {
@@ -109,8 +108,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
                     showBottomSheet()
 
                 } else {
-                    Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG)
-                        .show()
+                    //Toast.makeText(requireContext(), "Please Login First!", Toast.LENGTH_LONG).show()
                     val intent = Intent(requireContext(), LoginActivity::class.java)
                     startActivityForResult(intent, 1234)
                 }
@@ -128,31 +126,46 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
     }
 
     override fun onResume() {
+        getPhoneNumSP = SharedPreferencesUtil.getData(
+            requireContext(),
+            UsernameInputKey,
+            ""
+        ).toString()
+
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
         val loginData = SharedPreferencesUtil.getSavedSocialLogInData(requireActivity())
         val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
         if (signInType == "Phone") {
             val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
-        } else if (signInType == AppUtils.Type_google){
-            if (loginData != null){
+        } else if (signInType == AppUtils.Type_google) {
+            if (loginData != null) {
                 val email = loginData.email
-                val firstname =loginData.firstName
-                val lastname =loginData.lastName
-                val imgUri =loginData.imageUri
+                val firstname = loginData.firstName
+                val lastname = loginData.lastName
+                val imgUri = loginData.imageUri
                 Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
-                SocialmediaLoginUtil().fetchSocialLogInData(this,AppUtils.Type_google, user, firstname, lastname, email, imgUri)
+                SocialmediaLoginUtil().fetchSocialLogInData(this, AppUtils.Type_google, user, firstname, lastname, email, imgUri)
             }
 
-        } else{
-            if(loginData != null){
+        } else {
+            if (loginData != null) {
                 val fullname = loginData.displayName
                 val imgUrl = loginData.imageUri
-                SocialmediaLoginUtil().fetchSocialLogInData(this, AppUtils.Type_fb,user,fullname, "","", imgUrl )
+                SocialmediaLoginUtil().fetchSocialLogInData(
+                    this,
+                    AppUtils.Type_fb,
+                    user,
+                    fullname,
+                    "",
+                    "",
+                    imgUrl
+                )
             }
-
         }
-
+        selectedPositions = -1
+        Log.i("bug", "onResume: $selectedPositions")
+        binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.gray))
 
         super.onResume()
     }
@@ -191,8 +204,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
                                 binding.textView.text = item.packtext
                                 sub_pack = item.sub_pack
                                 Log.i(
-                                    "Subscription",
-                                    "onViewCreated: ${item.packtext} & ${item.userpack}"
+                                    "Subscription", "onViewCreated: ${item.packtext} & ${item.userpack}"
                                 )
                             } else {
                                 binding.textView.text = item.packtext

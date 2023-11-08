@@ -59,8 +59,16 @@ class FeedBackActivity : AppCompatActivity() {
 
         binding.sentFeedbackBtn.setOnClickListener{
             val userInput = binding.contentEditText.text.toString()
-            feedbackViewmodel.saveFeedback(username,userInput)
-            checkResponse()
+            if (userInput.length < 3)
+            {
+                Toast.makeText(this, "Type at least 3 character",Toast.LENGTH_SHORT).show()
+            }
+            else
+            {
+                feedbackViewmodel.saveFeedback(username,userInput)
+                checkResponse()
+            }
+
         }
     }
 
@@ -73,8 +81,7 @@ class FeedBackActivity : AppCompatActivity() {
                 is ResultType.Success<*> -> {
                     val response = it.data as FeedbackResponse
                     if (response.status == "success") {
-                        Toast.makeText(this@FeedBackActivity, response.status, Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this,"Feedback successfully sent", Toast.LENGTH_SHORT).show()
                         binding.progressbar.visibility = View.GONE
                         binding.contentEditText.text?.clear()
                     }
