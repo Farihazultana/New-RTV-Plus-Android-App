@@ -23,9 +23,6 @@ import com.rtvplus.ui.activities.LoginActivity
 import com.rtvplus.ui.adapters.SubscriptionAdapter
 import com.rtvplus.ui.viewmodels.SubscriptionViewModel
 import com.rtvplus.utils.AppUtils
-import com.rtvplus.utils.AppUtils.GoogleSignIn_Email
-import com.rtvplus.utils.AppUtils.GoogleSignIn_FirstName
-import com.rtvplus.utils.AppUtils.GoogleSignIn_LastName
 import com.rtvplus.utils.AppUtils.UserPasswordKey
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.LogInUtil
@@ -34,7 +31,6 @@ import com.rtvplus.utils.SharedPreferencesUtil
 import com.rtvplus.utils.SocialmediaLoginUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
 
 @AndroidEntryPoint
 class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
@@ -91,7 +87,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
         subscription()
 
         LogInUtil().observeLoginData(requireActivity(), this, this, this)
-        SocialmediaLoginUtil().observeGoogleLogInData(requireActivity(), this, this, this)
+        SocialmediaLoginUtil().observeSocialLogInData(requireActivity(), this, this, this)
 
         return binding.root
     }
@@ -133,54 +129,34 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
 
     override fun onResume() {
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
-
+        val loginData = SharedPreferencesUtil.getSavedSocialLogInData(requireActivity())
+        val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
         if (signInType == "Phone") {
-            val user =
-                SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
-            val password =
-                SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
+            val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
-        } else {
-            val user =
-                SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
-            val email =
-                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_Email, "").toString()
-            val firstname =
-                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_FirstName, "")
-                    .toString()
-            val lastname =
-                SharedPreferencesUtil.getData(requireContext(), GoogleSignIn_LastName, "")
-                    .toString()
-            val imgUri =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
-                    .toString()
-            Log.i(
-                "OneTap",
-                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
-            )
-            SocialmediaLoginUtil().fetchGoogleLogInData(
-                this,
-                user,
-                firstname,
-                lastname,
-                email,
-                imgUri
-            )
+        } else if (signInType == AppUtils.Type_google){
+            if (loginData != null){
+                val email = loginData.email
+                val firstname =loginData.firstName
+                val lastname =loginData.lastName
+                val imgUri =loginData.imageUri
+                Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
+                SocialmediaLoginUtil().fetchSocialLogInData(this,AppUtils.Type_google, user, firstname, lastname, email, imgUri)
+            }
+
+        } else{
+            if(loginData != null){
+                val fullname = loginData.displayName
+                val imgUrl = loginData.imageUri
+                SocialmediaLoginUtil().fetchSocialLogInData(this, AppUtils.Type_fb,user,fullname, "","", imgUrl )
+            }
+
         }
 
-       // subscription()
 
         super.onResume()
     }
 
-   /* override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.i("SubAdapt", "onActivityResult: $resultCode $resultCode")
-        if (requestCode == 1234 && resultCode == Activity.RESULT_OK) {
-
-            subscription()
-        }
-    }*/
 
     fun subscription() {
         subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
@@ -284,8 +260,9 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
         subscription()
     }
 
-    override fun observerListenerSocial(result: String) {
+    override fun observerListenerSocial(result: String, loginSrc: String) {
         subscription()
     }
+
 
 }

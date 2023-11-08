@@ -20,8 +20,6 @@ import com.rtvplus.data.models.local_payment.SaveLocalPaymentResponse
 import com.rtvplus.databinding.ActivityLocalPaymentBinding
 import com.rtvplus.ui.viewmodels.LocalPaymentViewModel
 import com.rtvplus.ui.viewmodels.SaveLocalPaymentViewModel
-import com.rtvplus.utils.AppUtils
-import com.rtvplus.utils.AppUtils.LogInModule
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.ResultType
 import com.rtvplus.utils.SharedPreferencesUtil

@@ -18,6 +18,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -31,6 +32,8 @@ import com.rtvplus.ui.activities.MainActivity
 import com.rtvplus.ui.viewmodels.SharedViewModel
 import com.rtvplus.utils.AppUtils
 import com.rtvplus.utils.AppUtils.PACKAGE_NAME
+import com.rtvplus.utils.AppUtils.Type_fb
+import com.rtvplus.utils.AppUtils.Type_google
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.AppUtils.isLoggedIn
 import com.rtvplus.utils.SharedPreferencesUtil
@@ -40,6 +43,7 @@ class MoreFragment : Fragment() {
     private lateinit var binding: FragmentMoreBinding
     private lateinit var dialog: Dialog
     private lateinit var oneTapClient: SignInClient
+    private lateinit var signInType: String
     lateinit var username: String
     private val sharedViewModel: SharedViewModel by viewModels()
 
@@ -71,20 +75,33 @@ class MoreFragment : Fragment() {
         username = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
 
         //To check if signed in with google
-        val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
-        email = SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_Email, "")
-            .toString()
-        if (signInType == "Google") {
-            username = email
-            binding.imgSocialLoginProfile.visibility = View.VISIBLE
-            val imgUri =
-                SharedPreferencesUtil.getData(requireContext(), AppUtils.GoogleSignIn_ImgUri, "")
-                    .toString()
-            Glide.with(requireActivity()).load(imgUri)
-                .placeholder(R.drawable.no_img)
-                .fitCenter().transform(RoundedCorners(50))
-                .error(R.drawable.no_img)
-                .into(binding.imgSocialLoginProfile)
+        signInType =
+            SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "").toString()
+        Log.i("FacebookProfile", "More Fragment onCreateView: $signInType")
+
+        val loginData = SharedPreferencesUtil.getSavedSocialLogInData(requireActivity())
+        if (loginData != null) {
+            email = loginData.email
+            if (signInType == AppUtils.Type_google) {
+                username = email
+                binding.imgSocialLoginProfile.visibility = View.VISIBLE
+                val imgUri = loginData.imageUri
+                Glide.with(requireActivity()).load(imgUri)
+                    .placeholder(R.drawable.no_img)
+                    .fitCenter().transform(RoundedCorners(50))
+                    .error(R.drawable.no_img)
+                    .into(binding.imgSocialLoginProfile)
+            }
+
+            if (signInType == AppUtils.Type_fb) {
+                binding.imgSocialLoginProfile.visibility = View.VISIBLE
+                val imgUri = loginData.imageUri
+                Glide.with(requireActivity()).load(imgUri)
+                    .placeholder(R.drawable.no_img)
+                    .fitCenter().transform(RoundedCorners(50))
+                    .error(R.drawable.no_img)
+                    .into(binding.imgSocialLoginProfile)
+            }
         }
 
         binding.favourite.setOnClickListener {
@@ -144,11 +161,9 @@ class MoreFragment : Fragment() {
         }
 
         if (username.isNotEmpty()) {
-            if (username == email) {
-                val gmailUser = SharedPreferencesUtil.getData(requireContext(),AppUtils.GoogleSignIn_dpName, "").toString()
-                binding.logInAs.text = gmailUser
+            if ((signInType == Type_google || signInType == Type_fb) && loginData != null) {
+                binding.logInAs.text = loginData.displayName
             } else {
-
                 binding.logInAs.text = "Logged in as: ${username.substring(2)}"
             }
             binding.logInBtn.visibility = View.GONE
@@ -165,8 +180,8 @@ class MoreFragment : Fragment() {
         }
 
         //Logout
-        setDialog()
         binding.logout.setOnClickListener {
+            setDialog()
             handleLogoutClick(username)
         }
         return binding.root
@@ -186,28 +201,33 @@ class MoreFragment : Fragment() {
     }
 
     private fun logout(username: String) {
+        isLoggedIn = false
         SharedPreferencesUtil.clear(requireContext())
-        Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
         if (isOneTapClientInitialized()) {
-            SharedPreferencesUtil.clear(requireContext())
-            //binding.logInAs.text = null
+            //SharedPreferencesUtil.clear(requireContext())
+            binding.logInAs.text = ""
 
             if (username.isNotEmpty()) {
                 oneTapClient.signOut().addOnFailureListener {
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                 }.addOnCompleteListener {
-                    //Toast.makeText(context, "You are Signed Out!", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "Logout completed!", Toast.LENGTH_SHORT).show()
                 }
             }
 
             navigateToHomeFragment()
         } else {
-            Toast.makeText(
-                requireContext(),
-                "OneTapClient is not initialized",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(requireContext(), "OneTapClient is not initialized", Toast.LENGTH_SHORT)
+                .show()
         }
+
+
+        //Facebook logout
+        if (signInType == AppUtils.Type_fb) {
+            LoginManager.getInstance().logOut()
+        }
+
     }
 
     private fun setDialog() {
@@ -237,36 +257,38 @@ class MoreFragment : Fragment() {
     }
 
     override fun onResume() {
-
         Log.e("checkflagvalue", AppUtils.isLoggedIn.toString())
 
+        username = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+        signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "").toString()
+        val loginData = SharedPreferencesUtil.getSavedSocialLogInData(requireActivity())
 
         if (isLoggedIn) {
-            Log.e("checkflagvalue", AppUtils.isLoggedIn.toString())
-            username =
-                SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
-            Log.e("checkflagvalue", username)
 
-            if (username.isNotEmpty()) {
-                if (username == email) {
-                    val gmailUser = SharedPreferencesUtil.getData(
-                        requireContext(),
-                        AppUtils.GoogleSignIn_dpName,
-                        ""
-                    ).toString()
-                    binding.logInAs.text = gmailUser
+            if (username.isNotEmpty())
+            {
+                Log.e("checkflagvalue", isLoggedIn.toString())
+                username =
+                    SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
+                Log.e("checkflagvalue", username)
+
+                if (signInType == Type_google || signInType == Type_fb) {
+                    binding.logInAs.text = loginData?.displayName
                 } else {
                     binding.logInAs.text = "Logged in as: ${username.substring(2)}"
-
                 }
                 binding.logInBtn.visibility = View.GONE
                 binding.logout.visibility = View.VISIBLE
                 binding.logInAs.visibility = View.VISIBLE
-            } else {
+            }
+            else
+            {
                 binding.logInBtn.visibility = View.VISIBLE
                 binding.logout.visibility = View.GONE
                 binding.logInAs.text = "User not logged in!"
             }
+
+
         }
 
         super.onResume()

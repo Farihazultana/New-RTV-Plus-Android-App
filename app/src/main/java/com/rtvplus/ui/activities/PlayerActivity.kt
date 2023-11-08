@@ -393,22 +393,12 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                 if (response.status == "success") {
                                     binding.shimmerFrameLayout.visibility = View.GONE
                                     binding.shimmerFrameLayout.stopShimmer()
-                                    Toast.makeText(
-                                        this@PlayerActivity,
-                                        response.status,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
                                     isInList = 0
 
                                 } else {
 
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
-                                    Toast.makeText(
-                                        this@PlayerActivity,
-                                        response.status,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
                                     binding.shimmerFrameLayout.visibility = View.GONE
                                     binding.shimmerFrameLayout.stopShimmer()
                                 }
@@ -435,21 +425,11 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                                 if (response.status == "success") {
                                     binding.shimmerFrameLayout.visibility = View.GONE
                                     binding.shimmerFrameLayout.stopShimmer()
-                                    Toast.makeText(
-                                        this@PlayerActivity,
-                                        response.status,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_24)
                                     isInList = 1
 
                                 } else {
                                     binding.favouriteIcon.setImageResource(R.drawable.baseline_favorite_border_24)
-                                    Toast.makeText(
-                                        this@PlayerActivity,
-                                        response.status,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
                                     binding.shimmerFrameLayout.visibility = View.GONE
                                     binding.shimmerFrameLayout.stopShimmer()
                                 }
@@ -537,15 +517,16 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
         // Set a click listener for the Confirm button
         confirmButton.setOnClickListener {
             val userInput = editText.text.toString()
-            if (userInput.isNotEmpty()) {
-                commentViewModel.saveComment(username, userInput)
 
-                alertDialog.dismiss()
-            } else {
+            if (userInput.length < 3)
+            {
+                Toast.makeText(this, "Type at least 3 character",Toast.LENGTH_SHORT).show()
+            }
+            else
+            {
+                commentViewModel.saveComment(username, userInput)
                 alertDialog.dismiss()
             }
-
-
         }
         alertDialog.show()
     }
@@ -561,18 +542,11 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
                 is ResultType.Success<*> -> {
                     val response = it.data as CommentResponse
                     if (response.status == "success") {
-                        Toast.makeText(this@PlayerActivity, response.status, Toast.LENGTH_SHORT)
-                            .show()
                         binding.progressbar.visibility = View.GONE
                     }
                 }
 
                 is ResultType.Error -> {
-                    Toast.makeText(
-                        this@PlayerActivity,
-                        R.string.error_response_msg,
-                        Toast.LENGTH_SHORT
-                    ).show()
                     binding.progressbar.visibility = View.GONE
                 }
             }

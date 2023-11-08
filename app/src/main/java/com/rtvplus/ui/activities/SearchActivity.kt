@@ -24,6 +24,8 @@ import com.rtvplus.ui.fragments.subscription.SubscriptionFragment
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.SearchViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.Type_fb
+import com.rtvplus.utils.AppUtils.Type_google
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.AppUtils.isLoggedIn
 import com.rtvplus.utils.LogInUtil
@@ -74,15 +76,13 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
 
         username = SharedPreferencesUtil.getData(this, UsernameInputKey, "").toString()
 
-        if (username.isNotEmpty()) {
-            logInViewModel.fetchLogInData(username, "", "yes", "1")
-        }
+
 
         signInType = SharedPreferencesUtil.getData(this, AppUtils.SignInType, "").toString()
         if (signInType == "Phone") {
             LogInUtil().observeLoginData(this, this, this, this)
         } else {
-            SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+            SocialmediaLoginUtil().observeSocialLogInData(this, this, this, this)
         }
 
         isPremiumUser = SharedPreferencesUtil.getSavedLogInData(this)?.play ?: 0
@@ -228,26 +228,14 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
     override fun onItemClickListener(position: Int, item: Content?) {
         if (item != null) {
 
-            val phone = SharedPreferencesUtil.getData(
-                this,
-                AppUtils.LogInKey,
-                ""
-            )
-            val email = SharedPreferencesUtil.getData(
-                this,
-                AppUtils.GoogleSignInKey,
-                ""
-            )
+            val phone = SharedPreferencesUtil.getData(this, AppUtils.LogInKey, "")
 
-            if (phone.toString().isNotEmpty() || email.toString().isNotEmpty()) {
+            if (phone.toString() != "") {
                 if (isPremiumUser == 0 && item.isfree == "0") {
 
                     val fragmentTransaction = this.supportFragmentManager.beginTransaction()
                     val subscriptionFragment = SubscriptionFragment()
-                    fragmentTransaction.replace(
-                        R.id.subscriptionContainerView,
-                        subscriptionFragment
-                    )
+                    fragmentTransaction.replace(R.id.subscriptionContainerView, subscriptionFragment)
                     fragmentTransaction.addToBackStack(null)
                     fragmentTransaction.commit()
 
@@ -281,6 +269,8 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
     }
 
     override fun onResume() {
+        val loginData = SharedPreferencesUtil.getSavedSocialLogInData(this)
+        val user = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
 
         Log.i("checkiflogin", isLoggedIn.toString())
         Log.i("checkiflogin", searhText.toString())
@@ -292,7 +282,7 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
             if (signInType == "Phone") {
                 LogInUtil().observeLoginData(this, this, this, this)
             } else {
-                SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+                SocialmediaLoginUtil().observeSocialLogInData(this, this, this, this)
             }
         }
 
@@ -302,32 +292,35 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
             val password =
                 SharedPreferencesUtil.getData(this, AppUtils.UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
-        } else {
-            val user =
-                SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
-            val email =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_Email, "").toString()
-            val firstname =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_FirstName, "")
-                    .toString()
-            val lastname =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_LastName, "")
-                    .toString()
-            val imgUri =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_ImgUri, "")
-                    .toString()
-            Log.i(
-                "OneTap",
-                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
-            )
-            SocialmediaLoginUtil().fetchGoogleLogInData(
-                this,
-                user,
-                firstname,
-                lastname,
-                email,
-                imgUri
-            )
+        } else if (signInType== Type_google) {
+            val user = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
+
+            if(loginData != null){
+                val email = loginData.email
+                val firstname =loginData.firstName
+                val lastname =loginData.lastName
+                val imgUri =loginData.imageUri
+                Log.i("OneTap", "onResume Search Activity: $user, $email, $firstname, $lastname, $imgUri")
+                SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
+            }
+
+        }
+
+        else if (signInType == Type_fb)
+        {
+            if (loginData != null) {
+                val fullname = loginData.displayName
+                val imgUrl = loginData.imageUri
+                SocialmediaLoginUtil().fetchSocialLogInData(
+                    this,
+                    AppUtils.Type_fb,
+                    user,
+                    fullname,
+                    "",
+                    "",
+                    imgUrl
+                )
+            }
         }
 
         super.onResume()
@@ -337,10 +330,8 @@ class SearchActivity : AppCompatActivity(), SearchListAdapter.itemClickListener,
 
     }
 
-    override fun observerListenerSocial(result: String) {
+    override fun observerListenerSocial(result: String, loginSrc: String) {
 
     }
-
-
 
 }

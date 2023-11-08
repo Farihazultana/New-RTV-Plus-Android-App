@@ -43,5 +43,8 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="Theme.RemoveSplashScreenTheme" parent="@style/Base.Theme.RTVPlusAndroidAppRevamp">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 
 </resources>

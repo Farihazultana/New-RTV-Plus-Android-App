@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.rtvplus.data.models.logIn.LogInResponseItem
+import com.rtvplus.data.models.logIn.SocialLoginData
 import java.lang.reflect.Type
 
 object SharedPreferencesUtil {
@@ -27,14 +28,6 @@ object SharedPreferencesUtil {
         editor.apply()
     }
 
-    fun saveLogInData(context: Context, list: LogInResponseItem?) {
-        val editor = getSharedPreferences(context).edit()
-        val gson = Gson()
-        val json = gson.toJson(list)
-        editor.putString(AppUtils.LogInObj, json)
-        editor.apply()
-    }
-
     fun getData(context: Context, key: String, defaultValue: Any?): Any {
         val sharedPreferences = getSharedPreferences(context)
         return when (defaultValue) {
@@ -47,10 +40,33 @@ object SharedPreferencesUtil {
         }
     }
 
+    fun saveLogInData(context: Context, list: LogInResponseItem?) {
+        val editor = getSharedPreferences(context).edit()
+        val gson = Gson()
+        val json = gson.toJson(list)
+        editor.putString(AppUtils.LogInObj, json)
+        editor.apply()
+    }
+
     fun getSavedLogInData(context: Context): LogInResponseItem? {
         val gson = Gson()
         val json: String? = getSharedPreferences(context).getString(AppUtils.LogInObj, null)
         val type: Type = object : TypeToken<LogInResponseItem?>() {}.type
+        return gson.fromJson(json, type)
+    }
+
+    fun saveSocialLogInData(context: Context, list: SocialLoginData?){
+        val editor = getSharedPreferences(context).edit()
+        val gson = Gson()
+        val json = gson.toJson(list)
+        editor.putString(AppUtils.SocialLogInObj, json)
+        editor.apply()
+    }
+
+    fun getSavedSocialLogInData(context: Context): SocialLoginData? {
+        val gson = Gson()
+        val json: String? = getSharedPreferences(context).getString(AppUtils.SocialLogInObj, null)
+        val type: Type = object : TypeToken<SocialLoginData?>() {}.type
         return gson.fromJson(json, type)
     }
 

@@ -23,7 +23,7 @@ class LogInUtil {
     fun observeLoginData(context: Context, lifecycleOwner: LifecycleOwner, viewModelOwner: ViewModelStoreOwner, listener: ObserverListener) {
         val logInViewModel = ViewModelProvider(viewModelOwner)[LogInViewModel::class.java]
         var result: String
-        this.observerListener = listener
+        observerListener = listener
 
         logInViewModel.logInData.observe(lifecycleOwner) {
             when (it) {
@@ -35,7 +35,7 @@ class LogInUtil {
                     val logInResult = it.data[0]
                     result = logInResult.result
 
-                    this.observerListener.observerListener(result)
+                    observerListener.observerListener(result)
                     SharedPreferencesUtil.saveData(context, AppUtils.LogInKey, result)
 
                     //Store Login Data

@@ -23,6 +23,8 @@ import com.rtvplus.ui.viewmodels.FavoriteListViewModel
 import com.rtvplus.ui.viewmodels.LogInViewModel
 import com.rtvplus.ui.viewmodels.RemoveFavoriteListViewModel
 import com.rtvplus.utils.AppUtils
+import com.rtvplus.utils.AppUtils.Type_fb
+import com.rtvplus.utils.AppUtils.Type_google
 import com.rtvplus.utils.AppUtils.UsernameInputKey
 import com.rtvplus.utils.LogInUtil
 import com.rtvplus.utils.ResultType
@@ -75,21 +77,18 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
         if (signInType == "Phone") {
             LogInUtil().observeLoginData(this, this, this, this)
         } else {
-            SocialmediaLoginUtil().observeGoogleLogInData(this, this, this, this)
+            SocialmediaLoginUtil().observeSocialLogInData(this, this, this, this)
         }
 
         if (username.isNotEmpty()) {
             logInViewModel.fetchLogInData(username, "", "yes", "1")
         }
-
         favoriteListAdapter = FavoriteListAdapter(null, this, this, isPremiumUser)
         binding.favouriteListRecyclerview.layoutManager = GridLayoutManager(this, 2)
         binding.favouriteListRecyclerview.adapter = favoriteListAdapter
 
-
         if (username.isNotEmpty()) {
             loadMoreData()
-
             binding.favouriteListRecyclerview.addOnScrollListener(object :
                 RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -313,38 +312,43 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
     }
 
     override fun onResume() {
+        val loginData = SharedPreferencesUtil.getSavedSocialLogInData(this)
+        val user = SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
         if (signInType == "Phone") {
             val user =
                 SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
             val password =
                 SharedPreferencesUtil.getData(this, AppUtils.UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
-        } else {
-            val user =
-                SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
-            val email =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_Email, "").toString()
-            val firstname =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_FirstName, "")
-                    .toString()
-            val lastname =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_LastName, "")
-                    .toString()
-            val imgUri =
-                SharedPreferencesUtil.getData(this, AppUtils.GoogleSignIn_ImgUri, "")
-                    .toString()
-            Log.i(
-                "OneTap",
-                "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri"
-            )
-            SocialmediaLoginUtil().fetchGoogleLogInData(
-                this,
-                user,
-                firstname,
-                lastname,
-                email,
-                imgUri
-            )
+        } else if (signInType == Type_google){
+
+            if (loginData != null){
+                val email =loginData.email
+                val firstname =loginData.firstName
+                val lastname =loginData.lastName
+                val imgUri =loginData.imageUri
+                Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
+                SocialmediaLoginUtil().fetchSocialLogInData(this,
+                    Type_google, user, firstname, lastname, email, imgUri)
+            }
+
+        }
+        else if(signInType == Type_fb)
+        {
+            if (loginData != null) {
+                val fullname = loginData.displayName
+                val imgUrl = loginData.imageUri
+                SocialmediaLoginUtil().fetchSocialLogInData(
+                    this,
+                    AppUtils.Type_fb,
+                    user,
+                    fullname,
+                    "",
+                    "",
+                    imgUrl
+                )
+            }
+
         }
 
         super.onResume()
@@ -354,7 +358,7 @@ class FavoriteListActivity : AppCompatActivity(), FavoriteListAdapter.OnRemoveIt
 
     }
 
-    override fun observerListenerSocial(result: String) {
+    override fun observerListenerSocial(result: String, loginSrc: String) {
 
     }
 
