@@ -131,46 +131,33 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
     override fun onResume() {
         val signInType = SharedPreferencesUtil.getData(requireActivity(), AppUtils.SignInType, "")
         val loginData = SharedPreferencesUtil.getSavedSocialLogInData(requireActivity())
-
+        val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
         if (signInType == "Phone") {
-            val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
             val password = SharedPreferencesUtil.getData(requireContext(), UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
-        } else if (signInType == "Google"){
-            val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
-
+        } else if (signInType == AppUtils.Type_google){
             if (loginData != null){
                 val email = loginData.email
                 val firstname =loginData.firstName
                 val lastname =loginData.lastName
                 val imgUri =loginData.imageUri
                 Log.i("OneTap", "onResume Subscription Fragment: $user, $email, $firstname, $lastname, $imgUri")
-                SocialmediaLoginUtil().fetchSocialLogInData(this,"google", user, firstname, lastname, email, imgUri)
+                SocialmediaLoginUtil().fetchSocialLogInData(this,AppUtils.Type_google, user, firstname, lastname, email, imgUri)
             }
 
         } else{
             if(loginData != null){
-                val user = SharedPreferencesUtil.getData(requireContext(), UsernameInputKey, "").toString()
                 val fullname = loginData.displayName
                 val imgUrl = loginData.imageUri
-                SocialmediaLoginUtil().fetchSocialLogInData(this, "facebook",user,fullname, "","", imgUrl )
+                SocialmediaLoginUtil().fetchSocialLogInData(this, AppUtils.Type_fb,user,fullname, "","", imgUrl )
             }
 
         }
 
-       // subscription()
 
         super.onResume()
     }
 
-   /* override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.i("SubAdapt", "onActivityResult: $resultCode $resultCode")
-        if (requestCode == 1234 && resultCode == Activity.RESULT_OK) {
-
-            subscription()
-        }
-    }*/
 
     fun subscription() {
         subscriptionViewModel.fetchSubscriptionData(getPhoneNumSP)
