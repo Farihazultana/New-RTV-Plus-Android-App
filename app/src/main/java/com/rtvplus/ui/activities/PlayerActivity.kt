@@ -596,7 +596,7 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
             // hideStatusBar()
             // Set the activity orientation back to portrait
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_24)
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             WindowInsetsControllerCompat(
                 this.window,
                 this.window.decorView

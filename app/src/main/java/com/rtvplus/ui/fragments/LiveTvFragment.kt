@@ -171,7 +171,7 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
         } else {
             // Set the activity orientation back to portrait
             fullScreenbutton.setImageResource(R.drawable.baseline_fullscreen_24)
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             WindowInsetsControllerCompat(
                 requireActivity().window,
                 requireActivity().window.decorView
