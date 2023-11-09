@@ -56,9 +56,13 @@ class MoreFragment : Fragment() {
         binding = FragmentMoreBinding.inflate(inflater, container, false)
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
+
+
+        val fragmentManager = requireActivity().supportFragmentManager
         binding.backButton.setOnClickListener {
-            val navController = findNavController(binding.root)
-            navController.navigate(R.id.HomeFragment)
+//            val navController = findNavController(binding.root)
+//            navController.navigate(R.id.HomeFragment)
+            fragmentManager.popBackStack()
             val bottomNavigationView =
                 requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
             bottomNavigationView.selectedItemId = R.id.HomeFragment
@@ -290,6 +294,10 @@ class MoreFragment : Fragment() {
 
 
         }
+
+        val bottomNavigationView =
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+        bottomNavigationView.selectedItemId = R.id.MoreFragment
 
         super.onResume()
 

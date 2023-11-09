@@ -638,8 +638,6 @@ class PlayerActivity : AppCompatActivity(), SimilarItemsAdapter.itemClickListene
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         player.stop()
-
-
         val elapsedTimeInSeconds = (elapsedTime) / 1000
         val timeInSeconds = player.currentPosition / 1000
 
