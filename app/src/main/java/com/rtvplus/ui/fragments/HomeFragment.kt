@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentHomeBinding
 import com.rtvplus.ui.activities.MainActivity
@@ -82,6 +83,8 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
             startActivity(intent)
             requireActivity().finish()
         }
+
+
 
 
         return binding.root
@@ -191,6 +194,10 @@ class HomeFragment : Fragment(),LogInUtil.ObserverListener,SocialmediaLoginUtil.
 
         Log.e("checkLogin", isLoggedIn.toString())
         Log.e("checkLogin", isPostPlayTime.toString())
+
+        val bottomNavigationView =
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+        bottomNavigationView.selectedItemId = R.id.HomeFragment
 
         homeViewModel.fetchHomeData(username!!, "home", "3", "app", "en")
 

@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.databinding.FragmentLiveTvBinding
 import com.rtvplus.ui.activities.MainActivity
@@ -66,6 +67,8 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
 
             LogInUtil().observeLoginData(requireActivity(), this, this, this)
             SocialmediaLoginUtil().observeSocialLogInData(requireActivity(), this, this, this)
+
+
 
 
 //        val fragmentManager = requireActivity().supportFragmentManager
@@ -216,6 +219,10 @@ class LiveTvFragment : Fragment(), LogInUtil.ObserverListener,
             }
 
         }
+
+        val bottomNavigationView =
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+        bottomNavigationView.selectedItemId = R.id.LiveTvFragment
 
         super.onResume()
 
