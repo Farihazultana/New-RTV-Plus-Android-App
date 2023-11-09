@@ -88,6 +88,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
         binding.rvSeeAll.layoutManager = layoutManager
         binding.rvSeeAll.adapter = seeAllAdapter
 
+        seeAllObserver()
 
         if (catCode.isNotEmpty()) {
             loadMoreData() // Initial data load
@@ -117,7 +118,9 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
     @SuppressLint("NotifyDataSetChanged")
     private fun loadMoreData() {
         seeAllViewModel.fetchSeeAllData(currentPage.toString(), catCode, "0", "1")
+    }
 
+    private fun seeAllObserver() {
         lifecycleScope.launch {
             seeAllViewModel.seeAllData.observe(this@SeeAllActivity) {
                 when (it) {
@@ -127,8 +130,11 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
                     }
 
                     is ResultType.Success -> {
-                        isPremiumUser = SharedPreferencesUtil.getSavedLogInData(this@SeeAllActivity)?.play ?: 0
-                        username = SharedPreferencesUtil.getData(this@SeeAllActivity, UsernameInputKey, "").toString()
+                        isPremiumUser =
+                            SharedPreferencesUtil.getSavedLogInData(this@SeeAllActivity)?.play ?: 0
+                        username =
+                            SharedPreferencesUtil.getData(this@SeeAllActivity, UsernameInputKey, "")
+                                .toString()
 
                         val seeAllData = it.data
 
@@ -251,13 +257,11 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
                 SocialmediaLoginUtil().observeSocialLogInData(this, this, this, this)
             }
 
-            seeAllViewModel.fetchSeeAllData(currentPage.toString(), catCode, "0", "1")
+            loadMoreData()
             Log.e("isLoggedInSeeAll", "isLoggedInSeeAll")
         }
 
         if (signInType == "Phone") {
-            val user =
-                SharedPreferencesUtil.getData(this, AppUtils.UsernameInputKey, "").toString()
             val password =
                 SharedPreferencesUtil.getData(this, AppUtils.UserPasswordKey, "").toString()
             LogInUtil().fetchLogInData(this, user, password)
@@ -288,15 +292,7 @@ class SeeAllActivity : AppCompatActivity(), SeeAllAdapter.itemClickListener,
             if (loginData != null) {
                 val fullname = loginData.displayName
                 val imgUrl = loginData.imageUri
-                SocialmediaLoginUtil().fetchSocialLogInData(
-                    this,
-                    AppUtils.Type_fb,
-                    user,
-                    fullname,
-                    "",
-                    "",
-                    imgUrl
-                )
+                SocialmediaLoginUtil().fetchSocialLogInData(this, Type_fb, user, fullname, "", "", imgUrl)
             }
 
         }

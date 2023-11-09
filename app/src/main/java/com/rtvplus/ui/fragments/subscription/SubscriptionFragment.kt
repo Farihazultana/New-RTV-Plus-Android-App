@@ -62,9 +62,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
         //for toolbar back press
         toolBarIconSubscribe.setOnClickListener {
             fragmentManager.popBackStack()
-            val bottomNavigationView =
-                requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-            bottomNavigationView.selectedItemId = R.id.HomeFragment
         }
 
         //go to previous screen
@@ -166,7 +163,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
 
         val bottomNavigationView =
             requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
-        bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
+        bottomNavigationView?.selectedItemId = R.id.SubscriptionFragment
 
 
         super.onResume()
