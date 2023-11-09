@@ -181,28 +181,30 @@ class MoreFragment : Fragment() {
     private fun logout(username: String) {
         isLoggedIn = false
         SharedPreferencesUtil.clear(requireContext())
+        navigateToHomeFragment()
         //Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()
-        if (isOneTapClientInitialized()) {
-            //SharedPreferencesUtil.clear(requireContext())
-            binding.logInAs.text = ""
+        if (signInType == Type_google) {
+            if (isOneTapClientInitialized()) {
+                //SharedPreferencesUtil.clear(requireContext())
+                binding.logInAs.text = ""
 
-            if (username.isNotEmpty()) {
-                oneTapClient.signOut().addOnFailureListener {
-                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
-                }.addOnCompleteListener {
-                    //Toast.makeText(context, "Logout completed!", Toast.LENGTH_SHORT).show()
+                if (username.isNotEmpty()) {
+                    oneTapClient.signOut().addOnFailureListener {
+                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                    }.addOnCompleteListener {
+                        //Toast.makeText(context, "Logout completed!", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
 
-            navigateToHomeFragment()
-        } else {
-            Toast.makeText(requireContext(), "OneTapClient is not initialized", Toast.LENGTH_SHORT)
-                .show()
+
+            } else {
+                Toast.makeText(requireContext(), "OneTapClient is not initialized", Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
 
-
         //Facebook logout
-        if (signInType == AppUtils.Type_fb) {
+        if (signInType == Type_fb) {
             LoginManager.getInstance().logOut()
         }
 
