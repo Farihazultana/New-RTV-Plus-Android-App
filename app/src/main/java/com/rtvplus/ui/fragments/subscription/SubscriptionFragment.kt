@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.rtvplus.R
 import com.rtvplus.data.models.subscription.SubschemesItem
 import com.rtvplus.databinding.FragmentSubscribeBottomBinding
@@ -70,6 +71,9 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
         //for toolbar back press
         toolBarIconSubscribe.setOnClickListener {
             fragmentManager.popBackStack()
+            val bottomNavigationView =
+                requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+            bottomNavigationView.selectedItemId = R.id.HomeFragment
         }
 
         //go to previous screen
@@ -152,6 +156,10 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
             }
 
         }
+
+        val bottomNavigationView =
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationBarId)
+        bottomNavigationView.selectedItemId = R.id.SubscriptionFragment
 
 
         super.onResume()
