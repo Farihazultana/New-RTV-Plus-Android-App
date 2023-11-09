@@ -44,25 +44,34 @@ class RedeemCouponBottomFragment : BottomSheetDialogFragment() {
             ""
         ).toString()
 
+        observe()
+
         button.setOnClickListener {
             val otp: String = pinView.text.toString()
-            redeemCouponViewModel.fetchRedeemCouponPaymentData(getPhoneNumSP, otp)
-            lifecycleScope.launch {
-                redeemCouponViewModel.redeemCuoponPaymentData.observe(this@RedeemCouponBottomFragment){
-                    when(it){
-                        is ResultType.Success -> {
-                            val result = it.data.response
-                            Toast.makeText(requireContext(), result, Toast.LENGTH_LONG).show()
-                            findNavController().navigate(R.id.SubscriptionFragment)
-                            dismiss()
-                        }
-
-                        else -> {}
-                    }
-                }
+            if(otp.length==8){
+                redeemCouponViewModel.fetchRedeemCouponPaymentData(getPhoneNumSP, otp)
+            }else if (otp.length <8 || otp.length >8){
+                Toast.makeText(requireActivity(), "Coupon code can't be less than 8", Toast.LENGTH_SHORT).show()
             }
         }
         return view
+    }
+
+    private fun observe() {
+        lifecycleScope.launch {
+            redeemCouponViewModel.redeemCuoponPaymentData.observe(this@RedeemCouponBottomFragment) {
+                when (it) {
+                    is ResultType.Success -> {
+                        val result = it.data.response
+                        Toast.makeText(requireContext(), result, Toast.LENGTH_LONG).show()
+                        findNavController().navigate(R.id.SubscriptionFragment)
+                        dismiss()
+                    }
+
+                    else -> {}
+                }
+            }
+        }
     }
 
     override fun onStart() {

@@ -45,13 +45,15 @@ class LocalPaymentActivity : AppCompatActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(view)
 
+        binding.toolBarBackIconLocalPay.setOnClickListener {
+            onBackPressed()
+        }
+
+        binding.pbLoading.visibility = View.VISIBLE
+
         localPaymentView = binding.wvLocalPayment
         localPaymentView.settings.javaScriptEnabled = true
-        localPaymentView.webViewClient =
-            LocalPaymentWebViewClient(
-                this,
-                saveLocalPaymentViewModel
-            )
+        localPaymentView.webViewClient = LocalPaymentWebViewClient(this, saveLocalPaymentViewModel)
 
         getPhoneNumSP= SharedPreferencesUtil.getData(
         this,
@@ -117,7 +119,10 @@ class LocalPaymentActivity : AppCompatActivity() {
                         return true
                     }
 
-                    view?.loadUrl(url)
+                    if(view?.progress!! > 50){
+                        binding.pbLoading.visibility = View.GONE
+                    }
+                    view.loadUrl(url)
                     if (url.contains("ACCEPTED")) {
                         val uri = Uri.parse(url)
                         val paramNames = uri.queryParameterNames
@@ -213,6 +218,20 @@ class LocalPaymentActivity : AppCompatActivity() {
         }
 
         super.finish()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        val fragmentManager = supportFragmentManager
+        val backStackEntryCount = fragmentManager.backStackEntryCount
+
+        if (backStackEntryCount > 0) {
+            // Pop the fragment on the first back button click
+            fragmentManager.popBackStack()
+        } else {
+            // If the back stack is empty, navigate back or exit the activity
+            super.onBackPressed()
+        }
     }
 
 }

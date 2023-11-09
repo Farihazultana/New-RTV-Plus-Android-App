@@ -58,14 +58,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
         val fragmentManager = requireActivity().supportFragmentManager
         val toolBarIconSubscribe = binding.toolBarIconSubscribe
 
-
-
-        getPhoneNumSP = SharedPreferencesUtil.getData(
-            requireContext(),
-            UsernameInputKey,
-            ""
-        ).toString()
-
         //for toolbar back press
         toolBarIconSubscribe.setOnClickListener {
             fragmentManager.popBackStack()
@@ -78,6 +70,12 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+        getPhoneNumSP = SharedPreferencesUtil.getData(
+            requireContext(),
+            UsernameInputKey,
+            ""
+        ).toString()
 
         subscriptionAdapter = SubscriptionAdapter(this, requireContext())
         binding.rvSubscriptionPacks.layoutManager = GridLayoutManager(requireContext(), 2)
