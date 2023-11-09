@@ -38,13 +38,6 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
         Log.i("Redeem", "onCreateView: $selectedPackforRedeemCoupon")
         args.putString("redeem_pack", selectedPackforRedeemCoupon)
 
-        bottomBinding.rbLocal.isChecked = true
-        bottomBinding.cvLocalPayment.setBackgroundColor(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.card_background_color
-            )
-        )
 
         bottomBinding.cvLocalPayment.setOnClickListener {
             bottomBinding.rbLocal.isChecked = true
@@ -66,7 +59,6 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
                 redeemCouponBottomFragment.show(
                     childFragmentManager, redeemCouponBottomFragment.tag
                 )
-                isRedeemCouponBottomDialogOpened = true
             } else{
                 val intent = Intent(requireContext(), LocalPaymentActivity::class.java)
                 intent.putExtra("sub_pack", sub_packLocalPayment)
@@ -76,12 +68,25 @@ class SubscribeBottomFragment : BottomSheetDialogFragment() {
             }
         }
 
-        if (isRedeemCouponBottomDialogOpened){
-            dismiss()
-            findNavController().popBackStack()
-        }
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bottomBinding.rbLocal.isChecked = true
+        bottomBinding.rbRedeem.isChecked = false
+        bottomBinding.cvLocalPayment.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.card_background_color
+            )
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dismiss()
     }
 
     private fun updateUI() {

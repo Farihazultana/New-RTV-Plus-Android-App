@@ -103,8 +103,6 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
         binding.btnContinuePayment.setOnClickListener {
             if (selectedPositions != -1) {
                 if (getPhoneNumSP.isNotEmpty()) {
-                    //binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.grey))
-                    //selectedPositions = -1
                     showBottomSheet()
 
                 } else {
@@ -163,9 +161,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
                 )
             }
         }
-        selectedPositions = -1
-        Log.i("bug", "onResume: $selectedPositions")
-        binding.btnContinuePayment.setBackgroundColor(resources.getColor(R.color.gray))
+
 
         super.onResume()
     }
