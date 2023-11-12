@@ -51,7 +51,7 @@ class RedeemCouponBottomFragment : BottomSheetDialogFragment() {
             if(otp.length==8){
                 redeemCouponViewModel.fetchRedeemCouponPaymentData(getPhoneNumSP, otp)
             }else if (otp.length <8 || otp.length >8){
-                Toast.makeText(requireActivity(), "Coupon code can't be less than 8", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "Please enter a valid a valid coupon code to proceed", Toast.LENGTH_SHORT).show()
             }
         }
         return view
