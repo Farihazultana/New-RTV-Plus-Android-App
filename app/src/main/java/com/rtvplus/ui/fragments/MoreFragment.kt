@@ -179,7 +179,6 @@ class MoreFragment : Fragment() {
     }
 
     private fun logout(username: String) {
-        isLoggedIn = false
         SharedPreferencesUtil.clear(requireContext())
         navigateToHomeFragment()
         //Toast.makeText(context, "You are Logged Out!", Toast.LENGTH_SHORT).show()

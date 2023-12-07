@@ -42,7 +42,7 @@ class SubscriptionFragment : Fragment(), SubscriptionAdapter.CardClickListener,
     private lateinit var subscriptionAdapter: SubscriptionAdapter
     private val subscriptionViewModel by viewModels<SubscriptionViewModel>()
 
-    //private val logInViewModel by viewModels<LogInViewModel>()
+
     private var selectedPositions = -1
 
     private var getPhoneNumSP: String = ""

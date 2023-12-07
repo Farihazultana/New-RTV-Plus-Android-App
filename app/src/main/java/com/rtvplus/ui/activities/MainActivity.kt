@@ -128,31 +128,6 @@ class MainActivity : AppCompatActivity() {
                 R.drawable.selected_nav_item_color
             )
         )
-
-        logInViewModel.logInData.observe(this) {
-            when (it) {
-                is ResultType.Success -> {
-                    val logInResult = it.data
-
-                    for (item in logInResult) {
-                        currentversion = item.currentversion
-                        enforcetext = item.enforcetext
-                        enforce = item.enforce
-                        checkSoftwareVersion()
-                    }
-                }
-
-                is ResultType.Error -> {
-
-                }
-
-                else -> {
-
-                }
-            }
-        }
-
-
     }
 
     fun showBottomNavigationBar() {

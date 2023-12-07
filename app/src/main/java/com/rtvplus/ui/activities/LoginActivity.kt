@@ -81,7 +81,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
 
         //LogIn with phone
         binding.btnLogIn.setOnClickListener {
-            isLoggedIn= true
+
             handlePhoneLogin(logInUtil)
         }
 
@@ -94,14 +94,14 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
 
         //Google Sign In
         binding.btnGoogleSignIn.setOnClickListener {
-            isLoggedIn= true
+
             googleLogIn()
         }
 
         //Facebook Signin
         // Trigger the Facebook login when the button is clicked
         binding.btnFacebookSignIn.setOnClickListener {
-            isLoggedIn= true
+
             facebookLoginIntegration()
             LoginManager.getInstance().logInWithReadPermissions(this, listOf("public_profile"))
         }
@@ -388,7 +388,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
             SharedPreferencesUtil.saveData(this, UserPasswordKey, enteredPassword)
             SharedPreferencesUtil.saveData(this, SignInType, "Phone")
 
-            isLoggedIn= true
+
 
             //Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
             finish()
@@ -405,7 +405,7 @@ class LoginActivity : AppCompatActivity(), LogInUtil.ObserverListener, Socialmed
                 SharedPreferencesUtil.saveData(this, SignInType, AppUtils.Type_fb)
             }
 
-            isLoggedIn= true
+
 
             finish()
         }
